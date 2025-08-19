@@ -27,20 +27,20 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
-    min-height: 500px;
+    min-height: 400px;
 }
 
 .logo {
-    width: 45px;
-    height: 45px;
+    width: 60px;
+    height: 60px;
     background: #4e54c8;
-    border-radius: 50%;
+    border-radius: 150%;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 12px rgba(78,84,200,0.18);
     position: absolute;
-    top: -22px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -58,6 +58,7 @@ body {
     font-size: 2.1rem;
     font-weight: 700;
     letter-spacing: 1px;
+    
 }
 .login-container p {
     margin-bottom: 1.7rem;

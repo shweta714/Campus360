@@ -6,6 +6,12 @@
     <title>Campus360 - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Check if user came from intro page, if not redirect
+        if (!sessionStorage.getItem('fromIntro')) {
+            window.location.href = 'intro.html';
+        }
+    </script>
 </head>
 <body>
     <div class="overlay"></div>

@@ -1,0 +1,155 @@
+body {
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    background: url('https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(60, 60, 120, 0.45);
+    z-index: 0;
+}
+
+.intro-container {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background: #4e54c8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 2px 12px rgba(78,84,200,0.18);
+}
+
+.logo span {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+h1 {
+    color: #4e54c8;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.tagline {
+    color: #333;
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.feature-card h3 {
+    color: #4e54c8;
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+}
+
+.feature-card p {
+    color: #333;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.auth-section {
+    margin-top: 2rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-btn {
+    background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+    color: white;
+}
+
+.signup-btn {
+    background: white;
+    color: #4e54c8;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(78,84,200,0.2);
+}
+
+@media (max-width: 768px) {
+    .intro-container {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .tagline {
+        font-size: 1rem;
+    }
+}
