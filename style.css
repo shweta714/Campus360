@@ -98,6 +98,24 @@ body {
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 4px 16px rgba(78,84,200,0.22);
 }
+
+.form-links {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.form-links a {
+    color: #4e54c8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.form-links a:hover {
+    color: #8f94fb;
+    text-decoration: underline;
+}
 @media (max-width: 500px) {
     .login-container {
         padding: 1.2rem 0.7rem;
