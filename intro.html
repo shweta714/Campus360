@@ -47,32 +47,16 @@
 
     <script>
         document.getElementById('loginBtn').addEventListener('click', function() {
+            // Set session storage to indicate coming from intro page
+            sessionStorage.setItem('fromIntro', 'true');
             window.location.href = 'index.html';
         });
 
-        document.getElementById('signupBtn').addEventListener('click', async function() {
-            const username = prompt('Enter your username or email:');
-            if (!username) return;
-
-            // Simulate checking if user exists (replace with actual API call)
-            const userExists = await checkIfUserExists(username);
-            if (userExists) {
-                alert('This username/email is already registered. Please login instead.');
-                window.location.href = 'index.html';
-            } else {
-                // Redirect to signup page (you'll need to create this)
-                alert('Redirecting to signup page...');
-                // window.location.href = 'signup.html';
-            }
+        document.getElementById('signupBtn').addEventListener('click', function() {
+            // Set session storage to indicate coming from intro page
+            sessionStorage.setItem('fromIntro', 'true');
+            window.location.href = 'index.html';
         });
-
-        // Simulate API call to check if user exists
-        async function checkIfUserExists(username) {
-            // Replace this with actual API call
-            // For now, let's simulate some existing users
-            const existingUsers = ['test@example.com', 'student1', 'admin@campus360.com'];
-            return existingUsers.includes(username);
-        }
     </script>
 </body>
 </html>
