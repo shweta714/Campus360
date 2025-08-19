@@ -12,6 +12,21 @@
             window.location.href = 'intro.html';
         }
     </script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            
+            // Here you would typically send this to your server
+            console.log(`Logging in as ${role}`);
+            alert(`Logging in as ${role}\nUsername: ${username}`);
+            
+            // You can redirect to different dashboards based on role
+            // window.location.href = `${role}-dashboard.html`;
+        });
+    </script>
 </head>
 <body>
     <div class="overlay"></div>
@@ -19,7 +34,23 @@
         <div class="logo"><span>🎓</span></div>
         <h1>Login</h1>
         <p> Welcome to a smarter campus experience!</p>
-        <form>
+        <form id="loginForm">
+            <div class="role-selector">
+                <label class="role-label">
+                    <input type="radio" name="role" value="student" checked>
+                    <span class="role-option">
+                        <span class="role-icon">👨‍🎓</span>
+                        <span class="role-text">Student</span>
+                    </span>
+                </label>
+                <label class="role-label">
+                    <input type="radio" name="role" value="faculty">
+                    <span class="role-option">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span class="role-text">Faculty</span>
+                    </span>
+                </label>
+            </div>
             <label for="username">Username or Email</label>
             <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
             <label for="password">Password</label>
