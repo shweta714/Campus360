@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus360 - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="signup-container">
+        <div class="logo"><span>🎓</span></div>
+        <h1>Create Account</h1>
+        <p>Join Campus360 today!</p>
+        <form id="signupForm" onsubmit="return validateForm(event)">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+            
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+            <div class="password-requirements">
+                <p>Password must contain:</p>
+                <ul>
+                    <li id="length">At least 8 characters</li>
+                    <li id="uppercase">One uppercase letter</li>
+                    <li id="number">One number</li>
+                    <li id="special">One special character</li>
+                </ul>
+            </div>
+            
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+            
+            <button type="submit">Create Account</button>
+            <div class="form-links">
+                <p>Already have an account? <a href="index.html" class="login-link">Login here</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+
+            // Password validation
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            const hasLength = password.length >= 8;
+
+            // Update password requirement indicators
+            document.getElementById('length').style.color = hasLength ? 'green' : 'red';
+            document.getElementById('uppercase').style.color = hasUpperCase ? 'green' : 'red';
+            document.getElementById('number').style.color = hasNumber ? 'green' : 'red';
+            document.getElementById('special').style.color = hasSpecial ? 'green' : 'red';
+
+            if (!hasLength || !hasUpperCase || !hasNumber || !hasSpecial) {
+                alert('Please meet all password requirements');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return false;
+            }
+
+            // Check if user already exists
+            const existingUsers = ['test@example.com', 'student1', 'admin@campus360.com'];
+            if (existingUsers.includes(email) || existingUsers.includes(username)) {
+                alert('This email or username is already registered. Please login instead.');
+                sessionStorage.setItem('fromIntro', 'true');
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            // If all validations pass
+            alert('Account created successfully! Please login.');
+            sessionStorage.setItem('fromIntro', 'true');
+            window.location.href = 'index.html';
+            return false;
+        }
+
+        // Real-time password validation
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            document.getElementById('length').style.color = password.length >= 8 ? 'green' : 'red';
+            document.getElementById('uppercase').style.color = /[A-Z]/.test(password) ? 'green' : 'red';
+            document.getElementById('number').style.color = /[0-9]/.test(password) ? 'green' : 'red';
+            document.getElementById('special').style.color = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'green' : 'red';
+        });
+    </script>
+</body>
+</html>
