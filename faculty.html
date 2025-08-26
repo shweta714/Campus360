@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamMate - Faculty Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="faculty.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header with faculty info -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">🎓</div>
+                <div class="header-info">
+                    <h1>Faculty Dashboard</h1>
+                    <p id="facultyName">Welcome, Dr. Smith</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="location.href='index.html'">Logout</button>
+        </header>
+
+        <!-- Faculty Profile Card -->
+        <div class="profile-section">
+            <h2>Faculty Information</h2>
+            <div class="profile-card">
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label>Name:</label>
+                        <span>Dr. John Smith</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Department:</label>
+                        <span>Computer Science</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Faculty ID:</label>
+                        <span>CS-FAC-101</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Email:</label>
+                        <span>john.smith@exammate.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Classes Section -->
+        <div class="classes-section">
+            <h2>Assigned Classes</h2>
+            <div class="class-cards">
+                <!-- Class Card 1 -->
+                <div class="class-card">
+                    <h3>Data Structures</h3>
+                    <div class="class-info">
+                        <div class="info-row">
+                            <span class="label">Course Code:</span>
+                            <span>CS201</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Class:</span>
+                            <span>B.Tech 2nd Year (A)</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Building:</span>
+                            <span>Tech Block</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Lecture Hall:</span>
+                            <span>LH-201</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Timing:</span>
+                            <span>Mon, Wed 10:00-11:30 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Card 2 -->
+                <div class="class-card">
+                    <h3>Database Management</h3>
+                    <div class="class-info">
+                        <div class="info-row">
+                            <span class="label">Course Code:</span>
+                            <span>CS301</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Class:</span>
+                            <span>B.Tech 3rd Year (B)</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Building:</span>
+                            <span>CS Block</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Lecture Hall:</span>
+                            <span>LH-305</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Timing:</span>
+                            <span>Tue, Thu 2:00-3:30 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Card 3 -->
+                <div class="class-card">
+                    <h3>Software Engineering</h3>
+                    <div class="class-info">
+                        <div class="info-row">
+                            <span class="label">Course Code:</span>
+                            <span>CS401</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Class:</span>
+                            <span>B.Tech 4th Year (A)</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Building:</span>
+                            <span>Main Block</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Lecture Hall:</span>
+                            <span>LH-401</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Timing:</span>
+                            <span>Wed, Fri 11:00-12:30 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

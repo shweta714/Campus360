@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus360 - Login</title>
+    <title>ExamMate - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script>
@@ -11,6 +11,27 @@
         if (!sessionStorage.getItem('fromIntro')) {
             window.location.href = 'intro.html';
         }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add submit event listener to login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const role = document.querySelector('input[name="role"]:checked').value;
+                
+                if (role === 'faculty') {
+                    // Store faculty info and redirect to faculty dashboard
+                    sessionStorage.setItem('facultyName', username);
+                    window.location.href = 'faculty.html';
+                } else {
+                    // Store student info and redirect to student dashboard
+                    sessionStorage.setItem('studentName', username);
+                    window.location.href = 'student-dashboard.html';
+                }
+            });
+        });
     </script>
 </head>
 <body>
@@ -18,8 +39,24 @@
     <div class="login-container">
         <div class="logo"><span>🎓</span></div>
         <h1>Login</h1>
-        <p> Welcome to a smarter campus experience!</p>
-        <form>
+        <p>Welcome to TestMate - Your Study Companion!</p>
+        <form id="loginForm">
+            <div class="role-selector">
+                <label class="role-label">
+                    <input type="radio" name="role" value="student" checked>
+                    <span class="role-option">
+                        <span class="role-icon">👨‍🎓</span>
+                        <span class="role-text">Student</span>
+                    </span>
+                </label>
+                <label class="role-label">
+                    <input type="radio" name="role" value="faculty">
+                    <span class="role-option">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span class="role-text">Faculty</span>
+                    </span>
+                </label>
+            </div>
             <label for="username">Username or Email</label>
             <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
             <label for="password">Password</label>

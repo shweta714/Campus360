@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus360 - Sign Up</title>
+    <title>ExamMate - Sign Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="signup.css">
 </head>
@@ -12,7 +12,7 @@
     <div class="signup-container">
         <div class="logo"><span>🎓</span></div>
         <h1>Create Account</h1>
-        <p>Join Campus360 today!</p>
+        <p>Join ExamMate today!</p>
         <form id="signupForm" onsubmit="return validateForm(event)">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
@@ -77,7 +77,7 @@
             }
 
             // Check if user already exists
-            const existingUsers = ['test@example.com', 'student1', 'admin@campus360.com'];
+            const existingUsers = ['test@example.com', 'student1', 'admin@exammate.com'];
             if (existingUsers.includes(email) || existingUsers.includes(username)) {
                 alert('This email or username is already registered. Please login instead.');
                 sessionStorage.setItem('fromIntro', 'true');
