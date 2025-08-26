@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamMate - Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="student-dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header with Navigation -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">🎓</div>
+                <div class="header-info">
+                    <h1>Student Dashboard</h1>
+                    <p id="studentName">Welcome, Student</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="location.href='index.html'">Logout</button>
+        </header>
+
+        <!-- Navigation Cards -->
+        <div class="nav-cards">
+            <!-- Timetable Card -->
+            <div class="nav-card" onclick="location.href='student-timetable.html'">
+                <div class="card-icon">📅</div>
+                <div class="card-content">
+                    <h2>Timetable</h2>
+                    <p>View your class schedule</p>
+                    <ul>
+                        <li>Daily class schedule</li>
+                        <li>Lecture halls</li>
+                        <li>Subject timings</li>
+                    </ul>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+
+            <!-- Exams Card -->
+            <div class="nav-card" onclick="location.href='student-exams.html'">
+                <div class="card-icon">📝</div>
+                <div class="card-content">
+                    <h2>Exams</h2>
+                    <p>View upcoming exams</p>
+                    <ul>
+                        <li>Exam schedule</li>
+                        <li>Subject details</li>
+                        <li>Exam instructions</li>
+                    </ul>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="nav-card" onclick="location.href='student-quiz.html'">
+                <div class="card-icon">✅</div>
+                <div class="card-content">
+                    <h2>Quiz</h2>
+                    <p>Take practice quizzes</p>
+                    <ul>
+                        <li>Auto-graded quizzes</li>
+                        <li>Practice tests</li>
+                        <li>Instant results</li>
+                    </ul>
+                </div>
+                <div class="card-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Quick Overview Section -->
+        <div class="overview-section">
+            <h2>Today's Overview</h2>
+            <div class="overview-grid">
+                <!-- Classes Today -->
+                <div class="overview-card">
+                    <h3>Today's Classes</h3>
+                    <div class="today-classes">
+                        <div class="class-item">
+                            <span class="time">9:00 AM</span>
+                            <span class="subject">Data Structures</span>
+                            <span class="room">Room 201</span>
+                        </div>
+                        <div class="class-item">
+                            <span class="time">11:00 AM</span>
+                            <span class="subject">Database Systems</span>
+                            <span class="room">Lab 102</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="overview-card">
+                    <h3>Upcoming Events</h3>
+                    <div class="events-list">
+                        <div class="event-item">
+                            <span class="event-date">Aug 25</span>
+                            <span class="event-name">Mid-Term Exam</span>
+                        </div>
+                        <div class="event-item">
+                            <span class="event-date">Aug 27</span>
+                            <span class="event-name">Quiz: Data Structures</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update student name from session storage
+        window.onload = function() {
+            const studentName = sessionStorage.getItem('studentName');
+            if (studentName) {
+                document.getElementById('studentName').textContent = `Welcome, ${studentName}`;
+            }
+        };
+    </script>
+</body>
+</html>
