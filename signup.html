@@ -15,7 +15,7 @@
         <div class="logo"><span>🎓</span></div>
         <h1>Create Account</h1>
         <p>Join Campus 360 today!</p>
-        <form id="signupForm" onsubmit="return validateForm(event)">
+        <form id="signupForm">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
 
@@ -43,15 +43,14 @@
 
             <button type="submit">Create Account</button>
             <div class="form-links">
-                <p>Already have an account? <a href="index.html" class="login-link">Login here</a></p>
+                <p>Already have an account? <a href="index.html" class="login-link"
+                        onclick="sessionStorage.setItem('fromIntro','true')">Login here</a></p>
             </div>
         </form>
     </div>
 
     <script>
         function validateForm(event) {
-            event.preventDefault();
-
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             const email = document.getElementById('email').value;
@@ -94,6 +93,14 @@
             window.location.href = 'index.html';
             return false;
         }
+
+        // Attach submit event handler to the form
+        document.getElementById('signupForm').addEventListener('submit', function (event) {
+            // Only prevent default if validation fails
+            if (!validateForm(event)) {
+                event.preventDefault();
+            }
+        });
 
         // Real-time Password validation
         document.getElementById('password').addEventListener('input', function () {
