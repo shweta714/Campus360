@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Settings - Campus360</title>
+  <link rel="stylesheet" href="student-dashboard.css">
+</head>
+<body>
+  <nav class="navbar-top">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+        <span class="navbar-title">SETTINGS</span>
+      </div>
+      <ul class="navbar-menu">
+        <li onclick="window.location.href='student-dashboard.html'">&larr; Dashboard</li>
+      </ul>
+    </div>
+  </nav>
+
+  <main style="max-width:900px;margin:80px auto 40px;padding:20px;">
+    <section class="settings-card">
+      <div class="settings-bubbles" id="settingsBubbles"></div>
+      <h1>Settings</h1>
+      <div class="settings-grid">
+        <div class="settings-item">
+          <h3>Theme</h3>
+          <p>Choose the color theme.</p>
+          <div class="btn-group" style="margin-top:10px;">
+            <button class="seg-btn" data-value="light" id="themeLight">Light</button>
+            <button class="seg-btn active" data-value="dark" id="themeDark">Dark</button>
+          </div>
+        </div>
+
+        <div class="settings-item">
+          <h3>Notifications</h3>
+          <p>Manage notifications.</p>
+          <div class="btn-group" style="margin-top:10px;">
+            <button class="seg-btn" data-value="off" id="notifyOff">Off</button>
+            <button class="seg-btn active" data-value="on" id="notifyOn">On</button>
+          </div>
+        </div>
+
+        <div class="settings-item">
+          <h3>Account</h3>
+          <p>Danger zone: Removes saved profile locally and signs you out.</p>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+            <button id="resetProfile" class="btn">Reset Profile</button>
+            <button id="logoutBtn" class="btn danger">Logout</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const PREF_KEY = 'campus360_prefs';
+    function loadPrefs(){
+      const raw = localStorage.getItem(PREF_KEY);
+      const prefs = raw ? JSON.parse(raw) : { theme:'dark', notify:true };
+      // set buttons
+      document.getElementById(prefs.theme === 'dark' ? 'themeDark' : 'themeLight').classList.add('active');
+      document.getElementById(prefs.notify ? 'notifyOn' : 'notifyOff').classList.add('active');
+      applyTheme(prefs.theme === 'dark');
+    }
+    function savePrefs(themeVal, notifyVal){
+      const prefs = { theme: themeVal, notify: notifyVal };
+      localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+      applyTheme(themeVal === 'dark');
+    }
+    function applyTheme(dark){
+      if(dark) document.body.classList.add('dark-theme'); else document.body.classList.remove('dark-theme');
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      loadPrefs();
+      // theme buttons
+      document.getElementById('themeDark').addEventListener('click', function(){
+        document.getElementById('themeDark').classList.add('active');
+        document.getElementById('themeLight').classList.remove('active');
+        savePrefs('dark', document.getElementById('notifyOn').classList.contains('active'));
+      });
+      document.getElementById('themeLight').addEventListener('click', function(){
+        document.getElementById('themeLight').classList.add('active');
+        document.getElementById('themeDark').classList.remove('active');
+        savePrefs('light', document.getElementById('notifyOn').classList.contains('active'));
+      });
+      // notify buttons
+      document.getElementById('notifyOn').addEventListener('click', function(){
+        document.getElementById('notifyOn').classList.add('active');
+        document.getElementById('notifyOff').classList.remove('active');
+        const themeVal = document.getElementById('themeDark').classList.contains('active') ? 'dark' : 'light';
+        savePrefs(themeVal, true);
+      });
+      document.getElementById('notifyOff').addEventListener('click', function(){
+        document.getElementById('notifyOff').classList.add('active');
+        document.getElementById('notifyOn').classList.remove('active');
+        const themeVal = document.getElementById('themeDark').classList.contains('active') ? 'dark' : 'light';
+        savePrefs(themeVal, false);
+      });
+
+      document.getElementById('resetProfile').addEventListener('click', function(){
+        if(!confirm('Remove stored profile data? This cannot be undone locally.')) return;
+        localStorage.removeItem('campus360_profile');
+        alert('Local profile reset.');
+      });
+      document.getElementById('logoutBtn').addEventListener('click', function(){
+        try{ sessionStorage.clear(); localStorage.removeItem('authToken'); } catch(e){}
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>

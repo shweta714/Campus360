@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Course - Campus360</title>
+  <link rel="stylesheet" href="student-dashboard.css">
+  <style>
+    /* small page-specific adjustments */
+    .course-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .course-controls{display:flex;gap:12px;align-items:center}
+    .resource-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+    .resource-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbff);}
+  </style>
+</head>
+<body>
+  <nav class="navbar-top">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+        <span class="navbar-title" id="courseTitle">COURSE</span>
+      </div>
+      <ul class="navbar-menu">
+        <li onclick="window.location.href='courses.html'">&larr; Courses</li>
+        <li onclick="window.location.href='student-dashboard.html'">Dashboard</li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="profile-page">
+    <div class="course-hero-card profile-card" style="padding:20px;">
+      <div class="course-hero-left">
+        <h1 id="titleH">Course</h1>
+        <p class="muted" id="courseSubtitle">Course subtitle / instructor</p>
+        <p class="muted" id="courseInstructor" style="margin-top:6px;">Instructor: -</p>
+        <p class="muted" id="courseDuration">Duration: -</p>
+
+        <div style="margin-top:18px;display:flex;align-items:center;gap:14px;">
+          <div class="cc-percent" id="bigPercent" style="--p:0;width:96px;height:96px;display:grid;place-items:center;font-size:18px;border-radius:999px;color:#fff;"></div>
+          <div>
+            <p class="muted" style="margin:0;" id="progressText">0% complete</p>
+            <div class="cc-progress" style="margin-top:8px;width:240px;max-width:60vw;"><div class="cc-progress-fill" id="progressFill" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;align-items:center;">
+          <label style="display:flex;align-items:center;gap:8px;">Enrolled <input type="checkbox" id="enrollToggle"></label>
+          <button id="startBtn" class="btn primary">Start / Resume</button>
+          <button id="markDone" class="btn">Mark +10%</button>
+        </div>
+
+  <div id="courseAlert" style="margin-top:12px;display:none;padding:10px;border-radius:8px;background:#fff6f6;border:1px solid #ffd6d6;color:#7a1b1b;">
+          <strong>Note:</strong> No course selected. <a href="courses.html" style="margin-left:8px;color:#7c3aed;">Open Courses list</a>
+        </div>
+      </div>
+
+      <div class="course-hero-right">
+        <div class="course-tabs">
+          <button class="tab active" data-tab="resources">Resources</button>
+          <button class="tab" data-tab="quiz">Quiz</button>
+          <button class="tab" data-tab="notes">Notes</button>
+        </div>
+
+        <div class="tab-contents">
+          <div id="tab-resources" class="tab-content">
+            <h3>Resources</h3>
+            <ul id="resList" class="resource-list"></ul>
+          </div>
+
+          <div id="tab-quiz" class="tab-content" style="display:none;">
+            <h3>Quiz</h3>
+            <p class="muted" id="quizIntro">Test your understanding with a short quiz.</p>
+            <div id="quizContainer" class="quiz-container"></div>
+            <div id="quizControls" style="margin-top:12px; display:flex;gap:8px;align-items:center;">
+              <button id="submitQuiz" class="btn primary">Submit Quiz</button>
+              <button id="retryQuiz" class="btn" style="display:none;">Retry</button>
+              <div id="quizResult" style="margin-left:12px; font-weight:600;"></div>
+            </div>
+          </div>
+
+          <div id="tab-notes" class="tab-content" style="display:none;">
+            <h3>Notes</h3>
+            <p class="muted">Save personal notes for this course. Notes are stored locally in your browser.</p>
+            <textarea id="notesText" rows="6" style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e6e8f0;"></textarea>
+            <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+              <button id="saveNotes" class="btn primary">Save Notes</button>
+              <div id="notesSaved" class="muted" style="font-size:0.95rem;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function getQuery(name){
+      const params = new URLSearchParams(location.search);
+      return params.get(name);
+    }
+    const courseName = getQuery('name') || 'Unknown Course';
+    document.getElementById('courseTitle').textContent = courseName;
+    document.getElementById('titleH').textContent = courseName;
+
+    const PROG_KEY = 'course_progress_'+courseName;
+    const ENROLL_KEY = 'course_enroll_'+courseName;
+
+    function setBigPercent(p){
+      const el = document.getElementById('bigPercent');
+      el.style.setProperty('--p', p);
+      el.textContent = p + '%';
+    }
+
+    function loadCourse(){
+      if(courseName === 'Unknown Course'){
+        document.getElementById('courseAlert').style.display='block';
+        document.getElementById('resList').innerHTML='';
+        document.getElementById('quizSection').style.display='none';
+        return;
+      } else {
+        document.getElementById('courseAlert').style.display='none';
+      }
+
+      const progress = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
+      const enrolled = localStorage.getItem(ENROLL_KEY) === '1';
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('progressText').textContent = progress + '% complete';
+      document.getElementById('enrollToggle').checked = enrolled;
+      setBigPercent(progress);
+
+      // populate metadata
+      const METAS = {
+        'DBMS': { instructor:'Dr. Sharma', duration:'12 weeks' },
+        'DSA (C++)': { instructor:'Prof. Rao', duration:'10 weeks' }
+      };
+      const meta = METAS[courseName] || { instructor:'TBA', duration:'TBD' };
+      document.getElementById('courseInstructor').textContent = 'Instructor: ' + meta.instructor;
+      document.getElementById('courseDuration').textContent = 'Duration: ' + meta.duration;
+
+      // load notes
+      const NOTES_KEY = 'course_notes_'+courseName;
+      try{ const n = localStorage.getItem(NOTES_KEY) || ''; document.getElementById('notesText').value = n; }catch(e){}
+
+      // sample resources
+      const res = [
+        {title:'Lecture 1 - Introduction', type:'video'},
+        {title:'Assignment 1', type:'pdf'},
+        {title:'Lab 1 - Setup', type:'link'}
+      ];
+      const list = document.getElementById('resList'); list.innerHTML='';
+      res.forEach((r,i)=>{
+        const li = document.createElement('li');
+        li.className='resource-item';
+        li.innerHTML = `<div><strong>${r.title}</strong><div class="muted">${r.type}</div></div><div><button class="btn" data-idx="${i}">Mark Done</button></div>`;
+        list.appendChild(li);
+      });
+
+      // wire mark done
+      list.querySelectorAll('button[data-idx]').forEach(btn=>{
+        btn.addEventListener('click', function(){
+          // increment progress and persist
+          let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
+          p = Math.min(100, p + 10);
+          localStorage.setItem(PROG_KEY, p);
+          loadCourse();
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      loadCourse();
+      document.getElementById('enrollToggle').addEventListener('change', function(){
+        localStorage.setItem(ENROLL_KEY, this.checked ? '1' : '0');
+      });
+      document.getElementById('markDone').addEventListener('click', function(){
+        let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
+        p = Math.min(100, p + 10);
+        localStorage.setItem(PROG_KEY, p);
+        loadCourse();
+      });
+      // notes save
+      document.getElementById('saveNotes').addEventListener('click', function(){
+        const val = document.getElementById('notesText').value || '';
+        try{ localStorage.setItem('course_notes_'+courseName, val); document.getElementById('notesSaved').textContent = 'Saved'; setTimeout(()=>document.getElementById('notesSaved').textContent='',1500); }catch(e){}
+      });
+
+      // hero entrance animation
+      const hero = document.querySelector('.course-hero-card');
+      if(hero){ hero.style.opacity = 0; hero.style.transform = 'translateY(6px)'; setTimeout(()=>{ hero.style.transition='opacity .36s ease, transform .36s ease'; hero.style.opacity = 1; hero.style.transform='translateY(0)'; }, 80); }
+    });
+
+    /* Quiz data and logic */
+    const QUIZ_KEY = 'course_quiz_'+courseName;
+    const QUIZ_DB = {
+      'DBMS': [
+        { q:'What does DBMS stand for?', opts:['Data Base Management System','Database Management Service','Data Backup Management System'], a:0 },
+        { q:'Which normal form is based on primary key?', opts:['1NF','2NF','3NF'], a:1 },
+        { q:'SQL is a', opts:['Programming language','Query language','Markup language'], a:1 }
+      ],
+      'DSA (C++)': [ { q:'Sample: What is O(1)?', opts:['Constant','Linear','Quadratic'], a:0 } ]
+    };
+
+    function renderQuiz(){
+      const qlist = QUIZ_DB[courseName] || [];
+      const section = document.getElementById('quizSection');
+      if(!qlist.length){ section.style.display='none'; return; }
+      section.style.display='block';
+      const container = document.getElementById('quizContainer'); container.innerHTML='';
+      qlist.forEach((item, idx)=>{
+        const qdiv = document.createElement('div'); qdiv.className='quiz-question';
+        const qh = document.createElement('h4'); qh.textContent = (idx+1)+'. '+item.q; qdiv.appendChild(qh);
+        const opts = document.createElement('div'); opts.className='quiz-opts';
+        item.opts.forEach((opt,i)=>{
+          const id = 'q'+idx+'o'+i;
+          const r = document.createElement('label'); r.style.display='block'; r.style.marginTop='6px';
+          r.innerHTML = `<input type='radio' name='q${idx}' value='${i}' id='${id}' style='margin-right:8px;'> ${opt}`;
+          opts.appendChild(r);
+        });
+        qdiv.appendChild(opts);
+        container.appendChild(qdiv);
+      });
+
+      document.getElementById('submitQuiz').onclick = function(){
+        let score=0;
+        qlist.forEach((item, idx)=>{
+          const sel = document.querySelector(`input[name='q${idx}']:checked`);
+          const val = sel ? parseInt(sel.value,10) : -1;
+          if(val === item.a) score++;
+        });
+        const pct = Math.round((score/qlist.length)*100);
+        document.getElementById('quizResult').textContent = `Score: ${score}/${qlist.length} (${pct}%)`;
+        document.getElementById('retryQuiz').style.display = 'inline-block';
+        // persist best score
+        try{
+          const prev = parseInt(localStorage.getItem(QUIZ_KEY) || '0',10);
+          if(pct > prev) localStorage.setItem(QUIZ_KEY, pct);
+        }catch(e){}
+      };
+
+      document.getElementById('retryQuiz').onclick = function(){ renderQuiz(); document.getElementById('quizResult').textContent=''; this.style.display='none'; };
+    }
+
+    // call renderQuiz after loadCourse
+    document.addEventListener('DOMContentLoaded', function(){ renderQuiz(); });
+
+    // Tab handlers
+    function showTab(name){
+      document.querySelectorAll('.course-tabs .tab').forEach(t=> t.classList.toggle('active', t.dataset.tab===name));
+      document.querySelectorAll('.tab-content').forEach(c=> c.style.display = (c.id === 'tab-'+name) ? '' : 'none');
+      if(name === 'quiz') renderQuiz();
+      if(name === 'resources') loadCourse();
+    }
+
+    document.addEventListener('click', function(e){
+      const tab = e.target.closest('.course-tabs .tab');
+      if(tab){ showTab(tab.dataset.tab); }
+    });
+  </script>
+</body>
+</html>

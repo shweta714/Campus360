@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Courses - Campus360</title>
+  <link rel="stylesheet" href="student-dashboard.css">
+</head>
+<body>
+  <nav class="navbar-top">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+        <span class="navbar-title">COURSES</span>
+      </div>
+      <ul class="navbar-menu">
+        <li onclick="window.location.href='student-dashboard.html'">&larr; Dashboard</li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="profile-page">
+    <div class="courses-hero">
+      <div class="hero-left">
+        <h1>Your Courses</h1>
+        <p class="muted">Quickly access resources, track progress and resume where you left off.</p>
+        <div class="search-row">
+          <input id="searchCourse" placeholder="Search courses (eg. DSA, DBMS)" />
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="core">Core</button>
+            <button class="filter-btn" data-filter="elective">Elective</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="course-grid" id="courseGrid"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const subjects = [
+      { name:'DSA (C++)', type:'core' },
+      { name:'ES', type:'core' },
+      { name:'IoT', type:'elective' },
+      { name:'FEE', type:'core' },
+      { name:'DBMS', type:'core' },
+      { name:'OOSE', type:'elective' }
+    ];
+
+    function createCard(sub){
+      const key = 'course_progress_'+sub.name;
+      const progress = parseInt(localStorage.getItem(key) || '0',10);
+      const card = document.createElement('article');
+      card.className = 'course-card-grid fancy';
+      card.setAttribute('data-type', sub.type);
+      card.innerHTML = `
+        <div class="cc-top">
+          <div class="cc-icon">📘</div>
+          <div class="cc-percent" style="--p:${progress}">
+            <span>${progress}%</span>
+          </div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-title">${sub.name}</div>
+          <div class="cc-sub muted">${progress}% complete</div>
+        </div>
+        <div class="cc-actions"><button class="btn primary" data-course="${encodeURIComponent(sub.name)}">Open</button></div>
+      `;
+      return card;
+    }
+
+    function renderCourses(filter='all', q=''){
+      const grid = document.getElementById('courseGrid');
+      grid.innerHTML = '';
+      const ql = q.trim().toLowerCase();
+      subjects.forEach(s=>{
+        if(filter !== 'all' && s.type !== filter) return;
+        if(ql && !s.name.toLowerCase().includes(ql)) return;
+        grid.appendChild(createCard(s));
+      });
+
+      // wire open buttons
+      grid.querySelectorAll('button[data-course]').forEach(btn=>{
+        btn.addEventListener('click', function(){
+          const name = decodeURIComponent(this.getAttribute('data-course'));
+          window.location.href = 'course.html?name='+encodeURIComponent(name);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      renderCourses();
+      // search
+      const search = document.getElementById('searchCourse');
+      search.addEventListener('input', function(){ renderCourses(document.querySelector('.filter-btn.active').dataset.filter, this.value); });
+      // filters
+      document.querySelectorAll('.filter-btn').forEach(b=> b.addEventListener('click', function(){
+        document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));
+        this.classList.add('active');
+        renderCourses(this.dataset.filter, document.getElementById('searchCourse').value);
+      }));
+    });
+  </script>
+</body>
+</html>

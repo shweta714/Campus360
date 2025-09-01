@@ -10,114 +10,99 @@
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <!-- Header with Navigation -->
-        <header class="dashboard-header">
-            <div class="header-left">
-                <div class="logo">🎓</div>
-                <div class="header-info">
-                    <h1>Student Dashboard</h1>
-                    <p id="studentName">Welcome, Student</p>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation Bar -->
+        <nav class="navbar-top">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+                    <span class="navbar-title">STUDENT DASHBOARD</span>
                 </div>
+                <ul class="navbar-menu">
+                    <li class="active" onclick="setActiveNav(this); showSection('Home')">
+                        <span class="nav-icon">&#8962;</span> Home
+                    </li>
+                    <li onclick="setActiveNav(this); showSection('Profile Overview')">
+                        <span class="nav-icon">&#128202;</span> Profile Overview
+                    </li>
+                    <li onclick="setActiveNav(this); showSection('Settings')">
+                        <span class="nav-icon">&#9881;</span> Settings
+                    </li>
+                    
+                </ul>
             </div>
-            <button class="logout-btn" onclick="location.href='intro.html'">Logout</button>
-        </header>
+        </nav>
 
-        <!-- Navigation Cards -->
-        <div class="nav-cards">
-            <!-- Timetable Card -->
-            <div class="nav-card" onclick="location.href='student-timetable.html'">
-                <div class="card-icon">📅</div>
-                <div class="card-content">
-                    <h2>Timetable</h2>
-                    <p>View your class schedule</p>
-                    <ul>
-                        <li>Daily class schedule</li>
-                        <li>Lecture halls</li>
-                        <li>Subject timings</li>
-                    </ul>
-                </div>
-                <div class="card-arrow">→</div>
-            </div>
-
-            <!-- Exams Card -->
-            <div class="nav-card" onclick="location.href='student-exams.html'">
-                <div class="card-icon">📝</div>
-                <div class="card-content">
-                    <h2>Exams</h2>
-                    <p>View upcoming exams</p>
-                    <ul>
-                        <li>Exam schedule</li>
-                        <li>Subject details</li>
-                        <li>Exam instructions</li>
-                    </ul>
-                </div>
-                <div class="card-arrow">→</div>
-            </div>
-
-            <!-- Quiz Card -->
-            <div class="nav-card" onclick="location.href='student-quiz.html'">
-                <div class="card-icon">✅</div>
-                <div class="card-content">
-                    <h2>Quiz</h2>
-                    <p>Take practice quizzes</p>
-                    <ul>
-                        <li>Auto-graded quizzes</li>
-                        <li>Practice tests</li>
-                        <li>Instant results</li>
-                    </ul>
-                </div>
-                <div class="card-arrow">→</div>
-            </div>
-        </div>
-
-        <!-- Quick Overview Section -->
-        <div class="overview-section">
-            <h2>Today's Overview</h2>
-            <div class="overview-grid">
-                <!-- Classes Today -->
-                <div class="overview-card">
-                    <h3>Today's Classes</h3>
-                    <div class="today-classes">
-                        <div class="class-item">
-                            <span class="time">9:00 AM</span>
-                            <span class="subject">Data Structures</span>
-                            <span class="room">Room 201</span>
-                        </div>
-                        <div class="class-item">
-                            <span class="time">11:00 AM</span>
-                            <span class="subject">Database Systems</span>
-                            <span class="room">Lab 102</span>
-                        </div>
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <div class="logo">&#127891;</div>
+                    <div class="header-info">
+                        <h1>Welcome to Your Dashboard</h1>
+                        <p>Manage your academic journey with ease</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Upcoming Events -->
-                <div class="overview-card">
-                    <h3>Upcoming Events</h3>
-                    <div class="events-list">
-                        <div class="event-item">
-                            <span class="event-date">Aug 25</span>
-                            <span class="event-name">Mid-Term Exam</span>
-                        </div>
-                        <div class="event-item">
-                            <span class="event-date">Aug 27</span>
-                            <span class="event-name">Quiz: Data Structures</span>
-                        </div>
+            <!-- Cards and overview: small cards for quick access -->
+            <div class="home-cards">
+                <div class="course-card" id="openCourses" onclick="window.location.href='courses.html'">
+                    <div class="card-icon">📚</div>
+                    <div class="card-body">
+                        <h3>Courses</h3>
+                        <p>View and manage your enrolled subjects</p>
                     </div>
+                    <div class="card-arrow">›</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Update student name from session storage
-        window.onload = function () {
-            const studentName = sessionStorage.getItem('studentName');
-            if (studentName) {
-                document.getElementById('studentName').textContent = `Welcome, ${studentName}`;
+        // Navbar active state
+        function setActiveNav(element) {
+            document.querySelectorAll('.navbar-menu li').forEach(function(li) {
+                li.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Section navigation
+        function showSection(section) {
+            // When Profile Overview is selected, open the dedicated profile page
+            if (section === 'Profile Overview') {
+                window.location.href = 'profile.html';
+                return;
             }
-        };
+
+            // When Settings is selected, open settings page
+            if (section === 'Settings') {
+                window.location.href = 'settings.html';
+                return;
+            }
+
+            // Fallback behaviour for other sections
+            alert('Navigating to: ' + section);
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const checkbox = document.getElementById('theme-toggle');
+            if (checkbox) checkbox.checked = document.body.classList.contains('dark-theme');
+        }
+
+        // Logout function: clear client storage and go to login page
+        function logout() {
+            try {
+                sessionStorage.clear();
+                localStorage.removeItem('authToken');
+            } catch (e) {}
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 

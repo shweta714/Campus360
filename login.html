@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login - Campus360</title>
+  <link rel="stylesheet" href="student-dashboard.css">
+</head>
+<body>
+  <main style="max-width:420px;margin:60px auto;padding:20px;">
+    <section style="background:white;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label>Email<br><input type="email" id="email" required style="width:100%;padding:8px;margin-top:6px;"/></label>
+        <label style="display:block;margin-top:12px;">Password<br><input type="password" id="password" required style="width:100%;padding:8px;margin-top:6px;"/></label>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:space-between;align-items:center;">
+          <button type="submit" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Login</button>
+          <a href="signup.html">Sign up</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      // fake login: store a token and redirect to dashboard
+      try { localStorage.setItem('authToken','demo-token'); } catch(e){}
+      window.location.href = 'student-dashboard.html';
+    });
+  </script>
+</body>
+</html>
