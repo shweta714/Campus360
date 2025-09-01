@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Campus360</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #c2e9fb 0%, #e0c3fc 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            position: relative;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            width: 100%;
+            background: #6403ca;
+            box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
+            padding: 1.2rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 2rem;
+        }
+
+        .navbar-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .navbar-menu li a:hover {
+            background: #e0e7ff;
+            color: #3554c8;
+        }
+
+        @media (max-width: 900px) {
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 1rem;
+            }
+
+            .navbar-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+        }
+
+        /* Help page specific styles */
+        .help-container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-section {
+            margin-bottom: 30px;
+        }
+
+        .help-section h2 {
+            color: #6403ca;
+            margin-bottom: 15px;
+        }
+
+        .help-section h3 {
+            color: #4a4a4a;
+            margin: 15px 0 10px 0;
+        }
+
+        .help-steps {
+            padding-left: 20px;
+        }
+
+        .help-steps li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 0.5rem 2rem; /* Reduced vertical padding */
+            background: rgba(100, 3, 202, 0.2); /* More transparent background */
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.3rem 1rem; /* Reduced vertical padding */
+            border-radius: 4px; /* Slightly smaller border radius */
+            transition: background 0.2s, color 0.2s;
+            float: right; /* Align to the right side */
+            font-size: 0.9rem; /* Slightly smaller font */
+        }
+
+        .footer a:hover {
+            background: #e0e7ff;
+            color: #3554c8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-menu">
+                <li><a href="intro.html" onclick="sessionStorage.clear()">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="review.html">Feedback</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="help-container">
+        <h1>Help Center</h1>
+        
+        <div class="help-section">
+            <h2>Getting Started</h2>
+            <h3>How to Sign In</h3>
+            <ol class="help-steps">
+                <li>Click the "Get Started" button on the home page</li>
+                <li>Enter your registered email address</li>
+                <li>Enter your password</li>
+                <li>Click "Sign In" to access your account</li>
+                <li>If you've forgotten your password, use the "Forgot Password" link below the sign-in form</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h2>Using Campus360</h2>
+            <h3>Navigation</h3>
+            <ul class="help-steps">
+                <li><strong>Home:</strong> Return to the main page at any time</li>
+                <li><strong>About:</strong> Learn more about Campus360's features and mission</li>
+                <li><strong>Feedback:</strong> Share your experience or report issues</li>
+                <li><strong>Help:</strong> Access this help guide</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <ul class="help-steps">
+                <li><strong>Dashboard:</strong> View your courses, assignments, and upcoming exams</li>
+                <li><strong>Profile:</strong> Update your personal information and settings</li>
+                <li><strong>Courses:</strong> Access your enrolled courses and course materials</li>
+                <li><strong>Assignments:</strong> Submit assignments and view grades</li>
+                <li><strong>Exams:</strong> View exam schedule and access online exams</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2>Common Issues</h2>
+            <h3>Login Problems</h3>
+            <ul class="help-steps">
+                <li>Make sure you're using the correct email address</li>
+                <li>Check if Caps Lock is turned on</li>
+                <li>Clear your browser cache and cookies</li>
+                <li>Use the "Forgot Password" option if needed</li>
+            </ul>
+
+            <h3>Need More Help?</h3>
+            <p>If you can't find the answer to your question, please visit our <a href="review.html">Feedback</a> page to contact support.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a href="help.html">Help</a>
+    </footer>
+</body>
+</html>

@@ -7,6 +7,61 @@
     <title>Campus360 - Sign Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="signup.css">
+    <style>
+        .google-signup-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .google-signup-btn:hover {
+            background: #f8f8f8;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #666;
+        }
+        
+        .divider:before, .divider:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .divider:before { left: 0; }
+        .divider:after { right: 0; }
+
+        .forgot-password-link {
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .forgot-password-link a {
+            color: #4e54c8;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,6 +70,14 @@
         <div class="logo"><img src="logo.png" alt="Campus360 Logo" style="width: 48px; height: 48px;"></div>
         <h1>Create Account</h1>
         <p>Join Campus 360 today!</p>
+        
+        <button type="button" class="google-signup-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="width:18px;height:18px;">
+            Sign up with Google
+        </button>
+        
+        <div class="divider">or</div>
+        
         <form id="signupForm">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>

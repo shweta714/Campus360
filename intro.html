@@ -193,6 +193,89 @@
                 padding: 1rem 1rem;
             }
         }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 0.5rem 2rem; /* Reduced vertical padding */
+            background: rgba(100, 3, 202, 0.2); /* More transparent background */
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.3rem 1rem; /* Reduced vertical padding */
+            border-radius: 4px; /* Slightly smaller border radius */
+            transition: background 0.2s, color 0.2s;
+            float: right; /* Align to the right side */
+            font-size: 0.9rem; /* Slightly smaller font */
+        }
+
+        .footer a:hover {
+            background: #e0e7ff;
+            color: #3554c8;
+        }
+
+        /* Choice Dialog Styles */
+        .choice-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            text-align: center;
+            min-width: 300px;
+            backdrop-filter: blur(8px);
+        }
+
+        .choice-dialog h2 {
+            color: #6403ca;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .choice-btn {
+            background: #6403ca;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .choice-btn:hover {
+            background: #7a1ef7;
+            transform: translateY(-2px);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+        }
     </style>
 </head>
 
@@ -204,7 +287,6 @@
                 <li><a href="intro.html" onclick="sessionStorage.clear()">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="review.html">Feedback</a></li>
-                <li><a href="signup.html">Sign Up</a></li>
             </ul>
         </div>
     </nav>
@@ -214,12 +296,38 @@
             <div class="subtitle">Smarter Exams, Smarter Campus.</div>
             <div class="desc">Manage exams, schedules, results, notifications, and more for students and faculty.
                 Experience seamless exam administration and performance tracking.</div>
-            <button class="getstarted-btn" onclick="window.location.href='signup.html'">Get Started</button>
+            <button class="getstarted-btn" onclick="showChoiceDialog()">Get Started</button>
         </div>
         <div class="right-section">
             <img class="illustration" src="Home.jpeg" alt="Campus360 Home Image">
         </div>
     </div>
-</body>
 
+    <!-- Choice Dialog -->
+    <div class="overlay" id="overlay"></div>
+    <div class="choice-dialog" id="choiceDialog">
+        <h2>Welcome to Campus360</h2>
+        <div class="choice-buttons">
+            <button class="choice-btn" onclick="window.location.href='login.html'">Login</button>
+            <button class="choice-btn" onclick="window.location.href='signup.html'">Sign Up</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a href="help.html">Help</a>
+    </footer>
+
+    <script>
+        function showChoiceDialog() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('choiceDialog').style.display = 'block';
+        }
+
+        // Close dialog when clicking outside
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('choiceDialog').style.display = 'none';
+        });
+    </script>
+</body>
 </html>
