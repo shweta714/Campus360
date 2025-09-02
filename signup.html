@@ -19,13 +19,25 @@
             justify-content: center;
             gap: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
             margin-bottom: 20px;
             font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #333;
         }
         
         .google-signup-btn:hover {
             background: #f8f8f8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .google-signup-btn:active {
+            background: #eee;
+        }
+        
+        .google-signup-btn img {
+            width: 18px;
+            height: 18px;
         }
         
         .divider {
@@ -71,8 +83,8 @@
         <h1>Create Account</h1>
         <p>Join Campus 360 today!</p>
         
-        <button type="button" class="google-signup-btn">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="width:18px;height:18px;">
+        <button type="button" class="google-signup-btn" id="googleSignUp">
+            <img src="images/google.svg" alt="Google">
             Sign up with Google
         </button>
         
@@ -173,7 +185,39 @@
             document.getElementById('number').style.color = /[0-9]/.test(password) ? 'green' : 'red';
             document.getElementById('special').style.color = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'green' : 'red';
         });
+
+        // Initialize Google Sign-In
+        function initializeGoogleSignIn() {
+            google.accounts.id.initialize({
+                client_id: '123672447023-9ph6ep8mb7l4bkcosp7bbtbetvps8upn.apps.googleusercontent.com', // Replace with your actual client ID
+                callback: handleGoogleSignIn
+            });
+        }
+
+        // Handle Google Sign-In response
+        function handleGoogleSignIn(response) {
+            const credential = response.credential;
+            // Here you would typically:
+            // 1. Send the credential to your backend
+            // 2. Create a new account or link to existing one
+            // 3. Redirect to dashboard
+            try { 
+                localStorage.setItem('authToken', credential);
+                window.location.href = 'student-dashboard.html';
+            } catch(e) {
+                console.error('Error storing auth token:', e);
+            }
+        }
+
+        // Add click handler for Google sign-up button
+        document.getElementById('googleSignUp').addEventListener('click', function() {
+            google.accounts.id.prompt();
+        });
+
+        // Initialize when page loads
+        window.onload = initializeGoogleSignIn;
     </script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </body>
 
 </html>

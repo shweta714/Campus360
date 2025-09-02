@@ -27,6 +27,15 @@
     font-weight: 700;
     color: #fff;
 }
+
+.navbar-logo a {
+    color: #fff;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-logo a:hover {
+    opacity: 0.9;
+}
 .navbar-title {
     font-size: 1.1rem;
     font-weight: 700;

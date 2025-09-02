@@ -7,48 +7,147 @@
   <link rel="stylesheet" href="student-dashboard.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    .divider {
+    .auth-title {
+      color: #333;
       text-align: center;
-      margin: 20px 0;
-      position: relative;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
     }
-    .divider:before, .divider:after {
+
+    .social-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: #333;
+      text-decoration: none;
+      gap: 10px;
+    }
+
+    .social-btn:hover {
+      background-color: #f8f8f8;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .social-btn:active {
+      background-color: #eee;
+    }
+
+    .social-btn img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .or-divider {
+      text-align: center;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
       content: "";
       position: absolute;
       top: 50%;
       width: 45%;
       height: 1px;
-      background: #ddd;
+      background-color: #ddd;
     }
-    .divider:before { left: 0; }
-    .divider:after { right: 0; }
-    .google-btn {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
+
+    .or-divider::before {
+      left: 0;
     }
-    .google-btn:hover {
-      background: #f8f8f8;
+
+    .or-divider::after {
+      right: 0;
     }
+
     .links-section {
       margin-top: 15px;
       text-align: center;
     }
+
     .links-section a {
       color: #4e54c8;
       text-decoration: none;
       font-size: 0.9rem;
     }
+
     .links-section a:hover {
       text-decoration: underline;
+    }
+
+    .otp-section {
+      display: none;
+    }
+
+    .otp-container {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .otp-input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      margin: 0 4px;
+    }
+
+    .timer {
+      text-align: center;
+      margin-top: 10px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .resend-btn {
+      background: none;
+      border: none;
+      color: #4e54c8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    .resend-btn:disabled {
+      color: #999;
+      text-decoration: none;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      color: #27ae60;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
     }
   </style>
 </head>
@@ -56,19 +155,47 @@
   <main style="max-width:420px;margin:60px auto;padding:20px;">
     <section style="background:white;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
       <h2>Login</h2>
-      <button class="google-btn">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="width:18px;height:18px;">
-        Continue with Google
-      </button>
-      <div class="divider">or</div>
+      <div class="social-buttons">
+        <button class="social-btn" id="googleSignIn">
+          <img src="images/google.svg" alt="Google">
+          Sign in with Google
+        </button>
+      </div>
+      <div class="or-divider">
+        <span>OR</span>
+      </div>
       <form id="loginForm">
         <label>Email<br><input type="email" id="email" required style="width:100%;padding:8px;margin-top:6px;"/></label>
         <label style="display:block;margin-top:12px;">Password<br><input type="password" id="password" required style="width:100%;padding:8px;margin-top:6px;"/></label>
         <div style="margin-top:16px;display:flex;gap:8px;justify-content:space-between;align-items:center;">
-          <button type="submit" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Login</button>
+          <button type="submit" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Send OTP</button>
           <a href="signup.html">Sign up</a>
         </div>
       </form>
+
+      <!-- OTP Section -->
+      <div id="otpSection" class="otp-section">
+        <p style="text-align:center;margin:15px 0;">Enter the OTP sent to your email</p>
+        <div class="otp-container">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        </div>
+        <div class="timer">
+          Resend OTP in <span id="timer">02:00</span>
+        </div>
+        <button id="resendBtn" class="resend-btn" disabled>Resend OTP</button>
+        <div style="text-align:center;margin-top:15px;">
+          <button id="verifyBtn" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Verify OTP</button>
+        </div>
+      </div>
+
+      <div id="successMessage" class="success-message">OTP verified successfully!</div>
+      <div id="errorMessage" class="error-message">Invalid OTP. Please try again.</div>
+
       <div class="links-section">
         <a href="forgot-password.html">Forgot Password?</a>
       </div>
@@ -76,12 +203,130 @@
   </main>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      // fake login: store a token and redirect to dashboard
-      try { localStorage.setItem('authToken','demo-token'); } catch(e){}
-      window.location.href = 'student-dashboard.html';
+    const loginForm = document.getElementById('loginForm');
+    const otpSection = document.getElementById('otpSection');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const resendBtn = document.getElementById('resendBtn');
+    const timerSpan = document.getElementById('timer');
+    const otpInputs = document.querySelectorAll('.otp-input');
+    
+    // Function to start timer
+    function startTimer(duration, display) {
+      let timer = duration;
+      let minutes, seconds;
+      let countdown = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          clearInterval(countdown);
+          resendBtn.disabled = false;
+          display.textContent = "00:00";
+        }
+      }, 1000);
+      return countdown;
+    }
+
+    // Auto-move to next input
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', function() {
+        if (this.value.length === 1) {
+          if (index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+          }
+        }
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
     });
+
+    // Handle login form submission
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      
+      // Show OTP section
+      otpSection.style.display = 'block';
+      loginForm.style.display = 'none';
+      
+      // Start timer
+      resendBtn.disabled = true;
+      const twoMinutes = 120;
+      startTimer(twoMinutes, timerSpan);
+
+      // Simulate sending OTP to email
+      console.log('OTP sent to:', email);
+      alert('OTP has been sent to ' + email);
+    });
+
+    // Handle resend OTP
+    resendBtn.addEventListener('click', function() {
+      resendBtn.disabled = true;
+      startTimer(120, timerSpan);
+      alert('New OTP has been sent to your email');
+    });
+
+    // Handle OTP verification
+    document.getElementById('verifyBtn').addEventListener('click', function() {
+      const otp = Array.from(otpInputs).map(input => input.value).join('');
+      
+      // For demo purposes, any 6-digit OTP is considered valid
+      if (otp.length === 6 && /^\d+$/.test(otp)) {
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        // Redirect to dashboard after successful verification
+        setTimeout(() => {
+          try { localStorage.setItem('authToken','demo-token'); } catch(e){}
+          window.location.href = 'student-dashboard.html';
+        }, 1500);
+      } else {
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'block';
+      }
+    });
+
+    // Load Google Sign-In API
+    function loadGoogleSignIn() {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        google.accounts.id.initialize({
+          client_id: '123672447023-9ph6ep8mb7l4bkcosp7bbtbetvps8upn.apps.googleusercontent.com', // Replace with your actual client ID
+          callback: handleGoogleSignIn
+        });
+      };
+    }
+
+    // Handle Google Sign-In response
+    function handleGoogleSignIn(response) {
+      const credential = response.credential;
+      // Send the credential to your backend for verification
+      // For demo purposes, we'll just redirect to dashboard
+      try { localStorage.setItem('authToken', credential); } catch(e){}
+      window.location.href = 'student-dashboard.html';
+    }
+
+    // Initialize Google Sign-In button
+    document.getElementById('googleSignIn').addEventListener('click', function() {
+      google.accounts.id.prompt();
+    });
+
+    // Load Google Sign-In when page loads
+    loadGoogleSignIn();
   </script>
 </body>
 </html>
