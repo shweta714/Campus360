@@ -6,7 +6,6 @@
   <title>Course - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
   <style>
-    /* small page-specific adjustments */
     .course-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
     .course-controls{display:flex;gap:12px;align-items:center}
     .resource-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
@@ -43,11 +42,7 @@
           </div>
         </div>
 
-        <div style="margin-top:16px;display:flex;gap:8px;align-items:center;">
-          <label style="display:flex;align-items:center;gap:8px;">Enrolled <input type="checkbox" id="enrollToggle"></label>
-          <button id="startBtn" class="btn primary">Start / Resume</button>
-          <button id="markDone" class="btn">Mark +10%</button>
-        </div>
+  <!-- Start/Resume button removed per request -->
 
   <div id="courseAlert" style="margin-top:12px;display:none;padding:10px;border-radius:8px;background:#fff6f6;border:1px solid #ffd6d6;color:#7a1b1b;">
           <strong>Note:</strong> No course selected. <a href="courses.html" style="margin-left:8px;color:#7c3aed;">Open Courses list</a>
@@ -69,12 +64,29 @@
 
           <div id="tab-quiz" class="tab-content" style="display:none;">
             <h3>Quiz</h3>
-            <p class="muted" id="quizIntro">Test your understanding with a short quiz.</p>
-            <div id="quizContainer" class="quiz-container"></div>
-            <div id="quizControls" style="margin-top:12px; display:flex;gap:8px;align-items:center;">
-              <button id="submitQuiz" class="btn primary">Submit Quiz</button>
-              <button id="retryQuiz" class="btn" style="display:none;">Retry</button>
-              <div id="quizResult" style="margin-left:12px; font-weight:600;"></div>
+            <p class="muted" id="quizIntro">Choose a level and test your understanding.</p>
+
+            <div class="quiz-levels" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+              <div class="quiz-card level-card active" data-level="basic" role="button" tabindex="0" onclick="selectLevel('basic')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#f8fbff,#eef6ff);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
+                <strong>Basic MCQ</strong>
+                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Short warm-up questions</div>
+              </div>
+              <div class="quiz-card level-card" data-level="medium" role="button" tabindex="0" onclick="selectLevel('medium')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff8f0,#fff3e8);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
+                <strong>Medium MCQ</strong>
+                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Moderate difficulty</div>
+              </div>
+              <div class="quiz-card level-card" data-level="hard" role="button" tabindex="0" onclick="selectLevel('hard')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff6fb,#f9eefb);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
+                <strong>Hard MCQ</strong>
+                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Challenging questions</div>
+              </div>
+            </div>
+
+            <div id="quizArea" style="margin-top:14px;">
+              <div id="quizPrompt" class="muted" style="margin-bottom:8px;">Select a level to begin the quiz.</div>
+              <div id="quizContainer" class="quiz-container"></div>
+              <div id="quizControls" style="margin-top:12px; display:flex;gap:8px;align-items:center;">
+                <div id="quizResult" style="margin-left:12px; font-weight:600;"></div>
+              </div>
             </div>
           </div>
 
@@ -114,20 +126,19 @@
       if(courseName === 'Unknown Course'){
         document.getElementById('courseAlert').style.display='block';
         document.getElementById('resList').innerHTML='';
-        document.getElementById('quizSection').style.display='none';
+        // quizSection was removed; hide the quiz tab content safely
+        const quizTabEl = document.getElementById('tab-quiz'); if(quizTabEl) quizTabEl.style.display = 'none';
         return;
       } else {
         document.getElementById('courseAlert').style.display='none';
       }
 
-      const progress = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
-      const enrolled = localStorage.getItem(ENROLL_KEY) === '1';
-      document.getElementById('progressFill').style.width = progress + '%';
-      document.getElementById('progressText').textContent = progress + '% complete';
-      document.getElementById('enrollToggle').checked = enrolled;
+  const progress = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('progressText').textContent = progress + '% complete';
       setBigPercent(progress);
 
-      // populate metadata
+
       const METAS = {
         'DBMS': { instructor:'Dr. Sharma', duration:'12 weeks' },
         'DSA (C++)': { instructor:'Prof. Rao', duration:'10 weeks' }
@@ -140,17 +151,31 @@
       const NOTES_KEY = 'course_notes_'+courseName;
       try{ const n = localStorage.getItem(NOTES_KEY) || ''; document.getElementById('notesText').value = n; }catch(e){}
 
-      // sample resources
-      const res = [
-        {title:'Lecture 1 - Introduction', type:'video'},
-        {title:'Assignment 1', type:'pdf'},
-        {title:'Lab 1 - Setup', type:'link'}
-      ];
+      // sample resources — per-course
+      let res = [];
+      if(courseName === 'DBMS'){
+        res = [
+          { title: 'DBMS Book (Copy 1)', type: 'book', url: 'https://drive.google.com/open?id=14O5UmHnT4zRQ3BGV4ywTKrs_g9moEW-n&usp=drive_copy' },
+          { title: 'DBMS Book (Copy 2)', type: 'book', url: 'https://drive.google.com/open?id=1rDitvBj-PYhHQAjj69Kt1KocVWxyneb4&usp=drive_copy' },
+          { title: 'Lecture 1 - Introduction', type: 'video' }
+        ];
+      } else {
+        res = [ {title:'Lecture 1 - Introduction', type:'video'}, {title:'Assignment 1', type:'pdf'}, {title:'Lab 1 - Setup', type:'link'} ];
+      }
+
       const list = document.getElementById('resList'); list.innerHTML='';
       res.forEach((r,i)=>{
         const li = document.createElement('li');
         li.className='resource-item';
-        li.innerHTML = `<div><strong>${r.title}</strong><div class="muted">${r.type}</div></div><div><button class="btn" data-idx="${i}">Mark Done</button></div>`;
+        const left = document.createElement('div');
+        left.innerHTML = `<strong>${r.title}</strong><div class="muted">${r.type || 'file'}</div>`;
+        const right = document.createElement('div');
+        if(r.url){
+          right.innerHTML = `<a class="btn" href="${r.url}" target="_blank" rel="noopener">Open</a>`;
+        } else {
+          right.innerHTML = `<button class="btn" data-idx="${i}">Mark Done</button>`;
+        }
+        li.appendChild(left); li.appendChild(right);
         list.appendChild(li);
       });
 
@@ -168,15 +193,7 @@
 
     document.addEventListener('DOMContentLoaded', function(){
       loadCourse();
-      document.getElementById('enrollToggle').addEventListener('change', function(){
-        localStorage.setItem(ENROLL_KEY, this.checked ? '1' : '0');
-      });
-      document.getElementById('markDone').addEventListener('click', function(){
-        let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10);
-        p = Math.min(100, p + 10);
-        localStorage.setItem(PROG_KEY, p);
-        loadCourse();
-      });
+  // enroll toggle and manual +10 button removed per request
       // notes save
       document.getElementById('saveNotes').addEventListener('click', function(){
         const val = document.getElementById('notesText').value || '';
@@ -188,65 +205,110 @@
       if(hero){ hero.style.opacity = 0; hero.style.transform = 'translateY(6px)'; setTimeout(()=>{ hero.style.transition='opacity .36s ease, transform .36s ease'; hero.style.opacity = 1; hero.style.transform='translateY(0)'; }, 80); }
     });
 
-    /* Quiz data and logic */
-    const QUIZ_KEY = 'course_quiz_'+courseName;
-    const QUIZ_DB = {
-      'DBMS': [
-        { q:'What does DBMS stand for?', opts:['Data Base Management System','Database Management Service','Data Backup Management System'], a:0 },
-        { q:'Which normal form is based on primary key?', opts:['1NF','2NF','3NF'], a:1 },
-        { q:'SQL is a', opts:['Programming language','Query language','Markup language'], a:1 }
+    // DBMS question sets supplied by user
+    const LEVEL_QUIZ_DB = {
+      basic: [
+        { q:'DBMS stands for:', opts:['Database Managing Software','Database Management System','Data Backup Management System','Database Managing Server'], a:1 },
+        { q:'A table row is also called a:', opts:['Column','Record','Attribute','Key'], a:1 },
+        { q:'Which SQL keyword is used to fetch data?', opts:['GET','SHOW','SELECT','FETCH'], a:2 },
+        { q:'What uniquely identifies a record in a table?', opts:['Foreign Key','Candidate Key','Primary Key','Alternate Key'], a:2 },
+        { q:'Which of these is NOT a DBMS software?', opts:['MySQL','Oracle','MS Word','PostgreSQL'], a:2 },
+        { q:'A table column is also called a:', opts:['Tuple','Attribute','Relation','Field'], a:1 },
+        { q:'SQL stands for:', opts:['Structured Query Language','Simple Query Language','Sequential Query Language','Structured Question Language'], a:0 },
+        { q:'Which type of database model uses tables?', opts:['Hierarchical','Relational','Network','Object-Oriented'], a:1 },
+        { q:'Which constraint ensures a value is not null?', opts:['UNIQUE','PRIMARY KEY','NOT NULL','CHECK'], a:2 },
+        { q:'Which of these is a DBMS function?', opts:['Data Storage','Data Retrieval','Backup & Recovery','All of the above'], a:3 }
       ],
-      'DSA (C++)': [ { q:'Sample: What is O(1)?', opts:['Constant','Linear','Quadratic'], a:0 } ]
+      medium: [
+        { q:'What is a foreign key?', opts:['A key used to link two tables','A unique key in a table','A key with null values','A primary key in another schema'], a:0 },
+        { q:'Which normal form removes transitive dependency?', opts:['1NF','2NF','3NF','BCNF'], a:2 },
+        { q:'Which SQL command deletes a table?', opts:['DELETE','REMOVE','DROP','CLEAR'], a:2 },
+        { q:'Which of these is a DML command?', opts:['CREATE','DROP','SELECT','ALTER'], a:2 },
+        { q:'Which join displays unmatched rows too?', opts:['INNER JOIN','FULL OUTER JOIN','LEFT JOIN','CROSS JOIN'], a:1 },
+        { q:'Candidate key means:', opts:['A key that uniquely identifies rows','A foreign key','A duplicate key','A primary key'], a:0 },
+        { q:'Which SQL constraint ensures unique column values?', opts:['UNIQUE','PRIMARY KEY','NOT NULL','CHECK'], a:0 },
+        { q:'Composite key is:', opts:['A key with multiple attributes','A primary key','A foreign key','A duplicate key'], a:0 },
+        { q:'TCL commands include:', opts:['COMMIT','SAVEPOINT','ROLLBACK','All of the above'], a:3 },
+        { q:'Which database model uses parent-child structure?', opts:['Relational','Network','Hierarchical','Object-Oriented'], a:2 }
+      ],
+      hard: [
+        { q:'A trigger is:', opts:['A constraint','An automatic action on events','A backup','An index'], a:1 },
+        { q:'Highest isolation level in DBMS:', opts:['READ COMMITTED','REPEATABLE READ','SERIALIZABLE','READ UNCOMMITTED'], a:2 },
+        { q:'Difference between DELETE and TRUNCATE:', opts:['DELETE removes all rows','TRUNCATE removes selected rows','DELETE removes selected rows, TRUNCATE removes all','Both are same'], a:2 },
+        { q:'Which ensures no duplicate rows?', opts:['UNIQUE','CHECK','NOT NULL','FOREIGN KEY'], a:0 },
+        { q:'What is BCNF?', opts:['Boyce-Codd Normal Form','Binary Coded Normal Form','Base Column Normal Form','None'], a:0 },
+        { q:'Clustered index means:', opts:['Index separate from table','Index defines physical order','Index with nulls','Multiple keys index'], a:1 },
+        { q:'What is a transaction?', opts:['A single SQL command','A set of operations executed together','A backup process','A rollback'], a:1 },
+        { q:'Deadlock happens when:', opts:['Multiple processes wait for each other’s resources','Table has no primary key','Database crashes','Keys are missing'], a:0 },
+        { q:'Functional dependency means:', opts:['Attribute depends on another','Column depends on table','Row depends on another row','Table depends on schema'], a:0 },
+        { q:'Which command undoes changes?', opts:['SAVEPOINT','COMMIT','ROLLBACK','DELETE'], a:2 }
+      ]
     };
 
-    function renderQuiz(){
-      const qlist = QUIZ_DB[courseName] || [];
-      const section = document.getElementById('quizSection');
-      if(!qlist.length){ section.style.display='none'; return; }
-      section.style.display='block';
-      const container = document.getElementById('quizContainer'); container.innerHTML='';
+    let currentLevel = 'basic';
+
+    // ensure QUIZ_DB exists for course-level fallback (empty by default)
+    const QUIZ_DB = window.QUIZ_DB || {};
+
+    function renderLevelQuiz(){
+      const qlist = LEVEL_QUIZ_DB[currentLevel] || [];
+      const container = document.getElementById('quizContainer'); if(!container) return;
+      container.innerHTML='';
+      if(!qlist.length){ container.innerHTML = '<p class="muted">No questions for this level.</p>'; return; }
       qlist.forEach((item, idx)=>{
         const qdiv = document.createElement('div'); qdiv.className='quiz-question';
         const qh = document.createElement('h4'); qh.textContent = (idx+1)+'. '+item.q; qdiv.appendChild(qh);
         const opts = document.createElement('div'); opts.className='quiz-opts';
         item.opts.forEach((opt,i)=>{
-          const id = 'q'+idx+'o'+i;
+          const id = `l${currentLevel}q${idx}o${i}`;
           const r = document.createElement('label'); r.style.display='block'; r.style.marginTop='6px';
-          r.innerHTML = `<input type='radio' name='q${idx}' value='${i}' id='${id}' style='margin-right:8px;'> ${opt}`;
+          r.innerHTML = `<input type='radio' name='lq${idx}' value='${i}' id='${id}' style='margin-right:8px;'> ${opt}`;
           opts.appendChild(r);
         });
         qdiv.appendChild(opts);
         container.appendChild(qdiv);
       });
-
-      document.getElementById('submitQuiz').onclick = function(){
-        let score=0;
-        qlist.forEach((item, idx)=>{
-          const sel = document.querySelector(`input[name='q${idx}']:checked`);
-          const val = sel ? parseInt(sel.value,10) : -1;
-          if(val === item.a) score++;
-        });
+      // add evaluate control
+      const controls = document.createElement('div'); controls.className='quiz-controls';
+      controls.innerHTML = `<button id="evalBtn" class="btn primary">Evaluate</button><div id="quizResult" style="font-weight:700;margin-left:8px"></div>`;
+      container.appendChild(controls);
+      document.getElementById('evalBtn').addEventListener('click', function(){
+        let score = 0;
+        qlist.forEach((item, idx)=>{ const sel = document.querySelector(`input[name='lq${idx}']:checked`); const val = sel ? parseInt(sel.value,10) : -1; if(val === item.a) score++; });
         const pct = Math.round((score/qlist.length)*100);
-        document.getElementById('quizResult').textContent = `Score: ${score}/${qlist.length} (${pct}%)`;
-        document.getElementById('retryQuiz').style.display = 'inline-block';
-        // persist best score
-        try{
-          const prev = parseInt(localStorage.getItem(QUIZ_KEY) || '0',10);
-          if(pct > prev) localStorage.setItem(QUIZ_KEY, pct);
-        }catch(e){}
-      };
-
-      document.getElementById('retryQuiz').onclick = function(){ renderQuiz(); document.getElementById('quizResult').textContent=''; this.style.display='none'; };
+        const res = document.getElementById('quizResult'); if(res) res.textContent = `${score}/${qlist.length} (${pct}%)`;
+        // store best
+        try{ const key = 'course_level_best_'+currentLevel+'_'+courseName; const prev = parseInt(localStorage.getItem(key)||'0',10); if(pct>prev) localStorage.setItem(key, pct); }catch(e){}
+      });
     }
 
     // call renderQuiz after loadCourse
-    document.addEventListener('DOMContentLoaded', function(){ renderQuiz(); });
+  document.addEventListener('DOMContentLoaded', function(){ renderQuiz();
+      // level-card click wiring (kept for resilience) - keyboard support handled by selectLevel
+      document.querySelectorAll('.level-card').forEach(card=>{
+        card.addEventListener('click', function(){ document.querySelectorAll('.level-card').forEach(c=>c.classList.remove('active')); this.classList.add('active'); currentLevel = this.dataset.level || 'basic'; const prompt = document.getElementById('quizPrompt'); if(prompt) prompt.style.display='none'; renderLevelQuiz(); });
+        card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectLevel(this.dataset.level || 'basic'); } });
+      });
+    });
+
+    // global helper used by inline onclick handlers - navigate to per-level quiz page
+    function selectLevel(lvl){
+      try{
+        const url = 'quiz-level.html?name=' + encodeURIComponent(courseName) + '&level=' + encodeURIComponent(lvl || 'basic');
+        window.location.href = url;
+      }catch(e){ console.error('selectLevel error', e); }
+    }
 
     // Tab handlers
     function showTab(name){
       document.querySelectorAll('.course-tabs .tab').forEach(t=> t.classList.toggle('active', t.dataset.tab===name));
       document.querySelectorAll('.tab-content').forEach(c=> c.style.display = (c.id === 'tab-'+name) ? '' : 'none');
-      if(name === 'quiz') renderQuiz();
+      if(name === 'quiz'){
+        // clear any previously rendered questions and show prompt until user selects a level
+  const container = document.getElementById('quizContainer'); if(container) container.innerHTML='';
+  const res = document.getElementById('quizResult'); if(res) res.textContent='';
+        const prompt = document.getElementById('quizPrompt'); if(prompt) prompt.style.display='block';
+      }
       if(name === 'resources') loadCourse();
     }
 

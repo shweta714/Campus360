@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz - Campus360</title>
+<link rel="stylesheet" href="student-dashboard.css">
+<style>
+  .quiz-page{max-width:900px;margin:84px auto;padding:20px}
+  .quiz-header{display:flex;justify-content:space-between;align-items:center}
+  .quiz-container{margin-top:18px}
+  .quiz-question{padding:12px;border-radius:10px;background:#fff;margin-bottom:10px}
+  .quiz-opts label{display:block;margin-top:8px}
+  .correct{background:#e6fff1}
+  .wrong{background:#fff1f1}
+  .muted{color:#666}
+  .btn.primary{background:#4e54c8;color:#fff}
+</style>
+</head>
+<body>
+<nav class="navbar-top"><div class="navbar-container"><div class="navbar-logo"><img src="logo.png" style="height:28px"> <span class="navbar-title">Quiz</span></div><ul class="navbar-menu"><li id="back">&larr; Back</li></ul></div></nav>
+<main class="quiz-page">
+  <div class="quiz-header">
+    <div><h1 id="courseTitle">Course</h1><div class="muted" id="levelLabel">Level</div></div>
+    <div id="bestBadge" style="font-weight:700;color:var(--accent,#4e54c8);"></div>
+  </div>
+
+  <div id="quizContainer" class="quiz-container"></div>
+  <div style="margin-top:12px;display:flex;gap:8px;align-items:center"><button id="evalBtn" class="btn primary">Evaluate</button><div id="quizResult" style="font-weight:700;margin-left:8px"></div></div>
+</main>
+<script>
+function getQuery(n){ return new URLSearchParams(location.search).get(n); }
+const courseName = getQuery('name') || 'Unknown Course';
+const level = (getQuery('level') || 'basic').toLowerCase();
+document.getElementById('courseTitle').textContent = courseName;
+document.getElementById('levelLabel').textContent = level.toUpperCase();
+document.getElementById('back').addEventListener('click', ()=> location.href = 'course.html?name='+encodeURIComponent(courseName));
+
+const LEVEL_QUIZ_DB = {
+  basic: [
+    { q:'DBMS stands for:', opts:['Database Managing Software','Database Management System','Data Backup Management System','Database Managing Server'], a:1 },
+    { q:'A table row is also called a:', opts:['Column','Record','Attribute','Key'], a:1 },
+    { q:'Which SQL keyword is used to fetch data?', opts:['GET','SHOW','SELECT','FETCH'], a:2 },
+    { q:'What uniquely identifies a record in a table?', opts:['Foreign Key','Candidate Key','Primary Key','Alternate Key'], a:2 },
+    { q:'Which of these is NOT a DBMS software?', opts:['MySQL','Oracle','MS Word','PostgreSQL'], a:2 },
+    { q:'A table column is also called a:', opts:['Tuple','Attribute','Relation','Field'], a:1 },
+    { q:'SQL stands for:', opts:['Structured Query Language','Simple Query Language','Sequential Query Language','Structured Question Language'], a:0 },
+    { q:'Which type of database model uses tables?', opts:['Hierarchical','Relational','Network','Object-Oriented'], a:1 },
+    { q:'Which constraint ensures a value is not null?', opts:['UNIQUE','PRIMARY KEY','NOT NULL','CHECK'], a:2 },
+    { q:'Which of these is a DBMS function?', opts:['Data Storage','Data Retrieval','Backup & Recovery','All of the above'], a:3 }
+  ],
+  medium: [], hard: []
+};
+
+const qlist = LEVEL_QUIZ_DB[level] || [];
+const container = document.getElementById('quizContainer');
+if(!qlist.length){ container.innerHTML = '<p class="muted">No questions for this level.</p>'; }
+else{
+  qlist.forEach((item,idx)=>{
+    const div = document.createElement('div'); div.className='quiz-question';
+    const h = document.createElement('h4'); h.textContent = (idx+1)+'. '+item.q; div.appendChild(h);
+    const opts = document.createElement('div'); opts.className='quiz-opts';
+    item.opts.forEach((o,i)=>{ opts.innerHTML += `<label data-idx="${idx}" data-opt="${i}"><input type="radio" name="q${idx}" value="${i}" style="margin-right:8px"> ${o}</label>`; });
+    div.appendChild(opts); container.appendChild(div);
+  });
+}
+
+function highlightResults(results){
+  // results: array of {idx, correctOpt, selected}
+  results.forEach(r=>{
+    const qWrap = container.querySelectorAll('.quiz-question')[r.idx];
+    if(!qWrap) return;
+    const labels = qWrap.querySelectorAll('label');
+    labels.forEach(lbl=>{
+      const opt = parseInt(lbl.getAttribute('data-opt'),10);
+      lbl.classList.remove('correct','wrong');
+      if(opt === r.correctOpt){ lbl.classList.add('correct'); }
+      if(r.selected !== null && opt === r.selected && r.selected !== r.correctOpt){ lbl.classList.add('wrong'); }
+    });
+  });
+}
+
+document.getElementById('evalBtn').addEventListener('click', function(){
+  if(!qlist.length) return;
+  const results = [];
+  let score = 0;
+  qlist.forEach((item, idx)=>{
+    const sel = container.querySelector(`input[name='q${idx}']:checked`);
+    const selected = sel ? parseInt(sel.value,10) : null;
+    if(selected === item.a) score++;
+    results.push({ idx, correctOpt: item.a, selected });
+  });
+  const pct = Math.round((score/qlist.length)*100);
+  document.getElementById('quizResult').textContent = `${score}/${qlist.length} (${pct}%)`;
+  highlightResults(results);
+  // update best
+  try{ const key = 'course_level_best_'+level+'_'+courseName; const prev = parseInt(localStorage.getItem(key)||'0',10); if(pct>prev) localStorage.setItem(key,pct); }catch(e){}
+  // increase completion by 10% per attempt (capped at 100)
+  try{ const PROG_KEY = 'course_progress_'+courseName; let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10); p = Math.min(100, p + 10); localStorage.setItem(PROG_KEY, p); }catch(e){}
+});
+
+</script>
+</body>
+</html>
