@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Campus360 — Seating Arrangement</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="seating.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a class="back" href="student-dashboard.html">← Dashboard</a>
+      <h1>Seating Arrangement</h1>
+      <p class="muted">Read-only seating map for the next exam.</p>
+    </header>
+
+    <main class="seating-area">
+      <div class="hall">
+        <div class="controls" style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+          <label style="font-weight:600;color:#374151">Course:
+            <select id="courseSelect" style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #e6edf8"></select>
+          </label>
+          <label style="font-weight:600;color:#374151">Exam Date:
+            <select id="dateSelect" style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #e6edf8"></select>
+          </label>
+          <label style="font-weight:600;color:#374151;margin-left:auto;">Search seat:
+            <input id="seatSearch" placeholder="Name or roll" style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #e6edf8" />
+          </label>
+        </div>
+
+        <div class="stage">Invigilator Desk</div>
+        <div id="rowsContainer" class="rows">
+          <!-- seats rendered here -->
+        </div>
+      </div>
+
+      <aside class="legend">
+        <h3>Legend</h3>
+        <div class="legend-item"><span class="swatch taken"></span> Assigned</div>
+        <div class="legend-item"><span class="swatch my"></span> Your seat</div>
+        <div class="legend-item"><span class="swatch"></span> Available</div>
+        <div class="note muted">Seating is read-only. For changes, contact exam office.</div>
+      </aside>
+    </main>
+
+    <script>
+      // Seating data mapped by date -> course -> rows
+      const SEATING_MAPS = {
+        '2025-10-12': {
+          'DBMS': [
+            ['A1:Shreya:RN101','A2:Rohit:RN102','A3:Priya:RN103','A4:Arjun:RN104'],
+            ['B1:Nikhil:RN105','B2:Ananya:RN106','B3:Karan:RN107','B4:Meera:RN108'],
+            ['C1:Rita:RN109','C2:Vikram:RN110','C3:Sunil:RN111','C4:Tara:RN112']
+          ]
+        },
+        '2025-10-15': {
+          'Algorithms': [
+            ['A1:Rahul:AL101','A2:Deepa:AL102','A3:Simran:AL103','A4:Sahil:AL104'],
+            ['B1:Kavita:AL105','B2:Manish:AL106','B3:Divya:AL107','B4:Ramesh:AL108']
+          ]
+        },
+        '2025-09-13': {
+          'DSA (C++)': [
+            ['A1:Vivek:DS101','A2:Anita:DS102','A3:Kumar:DS103','A4:Bhavya:DS104'],
+            ['B1:Leena:DS105','B2:Aditya:DS106','B3:Sunita:DS107','B4:Pranav:DS108']
+          ],
+          'IOT': [
+            ['A1:Rahul:IO101','A2:Maya:IO102','A3:Zeen:IO103','A4:Omi:IO104'],
+            ['B1:Anil:IO105','B2:Sana:IO106','B3:Tom:IO107','B4:Kriti:IO108']
+          ]
+        },
+        '2025-11-02': {
+          'Networks': [
+            ['A1:Priyank:NW101','A2:Neha:NW102','A3:Adil:NW103','A4:Isha:NW104'],
+            ['B1:Kunal:NW105','B2:Megha:NW106','B3:Omar:NW107','B4:Zara:NW108']
+          ]
+        }
+      };
+
+      const PROFILE_KEY = 'campus360_profile';
+
+      function readProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); }catch(e){return {};}}
+
+      function populateFilters(){
+        const courseSel = document.getElementById('courseSelect');
+        const dateSel = document.getElementById('dateSelect');
+        courseSel.innerHTML = '';
+        dateSel.innerHTML = '';
+        const dates = Object.keys(SEATING_MAPS).sort();
+        // populate dates
+        dates.forEach(d=>{
+          const opt = document.createElement('option'); opt.value=d; opt.textContent=d; dateSel.appendChild(opt);
+        });
+        // when date changes, populate courses
+        dateSel.addEventListener('change', ()=>{
+          populateCoursesForDate(dateSel.value);
+          renderForSelection();
+        });
+        // when course changes
+        courseSel.addEventListener('change', ()=> renderForSelection());
+
+        // select first date by default
+        if(dates.length) { dateSel.value = dates[0]; populateCoursesForDate(dates[0]); }
+      }
+
+      function populateCoursesForDate(date){
+        const courseSel = document.getElementById('courseSelect');
+        courseSel.innerHTML = '';
+        const courses = Object.keys(SEATING_MAPS[date] || {});
+        courses.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; courseSel.appendChild(o); });
+        if(courses.length) courseSel.value = courses[0];
+      }
+
+      function renderForSelection(){
+        const date = document.getElementById('dateSelect').value;
+        const course = document.getElementById('courseSelect').value;
+        const rows = (SEATING_MAPS[date] && SEATING_MAPS[date][course]) || [];
+        const container = document.getElementById('rowsContainer');
+        container.innerHTML = '';
+        const profile = readProfile();
+        const userRoll = (profile.roll||'').toLowerCase();
+        const userName = (profile.name||'').toLowerCase();
+        let mySeatFound = false;
+
+        rows.forEach(r=>{
+          const rowEl = document.createElement('div'); rowEl.className='row';
+          r.forEach(cell=>{
+            // cell format: seat:Name:Roll
+            const parts = String(cell).split(':');
+            const seatId = parts[0] || '';
+            const name = parts[1] || '';
+            const roll = parts[2] || '';
+            const seat = document.createElement('div');
+            seat.className = 'seat' + (name? ' taken':'');
+            seat.setAttribute('data-seat', seatId);
+            seat.setAttribute('data-roll', roll);
+            seat.setAttribute('data-name', name);
+            seat.innerHTML = `${seatId}<br><span class="name">${name}</span>`;
+            // highlight if matches current user
+            if((roll && roll.toLowerCase()===userRoll) || (name && name.toLowerCase()===userName)){
+              seat.classList.add('my-seat'); mySeatFound = true;
+              // add note
+              seat.title = 'This is your assigned seat';
+            }
+            rowEl.appendChild(seat);
+          });
+          container.appendChild(rowEl);
+        });
+
+        // if user's seat found, scroll into view
+        if(mySeatFound){ const el = document.querySelector('.my-seat'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); }
+      }
+
+      // debounced search
+      function debounce(fn, wait){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn.apply(this,args), wait); }; }
+
+      document.addEventListener('DOMContentLoaded', function(){ populateFilters(); renderForSelection();
+        const search = document.getElementById('seatSearch');
+        search.addEventListener('input', debounce(()=>{
+          const q = (search.value||'').toLowerCase().trim();
+          document.querySelectorAll('#rowsContainer .seat').forEach(s=>{
+            const name = (s.getAttribute('data-name')||'').toLowerCase();
+            const roll = (s.getAttribute('data-roll')||'').toLowerCase();
+            const match = !q || name.includes(q) || roll.includes(q) || s.getAttribute('data-seat').toLowerCase().includes(q);
+            s.style.opacity = match ? '1' : '0.25';
+            if(match) s.classList.add('highlight'); else s.classList.remove('highlight');
+          });
+        }, 180));
+      });
+    </script>
+
+  </div>
+</body>
+</html>

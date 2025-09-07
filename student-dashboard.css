@@ -429,6 +429,53 @@ label input, label textarea { margin-top:6px; }
 
 @media (max-width:900px) { .settings-grid { grid-template-columns: 1fr; } }
 
+/* Dashboard layout helpers added for moved inline styles */
+.dashboard-main { display:flex; gap:18px; margin-top:18px; align-items:flex-start; justify-content:center; }
+.left-column { width:720px; max-width:68%; display:flex; flex-direction:column; gap:12px; }
+.left-card { background:linear-gradient(135deg,#06b6d4,#7c3aed); color:#fff; padding:18px; border-radius:12px; min-height:110px; display:flex; align-items:center; box-shadow:0 6px 18px rgba(16,24,40,0.06); cursor:pointer; }
+.left-card .card-icon { font-size:28px; margin-right:12px }
+.left-card .card-body p { color:#eef }
+.left-card .card-arrow { margin-left:auto; color:rgba(255,255,255,0.9); font-size:22px }
+.left-card .badge { background: rgba(255,255,255,0.12); padding:8px;border-radius:8px }
+
+/* Navbar logo link and image (moved from inline attributes) */
+.navbar-logo a { text-decoration:none; display:flex; align-items:center; gap:10px; }
+.navbar-logo img { height:28px; vertical-align:middle; }
+
+/* Left card text rules */
+.left-card .card-body h3 { margin:0; color:#fff; }
+.left-card .card-body p { margin:4px 0 0; color:#eef; }
+
+/* Seating icon bubble used in the seating card */
+.seat-icon { width:54px; height:54px; border-radius:10px; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:22px; margin-right:12px; }
+
+/* Chat header moved from inline styles */
+.chat-header { display:flex; align-items:center; justify-content:space-between; }
+.chat-header strong { font-size:1.05rem; color:#0f172a; }
+.chat-header .muted { font-size:0.85rem; color:#6b7280; }
+
+/* Transitions and hover/focus states for the left cards */
+.left-card { transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease, background .18s ease; will-change: transform; }
+.left-card:hover { transform: translateY(-6px); box-shadow: 0 18px 38px rgba(12,13,20,0.08); }
+.left-card:active { transform: translateY(-2px) scale(0.998); }
+.left-card:focus { outline: none; box-shadow: 0 18px 38px rgba(12,13,20,0.12), 0 0 0 4px rgba(124,58,237,0.08); }
+.left-card:focus-visible { outline: none; box-shadow: 0 18px 38px rgba(12,13,20,0.12), 0 0 0 4px rgba(124,58,237,0.12); }
+
+/* Compact clear-chat button style used in the chat header */
+.clear-chat { background:transparent; border:1px solid rgba(12,13,20,0.06); padding:6px 8px; border-radius:8px; font-size:0.86rem; cursor:pointer; color:#374151; transition: background .14s, color .14s, transform .08s; margin-right:8px; }
+.clear-chat:hover { background:#f3f4f6; color:#111; transform:translateY(-1px); }
+.clear-chat:active { transform:translateY(0); }
+
+.right-column { width:420px; max-width:32%; }
+.chat-outer { background:#fff; border-radius:12px; padding:12px; box-shadow:0 12px 40px rgba(16,24,40,0.06); display:flex; flex-direction:column; }
+.chat-header { display:flex; align-items:center; justify-content:space-between; }
+.chat-window { flex:1; overflow:auto; padding:10px; margin-top:10px; border-radius:8px; background:#f7f9fc; border:1px solid #eef3ff; }
+.chat-input-row { display:flex; gap:8px; margin-top:10px; }
+.chat-input-row input { flex:1; padding:10px; border-radius:8px; border:1px solid #e6eaf7; }
+.chat-input-row .btn.primary { padding:10px 14px; }
+
+@media(max-width:900px){ .dashboard-main{flex-direction:column;padding:12px} .left-column{width:100%;max-width:100%} .right-column{width:100%;max-width:100%} }
+
 /* Quiz styles */
 .quiz-container { margin-top:8px; display:flex; flex-direction:column; gap:12px; }
 .quiz-question { background:#fff; padding:12px 14px; border-radius:10px; box-shadow:0 6px 18px rgba(16,24,40,0.04); }

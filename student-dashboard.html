@@ -49,15 +49,63 @@
                 </div>
             </div>
 
-            <!-- Cards and overview: small cards for quick access -->
-            <div class="home-cards">
-                <div class="course-card" id="openCourses" onclick="window.location.href='courses.html'">
-                    <div class="card-icon">📚</div>
-                    <div class="card-body">
-                        <h3>Courses</h3>
-                        <p>View and manage your enrolled subjects</p>
+            <!-- Main two-column layout: left stacked cards, right chatbot -->
+            <div class="dashboard-main">
+                <div class="left-column">
+                    <!-- unified left-column card style: same palette/size -->
+                    <div class="left-card" id="openCourses" onclick="window.location.href='courses.html'">
+                        <div class="card-icon">📚</div>
+                        <div class="card-body">
+                            <h3 style="margin:0;color:#fff">Courses</h3>
+                            <p>View and manage your enrolled subjects</p>
+                        </div>
+                        <div class="card-arrow">›</div>
                     </div>
-                    <div class="card-arrow">›</div>
+
+                    <div class="left-card" id="openTimetable" onclick="window.location.href='timetable.html'">
+                        <div class="card-icon">🗓️</div>
+                        <div class="card-body">
+                            <h3 style="margin:0;color:#fff">Timetable</h3>
+                            <p>View upcoming exams in a calendar</p>
+                        </div>
+                        <div class="card-arrow">›</div>
+                    </div>
+
+                    <div style="margin-top:6px;">
+                        <div class="left-card" onclick="window.location.href='seating.html'">
+                            <div class="seat-icon">💺</div>
+                            <div>
+                                <h3>Seating Arrangement</h3>
+                                <p>View the seating layout for upcoming exams</p>
+                            </div>
+                            <div class="card-arrow">›</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chatbot card on the right -->
+                <div class="right-column">
+                    <div id="chatOuter" class="chat-outer">
+                        <div class="chat-header">
+                            <div>
+                                <strong>Campus360 Chat</strong>
+                                <div class="muted">Ask about timetable, seating, or courses.</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <button id="clearChat" class="clear-chat" title="Clear chat (Ctrl+K)">Clear</button>
+                                <div style="font-size:20px;">🤖</div>
+                            </div>
+                        </div>
+
+                        <div id="chatWindow" class="chat-window">
+                            <!-- messages appear here -->
+                        </div>
+
+                        <div class="chat-input-row">
+                            <input id="chatInput" placeholder="Type a message..." />
+                            <button id="sendChat" class="btn primary">Send</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,6 +153,145 @@
             } catch (e) {}
             window.location.href = 'login.html';
         }
+
+            // Simple local chatbot (mock) saved in localStorage
+            (function(){
+                const CHAT_KEY = 'campus360_chat_msgs';
+                function readMsgs(){ try{ return JSON.parse(localStorage.getItem(CHAT_KEY)||'[]'); }catch(e){return [];} }
+                function saveMsgs(m){ localStorage.setItem(CHAT_KEY, JSON.stringify(m)); }
+                function renderMsgs(){ const win = document.getElementById('chatWindow'); if(!win) return; win.innerHTML=''; const msgs = readMsgs(); msgs.forEach(m=>{ const d = document.createElement('div'); d.style.marginBottom='8px'; if(m.role==='user'){ d.innerHTML = `<div style="text-align:right"><span style="display:inline-block;background:#e6f3ff;padding:8px;border-radius:10px;">${escapeHtml(m.text)}</span></div>` } else { d.innerHTML = `<div style="text-align:left"><span style="display:inline-block;background:#fff;padding:8px;border-radius:10px;border:1px solid #eef3ff;">${escapeHtml(m.text)}</span></div>` } win.appendChild(d); }); win.scrollTop = win.scrollHeight; }
+                function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+                async function mockReply(text){
+                    // Professional reply generator that attempts to answer from site data (timetable/seating)
+                    text = (text||'').trim();
+                    const prof = (function(){ try{ return JSON.parse(localStorage.getItem('campus360_profile')||'null'); }catch(e){ return null; } })();
+                    const name = prof && (prof.name||prof.fullName||prof.firstName) ? (prof.name||prof.fullName||prof.firstName) : null;
+                    const greet = name ? `Hello ${name},` : 'Hello,';
+                    if(!text) return `${greet} how may I assist you today? I can help with timetable, seating, courses, and resources.`;
+
+                    const lower = text.toLowerCase();
+
+                    // Helper: attempt to load JS arrays/objects from other pages (timetable.html, seating.html)
+                    async function fetchDataOnce(url, re){
+                        try{
+                            const cacheKey = `_cache_${url}`;
+                            if(window[cacheKey]) return window[cacheKey];
+                            const res = await fetch(url, {cache: 'no-store'});
+                            if(!res.ok) throw new Error('fetch failed');
+                            const txt = await res.text();
+                            const m = txt.match(re);
+                            if(!m) return null;
+                            // evaluate the JS literal safely using Function
+                            const val = (new Function('return ' + m[1]))();
+                            window[cacheKey] = val;
+                            return val;
+                        }catch(e){ return null; }
+                    }
+
+                    // Timetable / exam queries: try to find EXAMS in timetable.html
+                    if(/\b(timetable|schedule|exam|date|when|time)\b/.test(lower)){
+                        const EXAMS = await fetchDataOnce('timetable.html', /(?:var|const|let)\s+EXAMS\s*=\s*(\[[\s\S]*?\]);/m);
+                        if(EXAMS && Array.isArray(EXAMS) && EXAMS.length){
+                            // search for exam by keywords in user text
+                            const hits = EXAMS.filter(e=>JSON.stringify(e).toLowerCase().includes(lower));
+                            if(hits.length===1){
+                                const e = hits[0];
+                                const parts = [];
+                                if(e.course) parts.push(`Course: ${e.course}`);
+                                if(e.title) parts.push(`Exam: ${e.title}`);
+                                if(e.date) parts.push(`Date: ${e.date}`);
+                                if(e.time) parts.push(`Time: ${e.time}`);
+                                if(e.location) parts.push(`Location: ${e.location}`);
+                                return `${greet} here is the information I found:
+${parts.join('\n')}
+If you need further details, tell me the course or exact exam name.`;
+                            }
+                            if(hits.length>1){
+                                const list = hits.slice(0,4).map(h=> (h.title||h.course||JSON.stringify(h)).toString()).join('; ');
+                                return `${greet} I found several matching exams: ${list}. Please specify which one you mean.`;
+                            }
+                            // no hits but we have data
+                            return `${greet} I can see the timetable data but could not find a match for "${text}". Please provide the course name or exact exam title.`;
+                        }
+                        // couldn't load timetable data
+                        return `${greet} I couldn't access the timetable from here. Please tell me the course or exact exam name (for example "DBMS exam") and I will search within my available data.`;
+                    }
+
+                    // Seating queries: attempt to read seating maps
+                    if(/\b(seat|seating|where is my seat|seat number|hall)\b/.test(lower)){
+                        const MAPS = await fetchDataOnce('seating.html', /(?:var|const|let)\s+SEATING_MAPS\s*=\s*(\{[\s\S]*?\});/m);
+                        if(MAPS){
+                            // try to match by roll or name in user text
+                            const token = text.replace(/[^a-z0-9]/gi,' ').trim().toLowerCase();
+                            for(const dateKey of Object.keys(MAPS)){
+                                const courses = MAPS[dateKey];
+                                for(const c of Object.keys(courses)){
+                                    const rows = courses[c];
+                                    for(const r=0;r<rows.length;r++){
+                                        for(const col=0;col<rows[r].length;col++){
+                                            const cell = rows[r][col];
+                                            if(!cell) continue;
+                                            if(JSON.stringify(cell).toLowerCase().includes(token)){
+                                                return `${greet} I found a seating entry for "${text}" on ${dateKey} in course ${c}: Row ${r+1}, Seat ${col+1} (${cell}).`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            return `${greet} I can access seating maps but could not find a match for "${text}". Provide a full name or roll number to improve the search.`;
+                        }
+                        return `${greet} I don't have direct access to seating data from this page. Share your full name or roll number and I'll try to match it.`;
+                    }
+
+                    // Course / enrollment queries
+                    if(/\b(course|enroll|enrolled|syllabus|resources|assignments)\b/.test(lower)){
+                        return `${greet} please tell me the course name you are interested in (for example: "DBMS"). I will summarize available resources and links.`;
+                    }
+
+                    // Help / contact queries
+                    if(/\b(help|support|contact|office|administration|who to contact)\b/.test(lower)){
+                        return `${greet} describe the issue briefly and I will suggest the best contact or next steps (for example: "I need to change exam slot").`;
+                    }
+
+                    // Greetings
+                    if(/\b(hi|hello|hey|good morning|good afternoon|good evening)\b/.test(lower)){
+                        return `${greet} I'm Campus360 Assistant — how may I help you with your timetable, seating, courses, or resources today?`;
+                    }
+
+                    // Polite fallback asking for clarification and examples
+                    return `${greet} I didn't fully understand that. Could you please rephrase or provide more details? Examples you can try: "When is DBMS exam?", "Find seat for Roll 12345", or "DBMS resources".`;
+                }
+                function sizeChat(){ const outer = document.getElementById('chatOuter'); if(!outer) return; const topOffset = outer.getBoundingClientRect().top; const avail = window.innerHeight - topOffset - 24; outer.style.height = avail + 'px'; }
+                document.addEventListener('DOMContentLoaded', function(){
+                    sizeChat(); renderMsgs();
+                    const send = document.getElementById('sendChat');
+                    const input = document.getElementById('chatInput');
+                    const clearBtn = document.getElementById('clearChat');
+
+                    if(send && input){
+                        send.addEventListener('click', function(){
+                            (async function(){
+                                const v = input.value.trim(); if(!v) return;
+                                const msgs = readMsgs(); msgs.push({role:'user', text:v}); saveMsgs(msgs); renderMsgs(); input.value='';
+                                // small typing delay to feel natural
+                                await new Promise(r=>setTimeout(r, 420));
+                                try{
+                                    const reply = await mockReply(v);
+                                    const m = readMsgs(); m.push({role:'bot', text:reply}); saveMsgs(m); renderMsgs();
+                                }catch(e){ const m = readMsgs(); m.push({role:'bot', text:'Sorry, I could not process that request.'}); saveMsgs(m); renderMsgs(); }
+                            })();
+                        });
+                        input.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
+                    }
+
+                    if(clearBtn){ clearBtn.addEventListener('click', function(){ if(!confirm('Clear chat history?')) return; saveMsgs([]); renderMsgs(); }); }
+
+                    // keyboard shortcut: Ctrl+K to clear chat
+                    document.addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); if(confirm('Clear chat history?')){ saveMsgs([]); renderMsgs(); } } });
+
+                    window.addEventListener('resize', sizeChat);
+                });
+            })();
     </script>
 </body>
 

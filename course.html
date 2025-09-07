@@ -68,15 +68,15 @@
 
             <div class="quiz-levels" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
               <div class="quiz-card level-card active" data-level="basic" role="button" tabindex="0" onclick="selectLevel('basic')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#f8fbff,#eef6ff);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Basic MCQ</strong>
+                <strong>Basic MCQ <span class="best-badge" data-level="basic"></span></strong>
                 <div class="muted" style="font-size:0.9rem;margin-top:6px;">Short warm-up questions</div>
               </div>
               <div class="quiz-card level-card" data-level="medium" role="button" tabindex="0" onclick="selectLevel('medium')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff8f0,#fff3e8);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Medium MCQ</strong>
+                <strong>Medium MCQ <span class="best-badge" data-level="medium"></span></strong>
                 <div class="muted" style="font-size:0.9rem;margin-top:6px;">Moderate difficulty</div>
               </div>
               <div class="quiz-card level-card" data-level="hard" role="button" tabindex="0" onclick="selectLevel('hard')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff6fb,#f9eefb);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Hard MCQ</strong>
+                <strong>Hard MCQ <span class="best-badge" data-level="hard"></span></strong>
                 <div class="muted" style="font-size:0.9rem;margin-top:6px;">Challenging questions</div>
               </div>
             </div>
@@ -151,31 +151,17 @@
       const NOTES_KEY = 'course_notes_'+courseName;
       try{ const n = localStorage.getItem(NOTES_KEY) || ''; document.getElementById('notesText').value = n; }catch(e){}
 
-      // sample resources — per-course
-      let res = [];
-      if(courseName === 'DBMS'){
-        res = [
-          { title: 'DBMS Book (Copy 1)', type: 'book', url: 'https://drive.google.com/open?id=14O5UmHnT4zRQ3BGV4ywTKrs_g9moEW-n&usp=drive_copy' },
-          { title: 'DBMS Book (Copy 2)', type: 'book', url: 'https://drive.google.com/open?id=1rDitvBj-PYhHQAjj69Kt1KocVWxyneb4&usp=drive_copy' },
-          { title: 'Lecture 1 - Introduction', type: 'video' }
-        ];
-      } else {
-        res = [ {title:'Lecture 1 - Introduction', type:'video'}, {title:'Assignment 1', type:'pdf'}, {title:'Lab 1 - Setup', type:'link'} ];
-      }
-
+      // sample resources
+      const res = [
+        {title:'Lecture 1 - Introduction', type:'video'},
+        {title:'Assignment 1', type:'pdf'},
+        {title:'Lab 1 - Setup', type:'link'}
+      ];
       const list = document.getElementById('resList'); list.innerHTML='';
       res.forEach((r,i)=>{
         const li = document.createElement('li');
         li.className='resource-item';
-        const left = document.createElement('div');
-        left.innerHTML = `<strong>${r.title}</strong><div class="muted">${r.type || 'file'}</div>`;
-        const right = document.createElement('div');
-        if(r.url){
-          right.innerHTML = `<a class="btn" href="${r.url}" target="_blank" rel="noopener">Open</a>`;
-        } else {
-          right.innerHTML = `<button class="btn" data-idx="${i}">Mark Done</button>`;
-        }
-        li.appendChild(left); li.appendChild(right);
+        li.innerHTML = `<div><strong>${r.title}</strong><div class="muted">${r.type}</div></div><div><button class="btn" data-idx="${i}">Mark Done</button></div>`;
         list.appendChild(li);
       });
 
@@ -290,6 +276,22 @@
         card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectLevel(this.dataset.level || 'basic'); } });
       });
     });
+
+    // show best-score badges for each level if available in localStorage
+    function updateBestBadges(){
+      document.querySelectorAll('.best-badge').forEach(el=>{
+        const level = el.dataset.level || '';
+        try{
+          const key = 'course_level_best_' + level + '_' + courseName;
+          const val = parseInt(localStorage.getItem(key) || '0',10);
+          if(val > 0){ el.textContent = 'Best ' + val + '%'; el.style.background = '#7c3aed'; el.style.color='#fff'; el.style.padding='2px 8px'; el.style.borderRadius='999px'; el.style.fontSize='12px'; }
+          else { el.textContent = ''; }
+        }catch(e){ el.textContent=''; }
+      });
+    }
+
+    // call after initial load
+    document.addEventListener('DOMContentLoaded', updateBestBadges);
 
     // global helper used by inline onclick handlers - navigate to per-level quiz page
     function selectLevel(lvl){
