@@ -48,12 +48,12 @@
   <script>
     // Prepopulated exam events (read-only)
     const EXAMS = [
-      { date: '2025-10-12', course: 'DBMS', time: '10:00 - 12:00', venue: 'Hall A' },
-      { date: '2025-10-15', course: 'Algorithms', time: '14:00 - 16:00', venue: 'Lab 3' },
-      { date: '2025-11-02', course: 'Networks', time: '09:00 - 11:00', venue: 'Room 204' },
-      { date: '2025-11-10', course: 'Operating Systems', time: '13:00 - 15:00', venue: 'Hall B' },
-      { date: '2025-09-13', course: 'DSA (C++)', time: '09:00 - 11:00', venue: 'Hall C' },
-      { date: '2025-09-13', course: 'IOT', time: '13:00 - 15:00', venue: 'Lab 5' }
+      { date: '2025-10-12', course: 'DBMS', time: '10:00 - 12:00', venue: 'Hall A', cloakroom: 'Cloakroom 1' },
+      { date: '2025-10-15', course: 'Algorithms', time: '14:00 - 16:00', venue: 'Lab 3', cloakroom: 'Cloakroom 2' },
+      { date: '2025-11-02', course: 'Networks', time: '09:00 - 11:00', venue: 'Room 204', cloakroom: 'Cloakroom 1' },
+      { date: '2025-11-10', course: 'Operating Systems', time: '13:00 - 15:00', venue: 'Hall B', cloakroom: 'Cloakroom 3' },
+      { date: '2025-09-13', course: 'DSA (C++)', time: '09:00 - 11:00', venue: 'Hall C', cloakroom: 'Cloakroom 2' },
+      { date: '2025-09-13', course: 'IOT', time: '13:00 - 15:00', venue: 'Lab 5', cloakroom: 'Cloakroom 1' }
     ];
 
     // Calendar state
@@ -108,7 +108,7 @@
       else {
         todays.forEach(e => {
           const card = document.createElement('div'); card.className = 'event-card';
-          card.innerHTML = `<h3>${e.course}</h3><p><strong>Time:</strong> ${e.time}</p><p><strong>Venue:</strong> ${e.venue}</p>`;
+          card.innerHTML = `<h3>${e.course}</h3><p><strong>Time:</strong> ${e.time}</p><p><strong>Venue:</strong> ${e.venue}</p>` + (e.cloakroom ? `<p><strong>Cloakroom:</strong> ${e.cloakroom}</p>` : '');
           list.appendChild(card);
         });
       }
@@ -143,7 +143,9 @@
         icsLines.push('DTSTART:' + dtstart);
         icsLines.push('DTEND:' + dtend);
         icsLines.push('SUMMARY:' + e.course + ' Exam');
-        icsLines.push('DESCRIPTION:Venue: ' + e.venue + '\\nTime: ' + e.time);
+  let desc = 'Venue: ' + e.venue + '\\nTime: ' + e.time;
+  if (e.cloakroom) desc += '\\nCloakroom: ' + e.cloakroom;
+  icsLines.push('DESCRIPTION:' + desc);
         icsLines.push('END:VEVENT');
       });
       icsLines.push('END:VCALENDAR');
@@ -160,14 +162,11 @@
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
         try {
+          // Read preferences for backward compatibility; do not modify DOM classes.
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            if (prefs.theme === 'dark') {
-              document.body.classList.add('dark-theme');
-            } else {
-              document.body.classList.remove('dark-theme');
-            }
+            // previously applied theme: intentionally no-op
           }
         } catch (e) { }
       });

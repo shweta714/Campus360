@@ -17,12 +17,19 @@
         <nav class="navbar-top">
             <div class="navbar-container">
                 <div class="navbar-logo">
-                    <a href="intro.html" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
-                        <span class="navbar-title">STUDENT DASHBOARD</span>
-                    </a>
+                        <a href="intro.html" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
+                            <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+                            <span class="navbar-title">STUDENT DASHBOARD</span>
+                        </a>
+                        <button id="navToggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+                            <svg class="hamburger" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path class="line line1" d="M3 6h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+                                <path class="line line2" d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+                                <path class="line line3" d="M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+                            </svg>
+                        </button>
                 </div>
-                <ul class="navbar-menu">
+                <ul id="mainNav" class="navbar-menu collapsed">
                     <li onclick="window.location.href='student-dashboard.html'" class="active">
                         <span class="nav-icon">&#8962;</span> Home
                     </li>
@@ -45,12 +52,11 @@
             <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="header-left">
-                    <div class="logo">&#127891;</div>
-                    <div class="header-info">
-                        <h1>Welcome to Your Dashboard</h1>
-                        <p>Manage your academic journey with ease</p>
+                        <div class="header-info">
+                            <h1><span class="logo" aria-hidden="true">&#127891;</span> Welcome to Your Dashboard</h1>
+                            <p>Manage your academic journey with ease</p>
+                        </div>
                     </div>
-                </div>
             </div>
 
             <!-- Main two-column layout: left stacked cards, right chatbot -->
@@ -129,7 +135,7 @@
         // Theme is now only toggled from settings page
         const PREF_KEY = 'campus360_prefs';
         function setTheme(dark) {
-            document.body.classList.toggle('dark-theme', dark);
+            // Dark theme support removed: do not toggle document classes here.
             const raw = localStorage.getItem(PREF_KEY);
             let prefs = raw ? JSON.parse(raw) : { theme: dark ? 'dark' : 'light', notify: true };
             prefs.theme = dark ? 'dark' : 'light';
@@ -284,20 +290,21 @@ If you need further details, tell me the course or exact exam name.`;
             });
         })();
 
-        // Auto-apply dark mode from settings
-        document.addEventListener('DOMContentLoaded', function () {
-            setTimeout(function () {
-                try {
-                    const raw = localStorage.getItem(PREF_KEY);
-                    let dark = false;
-                    if (raw) {
-                        const prefs = JSON.parse(raw);
-                        dark = prefs.theme === 'dark';
-                    }
-                    setTheme(dark);
-                } catch (e) { setTheme(false); }
-            }, 0);
-        });
+    // Dark theme removed: no automatic theme toggling from this page
+    </script>
+    <script>
+        // Mobile nav toggle for student dashboard
+        (function(){
+            const btn = document.getElementById('navToggle');
+            const menu = document.getElementById('mainNav');
+            if(!btn || !menu) return;
+            btn.addEventListener('click', function(){
+                const isCollapsed = menu.classList.toggle('collapsed');
+                btn.setAttribute('aria-expanded', (!isCollapsed).toString());
+                // animate hamburger to X
+                btn.classList.toggle('open', !isCollapsed);
+            });
+        })();
     </script>
 </body>
 

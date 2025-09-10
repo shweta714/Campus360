@@ -59,7 +59,10 @@
       card.setAttribute('data-type', sub.type);
       card.innerHTML = `
         <div class="cc-top">
-          <div class="cc-icon">📘</div>
+          <div class="cc-left">
+            <div class="cc-icon">📘</div>
+            <div class="cc-badge">${sub.type.charAt(0).toUpperCase() + sub.type.slice(1)}</div>
+          </div>
           <div class="cc-percent" style="--p:${progress}">
             <span>${progress}%</span>
           </div>
@@ -67,8 +70,11 @@
         <div class="cc-body">
           <div class="cc-title">${sub.name}</div>
           <div class="cc-sub muted">${progress}% complete</div>
+          <div class="cc-progress"><div class="cc-progress-fill" style="width:${progress}%;"></div></div>
         </div>
-        <div class="cc-actions"><button class="btn primary" data-course="${encodeURIComponent(sub.name)}">Open</button></div>
+        <div class="cc-actions">
+          <button class="btn primary" data-course="${encodeURIComponent(sub.name)}">Open</button>
+        </div>
       `;
       return card;
     }
@@ -106,6 +112,7 @@
     });
   </script>
   <script>
+    // Dark theme removed: read prefs for compatibility but do not alter the DOM class
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
@@ -113,11 +120,7 @@
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            if (prefs.theme === 'dark') {
-              document.body.classList.add('dark-theme');
-            } else {
-              document.body.classList.remove('dark-theme');
-            }
+            // no-op: theme preference retained but no class toggling
           }
         } catch (e) { }
       });

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Profile - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
+  
 </head>
 
 <body>
@@ -71,6 +72,11 @@
               <input type="text" id="inputPhone">
             </label>
           </div>
+          <div class="form-row">
+            <label>GPA
+              <input type="text" id="inputGPA" placeholder="e.g. 8.5">
+            </label>
+          </div>
           <label>About
             <textarea id="inputAbout" rows="3"></textarea>
           </label>
@@ -90,6 +96,11 @@
               <h3 id="vEmail">Email</h3>
               <p class="muted" id="vPhone">Phone</p>
             </div>
+          </div>
+
+          <div style="margin-top:8px;">
+            <h3 id="vGPA">GPA</h3>
+            <p class="muted" id="vGPAval">N/A</p>
           </div>
 
           <h4 style="margin-top:12px;">About</h4>
@@ -118,6 +129,9 @@
       document.getElementById('vEmail').textContent = profile.email || 'Email';
       document.getElementById('vPhone').textContent = profile.phone || 'Phone';
       document.getElementById('vAbout').textContent = profile.about || 'No info yet.';
+    // GPA
+    var gpaVal = (profile.gpa !== undefined && profile.gpa !== null && profile.gpa !== '') ? profile.gpa : 'N/A';
+    var gpaEl = document.getElementById('vGPAval'); if (gpaEl) gpaEl.textContent = gpaVal;
       // avatar
       const img = document.getElementById('avatarImg');
       if (profile.avatar) { img.src = profile.avatar; } else { img.src = 'https://via.placeholder.com/160x160.png?text=Avatar'; }
@@ -140,6 +154,7 @@
       document.getElementById('inputSem').value = profile.sem || '';
       document.getElementById('inputEmail').value = profile.email || '';
       document.getElementById('inputPhone').value = profile.phone || '';
+    document.getElementById('inputGPA').value = profile.gpa || '';
       document.getElementById('inputAbout').value = profile.about || '';
       // skills
       const sc = document.getElementById('skillsContainer'); sc.innerHTML = '';
@@ -171,6 +186,7 @@
       profile.sem = document.getElementById('inputSem').value.trim();
       profile.email = document.getElementById('inputEmail').value.trim();
       profile.phone = document.getElementById('inputPhone').value.trim();
+    profile.gpa = (document.getElementById('inputGPA') ? document.getElementById('inputGPA').value.trim() : '');
       profile.about = document.getElementById('inputAbout').value.trim();
       // skills
       profile.skills = Array.from(document.getElementById('skillsContainer').querySelectorAll('.skill-chip')).map(c => c.childNodes[0].nodeValue || c.textContent.replace('x', '').trim());
@@ -206,18 +222,16 @@
     });
   </script>
   <script>
+    // Dark theme support removed: preferences are retained but no class toggling is performed.
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
         try {
+          // Read prefs silently for compatibility; do not modify document classes.
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            if (prefs.theme === 'dark') {
-              document.body.classList.add('dark-theme');
-            } else {
-              document.body.classList.remove('dark-theme');
-            }
+            // previously applied theme: intentionally a no-op now
           }
         } catch (e) { }
       });

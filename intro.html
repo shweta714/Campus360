@@ -325,7 +325,7 @@
     </footer>
 
     <script>
-        // Auto-apply selected theme from settings (no toggle UI)
+        // Dark theme removed: read preferences for compatibility but do not alter page classes
         (function () {
             const PREF_KEY = 'campus360_prefs';
             document.addEventListener('DOMContentLoaded', function () {
@@ -333,11 +333,7 @@
                     const raw = localStorage.getItem(PREF_KEY);
                     if (raw) {
                         const prefs = JSON.parse(raw);
-                        if (prefs.theme === 'dark') {
-                            document.body.classList.add('dark-theme');
-                        } else {
-                            document.body.classList.remove('dark-theme');
-                        }
+                        // no-op: previously applied theme is intentionally not applied now
                     }
                 } catch (e) { }
             });

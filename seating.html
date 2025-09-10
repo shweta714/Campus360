@@ -32,6 +32,10 @@
             <input id="seatSearch" placeholder="Name or roll"
               style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #e6edf8" />
           </label>
+          <!-- assignment info will show assigned hall and invigilator for selected exam -->
+          <div id="assignmentInfo" style="font-weight:600;color:#374151;margin-left:12px;min-width:220px;">
+            <!-- populated by JS -->
+          </div>
         </div>
 
         <div class="stage">Invigilator Desk</div>
@@ -81,6 +85,15 @@
             ['B1:Kunal:NW105', 'B2:Megha:NW106', 'B3:Omar:NW107', 'B4:Zara:NW108']
           ]
         }
+      };
+
+      // Assignments mapping: date -> course -> { hall, teacher }
+      const ASSIGNMENTS = {
+        '2025-10-12': { 'DBMS': { hall: 'Hall A', teacher: 'Dr. R. Mehta' } },
+        '2025-10-15': { 'Algorithms': { hall: 'Lab 3', teacher: 'Prof. S. Kapoor' } },
+        '2025-11-02': { 'Networks': { hall: 'Room 204', teacher: 'Mrs. L. Singh' } },
+        '2025-11-10': { 'Operating Systems': { hall: 'Hall B', teacher: 'Dr. A. Roy' } },
+        '2025-09-13': { 'DSA (C++)': { hall: 'Hall C', teacher: 'Mr. P. Nair' }, 'IOT': { hall: 'Lab 5', teacher: 'Ms. R. Bose' } }
       };
 
       const PROFILE_KEY = 'campus360_profile';
@@ -155,6 +168,19 @@
 
         // if user's seat found, scroll into view
         if (mySeatFound) { const el = document.querySelector('.my-seat'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+
+    // populate assignment info for selected date/course (if available)
+    try {
+      const assignEl = document.getElementById('assignmentInfo');
+      if (assignEl) {
+        const a = (ASSIGNMENTS[date] && ASSIGNMENTS[date][course]) || null;
+        if (a) {
+          assignEl.textContent = 'Assigned: ' + a.hall + ' · Invigilator: ' + a.teacher;
+        } else {
+          assignEl.textContent = 'No hall/teacher assignment available';
+        }
+      }
+  } catch (e) { }
       }
 
       // debounced search
@@ -178,6 +204,7 @@
 
   </div>
   <script>
+    // Dark theme support removed: read preferences but do not modify document classes
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
@@ -185,11 +212,7 @@
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            if (prefs.theme === 'dark') {
-              document.body.classList.add('dark-theme');
-            } else {
-              document.body.classList.remove('dark-theme');
-            }
+            // no-op
           }
         } catch (e) { }
       });
