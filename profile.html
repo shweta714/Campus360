@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Profile - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
 </head>
+
 <body>
   <nav class="navbar-top">
     <div class="navbar-container">
@@ -103,14 +105,14 @@
 
   <script>
     const PROFILE_KEY = 'campus360_profile';
-    function readProfile(){
-      try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); }catch(e){return {};}
+    function readProfile() {
+      try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'); } catch (e) { return {}; }
     }
-    function saveProfileObj(obj){ localStorage.setItem(PROFILE_KEY, JSON.stringify(obj)); }
+    function saveProfileObj(obj) { localStorage.setItem(PROFILE_KEY, JSON.stringify(obj)); }
 
-    function renderView(profile){
+    function renderView(profile) {
       document.getElementById('displayName').textContent = profile.name || 'Your Name';
-      document.getElementById('displayRoll').textContent = profile.roll ? ('Roll: '+profile.roll) : 'Roll: -';
+      document.getElementById('displayRoll').textContent = profile.roll ? ('Roll: ' + profile.roll) : 'Roll: -';
       document.getElementById('vDept').textContent = profile.dept || 'Department';
       document.getElementById('vSem').textContent = profile.sem || 'Semester';
       document.getElementById('vEmail').textContent = profile.email || 'Email';
@@ -118,19 +120,19 @@
       document.getElementById('vAbout').textContent = profile.about || 'No info yet.';
       // avatar
       const img = document.getElementById('avatarImg');
-      if(profile.avatar){ img.src = profile.avatar; } else { img.src = 'https://via.placeholder.com/160x160.png?text=Avatar'; }
+      if (profile.avatar) { img.src = profile.avatar; } else { img.src = 'https://via.placeholder.com/160x160.png?text=Avatar'; }
       // skills
-      const vSkills = document.getElementById('vSkills'); vSkills.innerHTML='';
-      (profile.skills || []).forEach(s=>{ const chip=document.createElement('div'); chip.className='skill-chip'; chip.textContent=s; vSkills.appendChild(chip); });
+      const vSkills = document.getElementById('vSkills'); vSkills.innerHTML = '';
+      (profile.skills || []).forEach(s => { const chip = document.createElement('div'); chip.className = 'skill-chip'; chip.textContent = s; vSkills.appendChild(chip); });
     }
 
-    function enterEdit(){
+    function enterEdit() {
       const profile = readProfile();
-      document.getElementById('profileForm').style.display='block';
-      document.getElementById('viewDetails').style.display='none';
-      document.getElementById('editBtn').style.display='none';
-      document.getElementById('saveBtn').style.display='inline-block';
-      document.getElementById('cancelBtn').style.display='inline-block';
+      document.getElementById('profileForm').style.display = 'block';
+      document.getElementById('viewDetails').style.display = 'none';
+      document.getElementById('editBtn').style.display = 'none';
+      document.getElementById('saveBtn').style.display = 'inline-block';
+      document.getElementById('cancelBtn').style.display = 'inline-block';
       // fill inputs
       document.getElementById('inputName').value = profile.name || '';
       document.getElementById('inputRoll').value = profile.roll || '';
@@ -140,28 +142,28 @@
       document.getElementById('inputPhone').value = profile.phone || '';
       document.getElementById('inputAbout').value = profile.about || '';
       // skills
-      const sc = document.getElementById('skillsContainer'); sc.innerHTML='';
+      const sc = document.getElementById('skillsContainer'); sc.innerHTML = '';
       (profile.skills || []).forEach(addSkillChipToEditor);
     }
 
-    function exitEdit(){
-      document.getElementById('profileForm').style.display='none';
-      document.getElementById('viewDetails').style.display='block';
-      document.getElementById('editBtn').style.display='inline-block';
-      document.getElementById('saveBtn').style.display='none';
-      document.getElementById('cancelBtn').style.display='none';
+    function exitEdit() {
+      document.getElementById('profileForm').style.display = 'none';
+      document.getElementById('viewDetails').style.display = 'block';
+      document.getElementById('editBtn').style.display = 'inline-block';
+      document.getElementById('saveBtn').style.display = 'none';
+      document.getElementById('cancelBtn').style.display = 'none';
     }
 
-    function addSkillChipToEditor(skill){
+    function addSkillChipToEditor(skill) {
       const sc = document.getElementById('skillsContainer');
-      const chip = document.createElement('div'); chip.className='skill-chip'; chip.textContent = skill;
-      const x = document.createElement('button'); x.textContent='x'; x.style.marginLeft='8px'; x.style.border='none'; x.style.background='transparent'; x.style.cursor='pointer';
-      x.addEventListener('click', function(){ chip.remove(); });
+      const chip = document.createElement('div'); chip.className = 'skill-chip'; chip.textContent = skill;
+      const x = document.createElement('button'); x.textContent = 'x'; x.style.marginLeft = '8px'; x.style.border = 'none'; x.style.background = 'transparent'; x.style.cursor = 'pointer';
+      x.addEventListener('click', function () { chip.remove(); });
       chip.appendChild(x);
       sc.appendChild(chip);
     }
 
-    function saveProfile(){
+    function saveProfile() {
       const profile = readProfile();
       profile.name = document.getElementById('inputName').value.trim();
       profile.roll = document.getElementById('inputRoll').value.trim();
@@ -171,37 +173,56 @@
       profile.phone = document.getElementById('inputPhone').value.trim();
       profile.about = document.getElementById('inputAbout').value.trim();
       // skills
-      profile.skills = Array.from(document.getElementById('skillsContainer').querySelectorAll('.skill-chip')).map(c => c.childNodes[0].nodeValue || c.textContent.replace('x','').trim());
+      profile.skills = Array.from(document.getElementById('skillsContainer').querySelectorAll('.skill-chip')).map(c => c.childNodes[0].nodeValue || c.textContent.replace('x', '').trim());
       saveProfileObj(profile);
       renderView(profile);
       exitEdit();
     }
 
     // avatar handling
-    function readFileAsDataURL(file, cb){ const r = new FileReader(); r.onload = e=>cb(e.target.result); r.readAsDataURL(file); }
-    document.getElementById('avatarArea').addEventListener('click', ()=> document.getElementById('avatarInput').click());
-    document.getElementById('changeAvatar').addEventListener('click', ()=> document.getElementById('avatarInput').click());
-    document.getElementById('avatarInput').addEventListener('change', function(){ if(this.files && this.files[0]){ readFileAsDataURL(this.files[0], function(data){ const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); } });
-    document.getElementById('removeAvatar').addEventListener('click', function(){ const p = readProfile(); delete p.avatar; saveProfileObj(p); renderView(p); });
+    function readFileAsDataURL(file, cb) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); }
+    document.getElementById('avatarArea').addEventListener('click', () => document.getElementById('avatarInput').click());
+    document.getElementById('changeAvatar').addEventListener('click', () => document.getElementById('avatarInput').click());
+    document.getElementById('avatarInput').addEventListener('change', function () { if (this.files && this.files[0]) { readFileAsDataURL(this.files[0], function (data) { const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); } });
+    document.getElementById('removeAvatar').addEventListener('click', function () { const p = readProfile(); delete p.avatar; saveProfileObj(p); renderView(p); });
 
     // drag and drop
     const avatarArea = document.getElementById('avatarArea');
-    avatarArea.addEventListener('dragover', function(e){ e.preventDefault(); avatarArea.classList.add('dragover'); });
-    avatarArea.addEventListener('dragleave', function(){ avatarArea.classList.remove('dragover'); });
-    avatarArea.addEventListener('drop', function(e){ e.preventDefault(); avatarArea.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if(f) readFileAsDataURL(f, data=>{ const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); });
+    avatarArea.addEventListener('dragover', function (e) { e.preventDefault(); avatarArea.classList.add('dragover'); });
+    avatarArea.addEventListener('dragleave', function () { avatarArea.classList.remove('dragover'); });
+    avatarArea.addEventListener('drop', function (e) { e.preventDefault(); avatarArea.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) readFileAsDataURL(f, data => { const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); });
 
     // skills input
-    document.getElementById('skillInput').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); const v = this.value.trim(); if(!v) return; addSkillChipToEditor(v); this.value=''; } });
+    document.getElementById('skillInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); const v = this.value.trim(); if (!v) return; addSkillChipToEditor(v); this.value = ''; } });
 
     document.getElementById('editBtn').addEventListener('click', enterEdit);
-    document.getElementById('cancelBtn').addEventListener('click', function(){ exitEdit(); });
+    document.getElementById('cancelBtn').addEventListener('click', function () { exitEdit(); });
     document.getElementById('saveBtn').addEventListener('click', saveProfile);
 
     // initial render
-    document.addEventListener('DOMContentLoaded', function(){
+    document.addEventListener('DOMContentLoaded', function () {
       const p = readProfile();
       renderView(p);
     });
   </script>
+  <script>
+    (function () {
+      const PREF_KEY = 'campus360_prefs';
+      document.addEventListener('DOMContentLoaded', function () {
+        try {
+          const raw = localStorage.getItem(PREF_KEY);
+          if (raw) {
+            const prefs = JSON.parse(raw);
+            if (prefs.theme === 'dark') {
+              document.body.classList.add('dark-theme');
+            } else {
+              document.body.classList.remove('dark-theme');
+            }
+          }
+        } catch (e) { }
+      });
+    })();
+  </script>
 </body>
+
 </html>

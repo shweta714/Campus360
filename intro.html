@@ -198,8 +198,10 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            padding: 0.5rem 2rem; /* Reduced vertical padding */
-            background: rgba(100, 3, 202, 0.2); /* More transparent background */
+            padding: 0.5rem 2rem;
+            /* Reduced vertical padding */
+            background: rgba(100, 3, 202, 0.2);
+            /* More transparent background */
             backdrop-filter: blur(5px);
             z-index: 100;
         }
@@ -208,11 +210,15 @@
             color: white;
             text-decoration: none;
             font-weight: 600;
-            padding: 0.3rem 1rem; /* Reduced vertical padding */
-            border-radius: 4px; /* Slightly smaller border radius */
+            padding: 0.3rem 1rem;
+            /* Reduced vertical padding */
+            border-radius: 4px;
+            /* Slightly smaller border radius */
             transition: background 0.2s, color 0.2s;
-            float: right; /* Align to the right side */
-            font-size: 0.9rem; /* Slightly smaller font */
+            float: right;
+            /* Align to the right side */
+            font-size: 0.9rem;
+            /* Slightly smaller font */
         }
 
         .footer a:hover {
@@ -308,7 +314,8 @@
     <div class="choice-dialog" id="choiceDialog">
         <h2>Welcome to Campus360</h2>
         <div class="choice-buttons">
-            <button class="choice-btn" onclick="window.location.href='index.html';sessionStorage.setItem('fromIntro','true')">Login</button>
+            <button class="choice-btn"
+                onclick="window.location.href='index.html';sessionStorage.setItem('fromIntro','true')">Login</button>
             <button class="choice-btn" onclick="window.location.href='signup.html'">Sign Up</button>
         </div>
     </div>
@@ -318,16 +325,35 @@
     </footer>
 
     <script>
+        // Auto-apply selected theme from settings (no toggle UI)
+        (function () {
+            const PREF_KEY = 'campus360_prefs';
+            document.addEventListener('DOMContentLoaded', function () {
+                try {
+                    const raw = localStorage.getItem(PREF_KEY);
+                    if (raw) {
+                        const prefs = JSON.parse(raw);
+                        if (prefs.theme === 'dark') {
+                            document.body.classList.add('dark-theme');
+                        } else {
+                            document.body.classList.remove('dark-theme');
+                        }
+                    }
+                } catch (e) { }
+            });
+        })();
+
         function showChoiceDialog() {
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('choiceDialog').style.display = 'block';
         }
 
         // Close dialog when clicking outside
-        document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('overlay').addEventListener('click', function () {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('choiceDialog').style.display = 'none';
         });
     </script>
 </body>
+
 </html>

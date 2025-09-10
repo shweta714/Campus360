@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="timetable.css">
 </head>
+
 <body>
   <div class="page">
     <header class="page-header">
@@ -29,7 +31,9 @@
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
           <h2 id="selectedDateLabel">Select a date</h2>
           <div>
-            <button id="downloadIcs" class="btn" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">Download .ics for selected date</button>
+            <button id="downloadIcs" class="btn"
+              style="padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">Download
+              .ics for selected date</button>
           </div>
         </div>
         <div id="eventsList" class="events-list">
@@ -47,9 +51,9 @@
       { date: '2025-10-12', course: 'DBMS', time: '10:00 - 12:00', venue: 'Hall A' },
       { date: '2025-10-15', course: 'Algorithms', time: '14:00 - 16:00', venue: 'Lab 3' },
       { date: '2025-11-02', course: 'Networks', time: '09:00 - 11:00', venue: 'Room 204' },
-  { date: '2025-11-10', course: 'Operating Systems', time: '13:00 - 15:00', venue: 'Hall B' },
-  { date: '2025-09-13', course: 'DSA (C++)', time: '09:00 - 11:00', venue: 'Hall C' },
-  { date: '2025-09-13', course: 'IOT', time: '13:00 - 15:00', venue: 'Lab 5' }
+      { date: '2025-11-10', course: 'Operating Systems', time: '13:00 - 15:00', venue: 'Hall B' },
+      { date: '2025-09-13', course: 'DSA (C++)', time: '09:00 - 11:00', venue: 'Hall C' },
+      { date: '2025-09-13', course: 'IOT', time: '13:00 - 15:00', venue: 'Lab 5' }
     ];
 
     // Calendar state
@@ -58,52 +62,52 @@
 
     function start() {
       renderCalendar();
-      document.getElementById('prevMonth').addEventListener('click', ()=>{ viewDate.setMonth(viewDate.getMonth()-1); renderCalendar(); });
-      document.getElementById('nextMonth').addEventListener('click', ()=>{ viewDate.setMonth(viewDate.getMonth()+1); renderCalendar(); });
+      document.getElementById('prevMonth').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(); });
+      document.getElementById('nextMonth').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(); });
     }
 
-    function renderCalendar(){
+    function renderCalendar() {
       const cal = document.getElementById('calendar');
       cal.innerHTML = '';
       const year = viewDate.getFullYear();
       const month = viewDate.getMonth();
       const first = new Date(year, month, 1);
       const startDay = first.getDay();
-      const daysInMonth = new Date(year, month+1, 0).getDate();
-      document.getElementById('monthLabel').textContent = viewDate.toLocaleString(undefined,{month:'long', year:'numeric'});
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      document.getElementById('monthLabel').textContent = viewDate.toLocaleString(undefined, { month: 'long', year: 'numeric' });
 
       // weekday headers
-      const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      for(let w of weekdays){
-        const el = document.createElement('div'); el.className='wd'; el.textContent = w; cal.appendChild(el);
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      for (let w of weekdays) {
+        const el = document.createElement('div'); el.className = 'wd'; el.textContent = w; cal.appendChild(el);
       }
 
       // empty cells
-      for(let i=0;i<startDay;i++){ const el=document.createElement('div'); el.className='cell empty'; cal.appendChild(el); }
+      for (let i = 0; i < startDay; i++) { const el = document.createElement('div'); el.className = 'cell empty'; cal.appendChild(el); }
 
-      for(let d=1; d<=daysInMonth; d++){
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const hasExam = EXAMS.some(e=>e.date===dateStr);
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasExam = EXAMS.some(e => e.date === dateStr);
         const el = document.createElement('button');
-        el.className='cell day'+(hasExam? ' has-event':'');
+        el.className = 'cell day' + (hasExam ? ' has-event' : '');
         el.setAttribute('data-date', dateStr);
         el.textContent = d;
-        el.addEventListener('click', ()=> selectDate(dateStr));
-        if(selectedDate===dateStr) el.classList.add('selected');
+        el.addEventListener('click', () => selectDate(dateStr));
+        if (selectedDate === dateStr) el.classList.add('selected');
         cal.appendChild(el);
       }
     }
 
-    function selectDate(dateStr){
+    function selectDate(dateStr) {
       selectedDate = dateStr;
       document.getElementById('selectedDateLabel').textContent = new Date(dateStr).toLocaleDateString();
       const list = document.getElementById('eventsList');
       list.innerHTML = '';
-      const todays = EXAMS.filter(e=>e.date===dateStr);
-      if(todays.length===0){ list.innerHTML = '<p class="muted">No exams scheduled for this date.</p>'; }
-      else{
-        todays.forEach(e=>{
-          const card = document.createElement('div'); card.className='event-card';
+      const todays = EXAMS.filter(e => e.date === dateStr);
+      if (todays.length === 0) { list.innerHTML = '<p class="muted">No exams scheduled for this date.</p>'; }
+      else {
+        todays.forEach(e => {
+          const card = document.createElement('div'); card.className = 'event-card';
           card.innerHTML = `<h3>${e.course}</h3><p><strong>Time:</strong> ${e.time}</p><p><strong>Venue:</strong> ${e.venue}</p>`;
           list.appendChild(card);
         });
@@ -112,44 +116,63 @@
       renderCalendar();
       // highlight selected
       const btn = document.querySelector(`[data-date='${dateStr}']`);
-      if(btn) btn.classList.add('selected');
+      if (btn) btn.classList.add('selected');
 
       // wire ICS download for the selected date
       const dl = document.getElementById('downloadIcs');
-      if(dl){ dl.disabled = false; dl.onclick = ()=>{ downloadIcsForDate(dateStr); }; }
+      if (dl) { dl.disabled = false; dl.onclick = () => { downloadIcsForDate(dateStr); }; }
     }
 
-    function downloadIcsForDate(dateStr){
-      const exams = EXAMS.filter(e=>e.date===dateStr);
-      if(exams.length===0){ alert('No exams for this date'); return; }
-      const icsLines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Campus360//Exam Timetable//EN'];
-      exams.forEach((e,idx)=>{
-        const dt = dateStr.replace(/-/g,'') + 'T000000';
-        const uid = 'campus360-'+dateStr+'-'+idx+'@campus360.local';
+    function downloadIcsForDate(dateStr) {
+      const exams = EXAMS.filter(e => e.date === dateStr);
+      if (exams.length === 0) { alert('No exams for this date'); return; }
+      const icsLines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Campus360//Exam Timetable//EN'];
+      exams.forEach((e, idx) => {
+        const dt = dateStr.replace(/-/g, '') + 'T000000';
+        const uid = 'campus360-' + dateStr + '-' + idx + '@campus360.local';
         // crude single-day event: start at time's first token
         const startTime = e.time.split('-')[0].trim();
         const endTime = e.time.split('-')[1] ? e.time.split('-')[1].trim() : startTime;
         // convert HH:MM to basic TZ-less format
-        const toHHMM = t=>{ const parts = t.split(':'); if(parts.length<2) return '000000'; return (parts[0].padStart(2,'0')+parts[1].padStart(2,'0')+'00'); };
-        const dtstart = dateStr.replace(/-/g,'') + 'T' + toHHMM(startTime);
-        const dtend = dateStr.replace(/-/g,'') + 'T' + toHHMM(endTime);
+        const toHHMM = t => { const parts = t.split(':'); if (parts.length < 2) return '000000'; return (parts[0].padStart(2, '0') + parts[1].padStart(2, '0') + '00'); };
+        const dtstart = dateStr.replace(/-/g, '') + 'T' + toHHMM(startTime);
+        const dtend = dateStr.replace(/-/g, '') + 'T' + toHHMM(endTime);
         icsLines.push('BEGIN:VEVENT');
-        icsLines.push('UID:'+uid);
-        icsLines.push('DTSTAMP:'+dtstart);
-        icsLines.push('DTSTART:'+dtstart);
-        icsLines.push('DTEND:'+dtend);
-        icsLines.push('SUMMARY:'+e.course+' Exam');
-        icsLines.push('DESCRIPTION:Venue: '+e.venue+'\\nTime: '+e.time);
+        icsLines.push('UID:' + uid);
+        icsLines.push('DTSTAMP:' + dtstart);
+        icsLines.push('DTSTART:' + dtstart);
+        icsLines.push('DTEND:' + dtend);
+        icsLines.push('SUMMARY:' + e.course + ' Exam');
+        icsLines.push('DESCRIPTION:Venue: ' + e.venue + '\\nTime: ' + e.time);
         icsLines.push('END:VEVENT');
       });
       icsLines.push('END:VCALENDAR');
       const blob = new Blob([icsLines.join('\r\n')], { type: 'text/calendar' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'exams-'+dateStr+'.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      const a = document.createElement('a'); a.href = url; a.download = 'exams-' + dateStr + '.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 
     // start
     start();
   </script>
+  <script>
+    (function () {
+      const PREF_KEY = 'campus360_prefs';
+      document.addEventListener('DOMContentLoaded', function () {
+        try {
+          const raw = localStorage.getItem(PREF_KEY);
+          if (raw) {
+            const prefs = JSON.parse(raw);
+            if (prefs.theme === 'dark') {
+              document.body.classList.add('dark-theme');
+            } else {
+              document.body.classList.remove('dark-theme');
+            }
+          }
+        } catch (e) { }
+      });
+    })();
+  </script>
 </body>
+
 </html>

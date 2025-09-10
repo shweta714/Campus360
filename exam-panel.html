@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Panel</title>
+    <link rel="stylesheet" href="exampanel.css">
+</head>
+
+<body>
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Exam Instructions</h3>
+            <div id="exam-link-info" style="margin-bottom:10px; color:#4B3AFF; font-weight:bold;"></div>
+            <ul style="text-align:left; font-size:1.08em; margin-bottom:18px;">
+                <li>Do not switch tabs or windows during the exam. Cheating will be detected and your exam may be
+                    terminated.</li>
+                <li>Exam duration: <span id="exam-duration">10</span> minutes.</li>
+                <li>Read each question carefully and select the best answer.</li>
+                <li>Once started, the timer will run and cannot be paused.</li>
+            </ul>
+            <button id="begin-exam-btn" style="margin-top:12px;">Begin</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="main-title">Campus360 Exam Panel</h2>
+
+        <!-- Upcoming Exams -->
+        <div id="upcoming-exams">
+            <h3 class="section-title">Upcoming Exams</h3>
+            <div id="attempted-preview"></div>
+            <style>
+                .exam-card.disabled {
+                    opacity: 0.6;
+                    pointer-events: none;
+                }
+
+                .attempted-card {
+                    box-shadow: 0 2px 8px #e0e0ff;
+                }
+            </style>
+            <div class="exam-list soft-cards">
+
+                <!-- DBMS Card -->
+                <div class="exam-card exam-card-horizontal" data-subject="dbms" onclick="openExamModal('dbms')">
+                    <div class="exam-card-left"
+                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
+                        <span role="img" aria-label="DBMS">🗄️</span>
+                    </div>
+                    <div class="exam-card-center">
+                        <div class="exam-title">DBMS</div>
+                        <div class="exam-desc">Database Management Systems</div>
+                    </div>
+                    <div class="exam-card-right">
+                        <span class="exam-card-arrow">&rsaquo;</span>
+                    </div>
+                </div>
+
+                <!-- OOSE Card -->
+                <div class="exam-card exam-card-horizontal" data-subject="oose" onclick="openExamModal('oose')">
+                    <div class="exam-card-left"
+                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
+                        <span role="img" aria-label="OOSE">💻</span>
+                    </div>
+                    <div class="exam-card-center">
+                        <div class="exam-title">OOSE</div>
+                        <div class="exam-desc">Object Oriented Software Engineering</div>
+                    </div>
+                    <div class="exam-card-right">
+                        <span class="exam-card-arrow">&rsaquo;</span>
+                    </div>
+                </div>
+
+                <!-- IoT Card -->
+                <div class="exam-card exam-card-horizontal" data-subject="iot" onclick="openExamModal('iot')">
+                    <div class="exam-card-left"
+                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
+                        <span role="img" aria-label="IoT">🌐</span>
+                    </div>
+                    <div class="exam-card-center">
+                        <div class="exam-title">IoT</div>
+                        <div class="exam-desc">Internet of Things</div>
+                    </div>
+                    <div class="exam-card-right">
+                        <span class="exam-card-arrow">&rsaquo;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Exam Link -->
+        <div id="link-entry-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span id="close-modal" class="close">&times;</span>
+                <h3>Exam Link</h3>
+                <div class="exam-link-modal-row">
+                    <input type="text" id="exam-link-input" readonly style="width:90%;padding:8px;">
+                    <button type="button" id="copy-modal-link">Copy</button>
+                </div>
+                <p style="margin:10px 0 0 0; color:#4B3AFF; font-weight:bold;">This is your exam link. Click Start Exam
+                    to proceed.</p>
+                <button id="start-exam-btn" style="margin-top:12px;">Start Exam</button>
+            </div>
+        </div>
+
+        <!-- Countdown Modal -->
+        <div id="countdown-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3>Exam will start in <span id="countdown-timer">5</span> seconds...</h3>
+            </div>
+        </div>
+
+        <!-- Cheat Modal -->
+        <div id="cheat-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3 style="color:red;">Cheating Detected!</h3>
+                <p>Tab switching or window change is not allowed during the exam.</p>
+            </div>
+        </div>
+
+        <!-- Dynamic Content Placeholders -->
+        <form id="exam-form" style="display:none;"></form>
+        <!-- Exam status bar will be injected above questions -->
+        <div id="thankyou" style="display:none; text-align:center;">✅ Thank you! Submitting...</div>
+        <div id="generating" style="display:none; text-align:center;">⏳ Generating Results...</div>
+        <div id="review" style="display:none;"></div>
+    </div>
+
+    <script>
+        const questions = {
+            dbms: [
+                { q: "What does DBMS stand for?", options: ["Database Management System", "Data Base Main Server", "Data Management Service", "Database Mainframe System"], answer: 0, explanation: "DBMS stands for Database Management System." },
+                { q: "Which SQL command is used to retrieve data?", options: ["INSERT", "SELECT", "UPDATE", "DELETE"], answer: 1, explanation: "SELECT is used to retrieve data from a database." },
+                { q: "Which of the following is a DBMS software?", options: ["MS Word", "Oracle", "Photoshop", "Excel"], answer: 1, explanation: "Oracle is a DBMS software." },
+                { q: "Which key is used to uniquely identify a record?", options: ["Foreign Key", "Primary Key", "Candidate Key", "Super Key"], answer: 1, explanation: "Primary Key uniquely identifies a record." },
+                { q: "Which normal form removes transitive dependency?", options: ["1NF", "2NF", "3NF", "BCNF"], answer: 2, explanation: "3NF removes transitive dependency." },
+                { q: "Which is not a type of database model?", options: ["Hierarchical", "Network", "Relational", "Linear"], answer: 3, explanation: "Linear is not a database model." },
+                { q: "Which command is used to remove a table?", options: ["DROP", "DELETE", "REMOVE", "ERASE"], answer: 0, explanation: "DROP is used to remove a table." },
+                { q: "Which is a DDL command?", options: ["SELECT", "INSERT", "CREATE", "UPDATE"], answer: 2, explanation: "CREATE is a DDL command." },
+                { q: "Which is not a property of transaction?", options: ["Atomicity", "Consistency", "Isolation", "Redundancy"], answer: 3, explanation: "Redundancy is not a property of transaction." },
+                { q: "Which language is used to define database structure?", options: ["DML", "DDL", "DCL", "TCL"], answer: 1, explanation: "DDL is used to define database structure." }
+            ],
+            oose: [
+                { q: "Which diagram is not UML?", options: ["Class", "Sequence", "Pie", "Use Case"], answer: 2, explanation: "Pie diagram is not a UML diagram." },
+                { q: "Which is a benefit of OOSE?", options: ["Reusability", "Redundancy", "Complexity", "None"], answer: 0, explanation: "Reusability is a benefit of OOSE." },
+                { q: "Which is not an OOSE language?", options: ["Java", "C++", "Python", "HTML"], answer: 3, explanation: "HTML is not an OOSE language." },
+                { q: "Which is not a type of inheritance?", options: ["Single", "Multiple", "Hybrid", "Circular"], answer: 3, explanation: "Circular is not a type of inheritance." },
+                { q: "Which is not a visibility modifier?", options: ["Public", "Private", "Protected", "Visible"], answer: 3, explanation: "Visible is not a visibility modifier." },
+                { q: "Which is not a type of polymorphism?", options: ["Compile-time", "Run-time", "Static", "Dynamic"], answer: 2, explanation: "Static is not a type of polymorphism." },
+                { q: "OOSE is mainly used for?", options: ["System Design", "Web Design", "Database Design", "None"], answer: 0, explanation: "OOSE is mainly used for System Design." },
+                { q: "Which is not a class member?", options: ["Method", "Attribute", "Object", "Constructor"], answer: 2, explanation: "Object is not a class member." }
+            ],
+            iot: [
+                { q: "What does IoT stand for?", options: ["Internet of Things", "Input Output Technology", "Integrated Online Technology", "None of these"], answer: 0, explanation: "IoT stands for Internet of Things." },
+                { q: "Which protocol is commonly used in IoT?", options: ["HTTP", "MQTT", "FTP", "SMTP"], answer: 1, explanation: "MQTT is a lightweight protocol commonly used in IoT." },
+                { q: "Which is not an IoT device?", options: ["Smartwatch", "Smartphone", "Smart TV", "Desktop PC"], answer: 3, explanation: "Desktop PC is not typically considered an IoT device." },
+                { q: "Which layer is not in IoT architecture?", options: ["Perception", "Network", "Application", "Presentation"], answer: 3, explanation: "Presentation is not a layer in IoT architecture." },
+                { q: "Which is a wireless IoT protocol?", options: ["Bluetooth", "Ethernet", "HDMI", "USB"], answer: 0, explanation: "Bluetooth is a wireless IoT protocol." },
+                { q: "Which company is a leader in IoT?", options: ["Google", "Apple", "Microsoft", "All of these"], answer: 3, explanation: "All listed companies are leaders in IoT." },
+                { q: "Which is not a sensor type in IoT?", options: ["Temperature", "Pressure", "Light", "Monitor"], answer: 3, explanation: "Monitor is not a sensor type." },
+                { q: "Which is not a benefit of IoT?", options: ["Automation", "Efficiency", "Security Risk", "Data Collection"], answer: 2, explanation: "Security Risk is not a benefit of IoT." },
+                { q: "Which is not a challenge in IoT?", options: ["Security", "Scalability", "Interoperability", "Simplicity"], answer: 3, explanation: "Simplicity is not a challenge in IoT." },
+                { q: "Which is not a communication protocol in IoT?", options: ["Zigbee", "WiFi", "Bluetooth", "Excel"], answer: 3, explanation: "Excel is not a communication protocol." }
+            ]
+        };
+
+        let examActive = false;
+        let tabSwitchCount = 0;
+        let examDuration = 10 * 60; // 10 minutes
+        let timerInterval = null;
+        let selectedSubject = "";
+        let userAnswers = [];
+
+        // Tab switching detection
+        document.addEventListener('visibilitychange', function () {
+            if (examActive && document.visibilityState !== 'visible') {
+                tabSwitchCount++;
+                document.getElementById('tab-switch-count').textContent = 'Tab Switches: ' + tabSwitchCount;
+                document.getElementById('cheat-modal').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('cheat-modal').style.display = 'none';
+                }, 2500);
+            }
+        });
+
+        const expectedLinks = {
+            dbms: "https://campus360/exam/dbms",
+            oose: "https://campus360/exam/oose",
+            iot: "https://campus360/exam/iot"
+        };
+
+        function openExamModal(subject) {
+            selectedSubject = subject;
+            document.getElementById("instructions-modal").style.display = "flex";
+            document.getElementById("exam-duration").textContent = "10";
+            // Show the exam link for reference
+            document.getElementById("exam-link-info").textContent = `Exam Link: ${expectedLinks[selectedSubject]}`;
+        }
+
+        document.getElementById("close-modal").onclick = () => {
+            document.getElementById("link-entry-modal").style.display = "none";
+        };
+
+        document.getElementById("copy-modal-link").onclick = () => {
+            const input = document.getElementById("exam-link-input");
+            const link = input.value;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => alert("Exam link copied!"), () => fallbackCopy(input));
+            } else {
+                fallbackCopy(input);
+            }
+        };
+
+        function fallbackCopy(input) {
+            input.select();
+            input.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            input.blur();
+            alert("Exam link copied!");
+        }
+
+        document.getElementById("start-exam-btn").onclick = () => {
+            document.getElementById("link-entry-modal").style.display = "none";
+            document.getElementById("instructions-modal").style.display = "flex";
+            document.getElementById("exam-duration").textContent = "10";
+        };
+
+        document.getElementById("begin-exam-btn").onclick = () => {
+            document.getElementById("instructions-modal").style.display = "none";
+            document.getElementById("countdown-modal").style.display = "flex";
+            let seconds = 5;
+            document.getElementById("countdown-timer").textContent = seconds;
+            const interval = setInterval(() => {
+                seconds--;
+                document.getElementById("countdown-timer").textContent = seconds;
+                if (seconds === 0) {
+                    clearInterval(interval);
+                    document.getElementById("countdown-modal").style.display = "none";
+                    document.getElementById("upcoming-exams").style.display = "none";
+                    renderQuestions(selectedSubject);
+                    const examForm = document.getElementById("exam-form");
+                    examForm.style.display = "block";
+                    document.getElementById("exam-status").style.display = "block";
+                    examForm.scrollIntoView({ behavior: "smooth" });
+                    examActive = true;
+                    tabSwitchCount = 0;
+                    document.getElementById('tab-switch-count').textContent = 'Tab Switches: 0';
+                    startExamTimer();
+                }
+            }, 1000);
+        };
+
+        function startExamTimer() {
+            let timeLeft = examDuration;
+            updateTimerDisplay(timeLeft);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("exam-form").style.display = "none";
+                    document.getElementById("exam-status").style.display = "none";
+                    showThankYou();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(timeLeft) {
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            document.getElementById('exam-timer').textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function renderQuestions(subject) {
+            const form = document.getElementById("exam-form");
+            form.innerHTML = "";
+            // Add exam status bar at the top
+            form.innerHTML += `<div id='exam-status' style='display:block; margin-bottom:18px; text-align:center;'>
+                <span id='exam-timer' style='font-weight:bold; color:#4B3AFF;'>Time Left: 10:00</span>
+                &nbsp;|&nbsp;
+                <span id='tab-switch-count' style='font-weight:bold; color:#E57373;'>Tab Switches: 0</span>
+            </div>`;
+            // Add exam title once below status
+            let subjectTitle = "";
+            if (subject === "dbms") subjectTitle = "DBMS";
+            else if (subject === "oose") subjectTitle = "OOSE";
+            else if (subject === "iot") subjectTitle = "IoT";
+            form.innerHTML += `<h3 class='exam-title-header' style='text-align:center; margin-bottom:18px;'>${subjectTitle} Exam</h3>`;
+            questions[subject].forEach((q, idx) => {
+                const div = document.createElement("div");
+                div.className = "question";
+                div.innerHTML = `
+                    <div class='question-header'>
+                        <span class='question-number'>Q${idx + 1}:</span>
+                        <span class='question-text'>${q.q}</span>
+                    </div>
+                    ${q.options.map((opt, i) =>
+                    `<label class='option-label'><input type='radio' name='q${idx}' value='${i}'> ${opt}</label>`
+                ).join('')}
+                `;
+                form.appendChild(div);
+            });
+            form.innerHTML += '<button type="submit" class="submit-exam-btn">Submit Exam</button>';
+            form.style.display = "block";
+            form.onsubmit = submitExam;
+        }
+
+        function submitExam(e) {
+            e.preventDefault();
+            userAnswers = [];
+            questions[selectedSubject].forEach((q, idx) => {
+                const radios = document.querySelectorAll(`input[name='q${idx}']`);
+                let ans = -1;
+                radios.forEach(r => { if (r.checked) ans = parseInt(r.value); });
+                userAnswers.push(ans);
+            });
+            document.getElementById("exam-form").style.display = "none";
+            document.getElementById("exam-status").style.display = "none";
+            if (timerInterval) clearInterval(timerInterval);
+            showThankYou();
+        }
+
+        function showThankYou() {
+            const thankDiv = document.getElementById("thankyou");
+            thankDiv.style.display = "block";
+            setTimeout(() => {
+                thankDiv.style.display = "none";
+                showGenerating();
+            }, 1800);
+        }
+
+        function showGenerating() {
+            const genDiv = document.getElementById("generating");
+            genDiv.style.display = "block";
+            setTimeout(() => {
+                genDiv.style.display = "none";
+                showReview();
+            }, 2000);
+        }
+
+        function showReview() {
+            const reviewDiv = document.getElementById("review");
+            reviewDiv.style.display = "block";
+            const reviewHTML = generateReviewHTML();
+            reviewDiv.innerHTML = reviewHTML;
+            setAttemptedExam(selectedSubject, reviewHTML);
+            renderAttemptedPreview();
+            disableAttemptedCards();
+            // Track attempted exams in localStorage
+            function getAttemptedExams() {
+                try {
+                    return JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+                } catch { return {}; }
+            }
+            function setAttemptedExam(subject, reviewHTML) {
+                const attempted = getAttemptedExams();
+                attempted[subject] = reviewHTML || true;
+                localStorage.setItem('attemptedExams', JSON.stringify(attempted));
+            }
+
+            // Render attempted exams preview
+            function renderAttemptedPreview() {
+                const attempted = getAttemptedExams();
+                const previewDiv = document.getElementById('attempted-preview');
+                if (!previewDiv) return;
+                previewDiv.innerHTML = '';
+                Object.keys(attempted).forEach(sub => {
+                    let title = sub === 'dbms' ? 'DBMS' : sub === 'oose' ? 'OOSE' : 'IoT';
+                    previewDiv.innerHTML += `<div class='attempted-card' style='background:#f3f3ff;border-radius:8px;padding:12px;margin-bottom:10px;'>
+                    <strong>${title} Exam Attempted</strong><br>
+                    <button onclick="showAttemptedReview('${sub}')" style='margin-top:6px;'>Preview</button>
+                </div>`;
+                });
+            }
+
+            function showAttemptedReview(subject) {
+                const attempted = getAttemptedExams();
+                let reviewHTML = attempted[subject];
+                if (typeof reviewHTML === 'string') {
+                    document.getElementById('review').innerHTML = reviewHTML;
+                    document.getElementById('review').style.display = 'block';
+                }
+            }
+
+            // Disable exam card if attempted
+            function disableAttemptedCards() {
+                const attempted = getAttemptedExams();
+                ['dbms', 'oose', 'iot'].forEach(sub => {
+                    if (attempted[sub]) {
+                        const card = document.querySelector(`.exam-card[data-subject='${sub}']`);
+                        if (card) {
+                            card.classList.add('disabled');
+                            card.onclick = () => alert('You have already attempted this exam.');
+                        }
+                    }
+                });
+            }
+
+            // Initialize attempted preview and disable cards on page load
+            document.addEventListener('DOMContentLoaded', function () {
+                renderAttemptedPreview();
+                disableAttemptedCards();
+            });
+        }
+
+        function generateReviewHTML() {
+            let html = `<h3>Review</h3>`;
+            questions[selectedSubject].forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const correct = userAns === q.answer;
+                html += `<div class="review-question">
+                                <div><strong>Q${idx + 1}:</strong> ${q.q}</div>
+                                <div>Your Answer: ${userAns >= 0 ? q.options[userAns] : "<em>Not Answered</em>"}</div>
+                                <div>Correct Answer: ${q.options[q.answer]}</div>
+                                <div>Explanation: ${q.explanation}</div>
+                                <div style="color:${correct ? 'green' : 'red'};">${correct ? "✔ Correct" : "✖ Incorrect"}</div>
+                                <hr>
+                            </div>`;
+            });
+            return html;
+        }
+    </script>
+    <script>
+        (function () {
+            const PREF_KEY = 'campus360_prefs';
+            document.addEventListener('DOMContentLoaded', function () {
+                try {
+                    const raw = localStorage.getItem(PREF_KEY);
+                    if (raw) {
+                        const prefs = JSON.parse(raw);
+                        if (prefs.theme === 'dark') {
+                            document.body.classList.add('dark-theme');
+                        } else {
+                            document.body.classList.remove('dark-theme');
+                        }
+                    }
+                } catch (e) { }
+            });
+        })();
+    </script>
+</body>
+
+</html>
