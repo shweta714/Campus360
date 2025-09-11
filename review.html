@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review / Feedback</title>
+    <title>Review Answers</title>
+    <link rel="stylesheet" href="review.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
         body {
             background: linear-gradient(120deg, #c2e9fb 0%, #e0c3fc 100%);
@@ -17,16 +18,18 @@
             align-items: center;
             justify-content: flex-start;
         }
+
         .navbar {
             width: 100%;
             background: #6403ca;
-            box-shadow: 0 2px 8px rgba(78,84,200,0.08);
+            box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
             padding: 1.2rem 0;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 100;
         }
+
         .navbar-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -35,6 +38,7 @@
             justify-content: flex-end;
             padding: 0 2rem;
         }
+
         .navbar-menu {
             list-style: none;
             display: flex;
@@ -42,6 +46,7 @@
             margin: 0;
             padding: 0;
         }
+
         .navbar-menu li a {
             color: #fff;
             text-decoration: none;
@@ -51,65 +56,54 @@
             border-radius: 6px;
             transition: background 0.2s, color 0.2s;
         }
+
         .navbar-menu li a:hover {
             background: #e0e7ff;
             color: #3554c8;
         }
-        .review-container {
-            background: rgba(255,255,255,0.85);
-            margin-top: 7rem;
-            padding: 2.5rem 2rem;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(78,84,200,0.12);
-            max-width: 420px;
+
+        header {
             width: 100%;
+            background: #fff;
+            padding: 2rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
         }
-        .review-title {
-            font-size: 2rem;
+
+        header h1 {
+            font-size: 2.5rem;
             font-weight: 700;
             color: #3554c8;
-            margin-bottom: 1.2rem;
             text-align: center;
+            margin: 0;
         }
-        .review-form label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        .review-form textarea, .review-form input[type="text"] {
+
+        main {
+            margin-top: 8rem;
+            padding: 2rem;
             width: 100%;
-            padding: 0.7rem;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-bottom: 1.2rem;
-            font-size: 1rem;
-            font-family: inherit;
-            resize: vertical;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .review-form button {
-            background: #3554c8;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
+
+        #answers-container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(78, 84, 200, 0.12);
+        }
+
+        #answers-container p {
             font-size: 1.1rem;
-            font-weight: 700;
-            padding: 0.7rem 2rem;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(78,84,200,0.18);
-            transition: background 0.2s;
-        }
-        .review-form button:hover {
-            background: #8f94fb;
-        }
-        .review-success {
-            color: #27ae60;
-            font-weight: 600;
-            margin-top: 1rem;
-            text-align: center;
+            color: #333;
         }
     </style>
 </head>
+
 <body>
     <!-- Aligned Navigation Bar -->
     <nav class="navbar">
@@ -121,27 +115,30 @@
             </ul>
         </div>
     </nav>
-    <div class="review-container">
-        <div class="review-title">Review / Feedback</div>
-        <form class="review-form" onsubmit="return submitReview(event)">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" name="name" required>
-            <label for="feedback">Your Feedback</label>
-            <textarea id="feedback" name="feedback" rows="5" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-        <div id="review-success" class="review-success" style="display:none;">Thank you for your feedback!</div>
-    </div>
+    <header>
+        <h1>Review Answers</h1>
+    </header>
+
+    <main>
+        <div id="answers-container">
+            <!-- Answers will be dynamically loaded here -->
+        </div>
+    </main>
+
     <script>
-        function submitReview(event) {
-            event.preventDefault();
-            document.getElementById('review-success').style.display = 'block';
-            event.target.reset();
-            setTimeout(function() {
-                document.getElementById('review-success').style.display = 'none';
-            }, 3000);
-            return false;
+        const urlParams = new URLSearchParams(window.location.search);
+        const exam = urlParams.get('exam');
+        const attemptedExams = JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+
+        const answersContainer = document.getElementById('answers-container');
+        const reviewHTML = attemptedExams[exam];
+
+        if (reviewHTML) {
+            answersContainer.innerHTML = reviewHTML;
+        } else {
+            answersContainer.innerHTML = '<p>No answers available for this exam.</p>';
         }
     </script>
 </body>
+
 </html>

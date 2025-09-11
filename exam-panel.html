@@ -6,20 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Panel</title>
     <link rel="stylesheet" href="exampanel.css">
+    <link rel="stylesheet" href="notification.css">
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar-top">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+                <span class="navbar-title">EXAM PANEL</span>
+            </div>
+            <ul class="navbar-menu">
+                <li onclick="window.location.href='student-dashboard.html'">&larr; Dashboard</li>
+                <li onclick="window.location.href='settings.html'">Settings</li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- Instructions Modal -->
     <div id="instructions-modal" class="modal" style="display:none;">
         <div class="modal-content">
+            <span id="close-instructions-modal" class="close">&times;</span>
             <h3>Exam Instructions</h3>
             <div id="exam-link-info" style="margin-bottom:10px; color:#4B3AFF; font-weight:bold;"></div>
             <ul style="text-align:left; font-size:1.08em; margin-bottom:18px;">
                 <li>Do not switch tabs or windows during the exam. Cheating will be detected and your exam may be
                     terminated.</li>
-                <li>Exam duration: <span id="exam-duration">10</span> minutes.</li>
                 <li>Read each question carefully and select the best answer.</li>
-                <li>Once started, the timer will run and cannot be paused.</li>
             </ul>
             <button id="begin-exam-btn" style="margin-top:12px;">Begin</button>
         </div>
@@ -173,18 +187,75 @@
         let timerInterval = null;
         let selectedSubject = "";
         let userAnswers = [];
+        let examPaused = false;
+        let tabSwitchLimit = 10;
+
+        // Display notifications and time duration prominently
+        function startExamTimer() {
+            let timeLeft = examDuration;
+            updateTimerDisplay(timeLeft);
+            showNotification('Exam started. You have 10 minutes.', 'info');
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+
+                if (timeLeft === 60) {
+                    showNotification('1 minute remaining!', 'warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showNotification('Time is up! Submitting your exam.', 'error');
+                    submitExam(new Event('submit'));
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(timeLeft) {
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            document.getElementById('exam-timer').textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
 
         // Tab switching detection
+        function handleTabSwitch() {
+            tabSwitchCount++;
+            document.getElementById('tab-switch-count').textContent = `Tab Switches: ${tabSwitchCount}`;
+
+            showNotification(`Tab switched ${tabSwitchCount} times`, 'warning');
+
+            if (tabSwitchCount >= tabSwitchLimit) {
+                showNotification('Tab switching limit reached! Submitting your exam.', 'error');
+                alert('Tab switching limit reached! Redirecting to Completed Exams page.');
+                submitExam(new Event('submit'));
+                navigateToCompletedExams();
+            }
+        }
+
         document.addEventListener('visibilitychange', function () {
-            if (examActive && document.visibilityState !== 'visible') {
-                tabSwitchCount++;
-                document.getElementById('tab-switch-count').textContent = 'Tab Switches: ' + tabSwitchCount;
-                document.getElementById('cheat-modal').style.display = 'flex';
-                setTimeout(() => {
-                    document.getElementById('cheat-modal').style.display = 'none';
-                }, 2500);
+            if (document.visibilityState === 'hidden') {
+                handleTabSwitch();
             }
         });
+
+        // Update tab switch count display
+        function initializeTabSwitchDisplay() {
+            const tabSwitchElement = document.createElement('span');
+            tabSwitchElement.id = 'tab-switch-count';
+            tabSwitchElement.textContent = `Tab Switches: ${tabSwitchCount}`;
+            document.getElementById('exam-header').appendChild(tabSwitchElement);
+        }
 
         const expectedLinks = {
             dbms: "https://campus360/exam/dbms",
@@ -230,49 +301,16 @@
 
         document.getElementById("begin-exam-btn").onclick = () => {
             document.getElementById("instructions-modal").style.display = "none";
-            document.getElementById("countdown-modal").style.display = "flex";
-            let seconds = 5;
-            document.getElementById("countdown-timer").textContent = seconds;
-            const interval = setInterval(() => {
-                seconds--;
-                document.getElementById("countdown-timer").textContent = seconds;
-                if (seconds === 0) {
-                    clearInterval(interval);
-                    document.getElementById("countdown-modal").style.display = "none";
-                    document.getElementById("upcoming-exams").style.display = "none";
-                    renderQuestions(selectedSubject);
-                    const examForm = document.getElementById("exam-form");
-                    examForm.style.display = "block";
-                    document.getElementById("exam-status").style.display = "block";
-                    examForm.scrollIntoView({ behavior: "smooth" });
-                    examActive = true;
-                    tabSwitchCount = 0;
-                    document.getElementById('tab-switch-count').textContent = 'Tab Switches: 0';
-                    startExamTimer();
-                }
-            }, 1000);
+            document.getElementById("upcoming-exams").style.display = "none";
+            renderQuestions(selectedSubject);
+            const examForm = document.getElementById("exam-form");
+            examForm.style.display = "block";
+            examForm.scrollIntoView({ behavior: "smooth" });
+            examActive = true;
+            tabSwitchCount = 0;
+            document.getElementById('tab-switch-count').textContent = 'Tab Switches: 0';
+            startExamTimer();
         };
-
-        function startExamTimer() {
-            let timeLeft = examDuration;
-            updateTimerDisplay(timeLeft);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay(timeLeft);
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById("exam-form").style.display = "none";
-                    document.getElementById("exam-status").style.display = "none";
-                    showThankYou();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay(timeLeft) {
-            const min = Math.floor(timeLeft / 60);
-            const sec = timeLeft % 60;
-            document.getElementById('exam-timer').textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
-        }
 
         function renderQuestions(subject) {
             const form = document.getElementById("exam-form");
@@ -308,6 +346,7 @@
             form.onsubmit = submitExam;
         }
 
+        // Lock exam after submission and redirect to 'Completed Exams' page
         function submitExam(e) {
             e.preventDefault();
             userAnswers = [];
@@ -320,122 +359,89 @@
             document.getElementById("exam-form").style.display = "none";
             document.getElementById("exam-status").style.display = "none";
             if (timerInterval) clearInterval(timerInterval);
-            showThankYou();
+            showSubmissionPopup();
         }
 
-        function showThankYou() {
-            const thankDiv = document.getElementById("thankyou");
-            thankDiv.style.display = "block";
-            setTimeout(() => {
-                thankDiv.style.display = "none";
-                showGenerating();
-            }, 1800);
+        function showSubmissionPopup() {
+            const popup = document.createElement('div');
+            popup.style = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            popup.innerHTML = `
+                <h1>Exam Submitted Successfully!</h1>
+                <p>Your exam has been submitted. You can review your answers on the Review Answers page.</p>
+                <button style="padding: 10px 20px; background: #4B3AFF; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="navigateToReviewPage()">Review Answers</button>
+            `;
+            document.body.appendChild(popup);
         }
 
-        function showGenerating() {
-            const genDiv = document.getElementById("generating");
-            genDiv.style.display = "block";
-            setTimeout(() => {
-                genDiv.style.display = "none";
-                showReview();
-            }, 2000);
+        function navigateToReviewPage() {
+            window.location.href = `review-answers.html?subject=${encodeURIComponent(selectedSubject)}`;
         }
 
-        function showReview() {
-            const reviewDiv = document.getElementById("review");
-            reviewDiv.style.display = "block";
-            const reviewHTML = generateReviewHTML();
-            reviewDiv.innerHTML = reviewHTML;
-            setAttemptedExam(selectedSubject, reviewHTML);
-            renderAttemptedPreview();
-            disableAttemptedCards();
-            // Track attempted exams in localStorage
-            function getAttemptedExams() {
-                try {
-                    return JSON.parse(localStorage.getItem('attemptedExams') || '{}');
-                } catch { return {}; }
+        function navigateToCompletedExams() {
+            const attemptedExams = JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+            if (Object.keys(attemptedExams).length > 0) {
+                window.location.href = 'completed-exams.html';
+            } else {
+                alert('No exams have been completed yet. Please complete an exam to review answers.');
             }
-            function setAttemptedExam(subject, reviewHTML) {
-                const attempted = getAttemptedExams();
-                attempted[subject] = reviewHTML || true;
-                localStorage.setItem('attemptedExams', JSON.stringify(attempted));
-            }
-
-            // Render attempted exams preview
-            function renderAttemptedPreview() {
-                const attempted = getAttemptedExams();
-                const previewDiv = document.getElementById('attempted-preview');
-                if (!previewDiv) return;
-                previewDiv.innerHTML = '';
-                Object.keys(attempted).forEach(sub => {
-                    let title = sub === 'dbms' ? 'DBMS' : sub === 'oose' ? 'OOSE' : 'IoT';
-                    previewDiv.innerHTML += `<div class='attempted-card' style='background:#f3f3ff;border-radius:8px;padding:12px;margin-bottom:10px;'>
-                    <strong>${title} Exam Attempted</strong><br>
-                    <button onclick="showAttemptedReview('${sub}')" style='margin-top:6px;'>Preview</button>
-                </div>`;
-                });
-            }
-
-            function showAttemptedReview(subject) {
-                const attempted = getAttemptedExams();
-                let reviewHTML = attempted[subject];
-                if (typeof reviewHTML === 'string') {
-                    document.getElementById('review').innerHTML = reviewHTML;
-                    document.getElementById('review').style.display = 'block';
-                }
-            }
-
-            // Disable exam card if attempted
-            function disableAttemptedCards() {
-                const attempted = getAttemptedExams();
-                ['dbms', 'oose', 'iot'].forEach(sub => {
-                    if (attempted[sub]) {
-                        const card = document.querySelector(`.exam-card[data-subject='${sub}']`);
-                        if (card) {
-                            card.classList.add('disabled');
-                            card.onclick = () => alert('You have already attempted this exam.');
-                        }
-                    }
-                });
-            }
-
-            // Initialize attempted preview and disable cards on page load
-            document.addEventListener('DOMContentLoaded', function () {
-                renderAttemptedPreview();
-                disableAttemptedCards();
-            });
         }
 
+        function lockExam(subject) {
+            const attempted = getAttemptedExams();
+            attempted[subject] = generateReviewHTML();
+            localStorage.setItem('attemptedExams', JSON.stringify(attempted));
+        }
+
+        function getAttemptedExams() {
+            try {
+                return JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+            } catch {
+                return {};
+            }
+        }
+
+        // Generate review HTML for completed exams
         function generateReviewHTML() {
             let html = `<h3>Review</h3>`;
             questions[selectedSubject].forEach((q, idx) => {
                 const userAns = userAnswers[idx];
                 const correct = userAns === q.answer;
                 html += `<div class="review-question">
-                                <div><strong>Q${idx + 1}:</strong> ${q.q}</div>
-                                <div>Your Answer: ${userAns >= 0 ? q.options[userAns] : "<em>Not Answered</em>"}</div>
-                                <div>Correct Answer: ${q.options[q.answer]}</div>
-                                <div>Explanation: ${q.explanation}</div>
-                                <div style="color:${correct ? 'green' : 'red'};">${correct ? "✔ Correct" : "✖ Incorrect"}</div>
-                                <hr>
-                            </div>`;
+                            <div><strong>Q${idx + 1}:</strong> ${q.q}</div>
+                            <div>Your Answer: ${userAns >= 0 ? q.options[userAns] : "<em>Not Answered</em>"}</div>
+                            <div>Correct Answer: ${q.options[q.answer]}</div>
+                            <div>Explanation: ${q.explanation}</div>
+                            <div style="color:${correct ? 'green' : 'red'};">${correct ? "✔ Correct" : "✖ Incorrect"}</div>
+                            <hr>
+                        </div>`;
             });
             return html;
         }
-    </script>
-    <script>
-        (function () {
-            const PREF_KEY = 'campus360_prefs';
-            document.addEventListener('DOMContentLoaded', function () {
-                try {
-                    const raw = localStorage.getItem(PREF_KEY);
-                    if (raw) {
-                        const prefs = JSON.parse(raw);
-                        // theme handling removed: intentionally do not toggle classes
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Close button functionality for all modals
+            document.querySelectorAll('.close').forEach(closeButton => {
+                closeButton.onclick = () => {
+                    const modal = closeButton.closest('.modal');
+                    if (modal) {
+                        modal.style.display = 'none';
                     }
-                } catch (e) { }
+                };
             });
-        })();
+        });
     </script>
 </body>
 

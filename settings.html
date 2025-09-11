@@ -6,7 +6,6 @@
   <title>Settings - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
 </head>
-</head>
 <body>
   <nav class="navbar-top">
     <div class="navbar-container">
@@ -63,15 +62,15 @@
       // set buttons
       document.getElementById(prefs.theme === 'dark' ? 'themeDark' : 'themeLight').classList.add('active');
       document.getElementById(prefs.notify ? 'notifyOn' : 'notifyOff').classList.add('active');
-      // theme application removed: keep preference but do not toggle classes here
+      applyTheme(prefs.theme === 'dark');
     }
     function savePrefs(themeVal, notifyVal){
       const prefs = { theme: themeVal, notify: notifyVal };
       localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
-      // theme application removed: preference saved but no DOM class changes performed
+      applyTheme(themeVal === 'dark');
     }
     function applyTheme(dark){
-      // noop: theme removed globally. Function retained for compatibility.
+      if(dark) document.body.classList.add('dark-theme'); else document.body.classList.remove('dark-theme');
     }
     document.addEventListener('DOMContentLoaded', function(){
       loadPrefs();

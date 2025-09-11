@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="exampanel.css">
+    <style>
+        .review-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .review-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #4B3AFF;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .review-content {
+            margin-top: 80px;
+            width: 100%;
+        }
+
+        .review-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #4B3AFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .review-container {
+                padding: 15px;
+            }
+
+            .review-section {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="review-header">
+        <h1>Review Answers</h1>
+    </div>
+    <div class="review-container">
+        <div class="review-content" id="review-container">
+            <script>
+                const urlParams = new URLSearchParams(window.location.search);
+                const subject = urlParams.get('subject');
+                const attemptedExams = JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+                const reviewContainer = document.getElementById('review-container');
+
+                if (subject && attemptedExams[subject]) {
+                    const section = document.createElement('section');
+                    section.classList.add('review-section');
+                    section.innerHTML = `<h2>${subject}</h2>${attemptedExams[subject]}`;
+                    reviewContainer.appendChild(section);
+                } else {
+                    reviewContainer.innerHTML = '<p>No answers available to review for this subject.</p>';
+                }
+            </script>
+        </div>
+        <button class="btn-back" onclick="window.history.back()">Go Back</button>
+    </div>
+</body>
+
+</html>

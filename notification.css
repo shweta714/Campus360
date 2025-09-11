@@ -1,0 +1,40 @@
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 16px;
+    z-index: 1000;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: pop-in 0.3s forwards;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.warning {
+    background-color: #ff9800;
+}
+
+.notification.info {
+    background-color: #2196f3;
+}
+
+@keyframes pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
