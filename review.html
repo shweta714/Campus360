@@ -4,19 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Answers</title>
+    <title>Feedback</title>
     <link rel="stylesheet" href="review.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(120deg, #c2e9fb 0%, #e0c3fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
             margin: 0;
             font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
+            background: linear-gradient(120deg, #c2e9fb 0%, #e0c3fc 100%);
         }
 
         .navbar {
@@ -90,16 +89,51 @@
             margin-right: auto;
         }
 
-        #answers-container {
+        #feedback-container {
             background: rgba(255, 255, 255, 0.85);
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 24px rgba(78, 84, 200, 0.12);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
         }
 
-        #answers-container p {
-            font-size: 1.1rem;
+        #feedback-container h2 {
+            margin-bottom: 1rem;
+            color: #3554c8;
+        }
+
+        #feedbackForm label {
+            display: block;
+            margin: 0.5rem 0 0.2rem;
+            font-weight: 600;
             color: #333;
+        }
+
+        #feedbackForm input,
+        #feedbackForm textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        #feedbackForm button {
+            background: #3554c8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #feedbackForm button:hover {
+            background: #8f94fb;
         }
     </style>
 </head>
@@ -116,28 +150,42 @@
         </div>
     </nav>
     <header>
-        <h1>Review Answers</h1>
+        <h1>Feedback</h1>
     </header>
 
     <main>
-        <div id="answers-container">
-            <!-- Answers will be dynamically loaded here -->
+        <div id="feedback-container">
+            <h2>We value your feedback!</h2>
+            <form id="feedbackForm">
+                <label for="feedbackName">Name</label>
+                <input type="text" id="feedbackName" name="name" placeholder="Enter your name" required>
+
+                <label for="feedbackEmail">Email</label>
+                <input type="email" id="feedbackEmail" name="email" placeholder="Enter your email address" required>
+
+                <label for="feedbackMessage">Message</label>
+                <textarea id="feedbackMessage" name="message" placeholder="Enter your feedback" rows="4" required></textarea>
+
+                <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
         </div>
     </main>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const exam = urlParams.get('exam');
-        const attemptedExams = JSON.parse(localStorage.getItem('attemptedExams') || '{}');
+        // Handle feedback form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('feedbackName').value;
+            const email = document.getElementById('feedbackEmail').value;
+            const message = document.getElementById('feedbackMessage').value;
 
-        const answersContainer = document.getElementById('answers-container');
-        const reviewHTML = attemptedExams[exam];
+            // Simulate feedback submission
+            console.log('Feedback submitted:', { name, email, message });
+            alert('Thank you for your feedback, ' + name + '!');
 
-        if (reviewHTML) {
-            answersContainer.innerHTML = reviewHTML;
-        } else {
-            answersContainer.innerHTML = '<p>No answers available for this exam.</p>';
-        }
+            // Clear the form
+            this.reset();
+        });
     </script>
 </body>
 
