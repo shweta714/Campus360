@@ -164,7 +164,8 @@
                 <input type="email" id="feedbackEmail" name="email" placeholder="Enter your email address" required>
 
                 <label for="feedbackMessage">Message</label>
-                <textarea id="feedbackMessage" name="message" placeholder="Enter your feedback" rows="4" required></textarea>
+                <textarea id="feedbackMessage" name="message" placeholder="Enter your feedback" rows="4"
+                    required></textarea>
 
                 <button type="submit" class="submit-btn">Submit Feedback</button>
             </form>
@@ -173,7 +174,7 @@
 
     <script>
         // Handle feedback form submission
-        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+        document.getElementById('feedbackForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('feedbackName').value;
             const email = document.getElementById('feedbackEmail').value;
