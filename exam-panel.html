@@ -4,17 +4,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Panel</title>
+    <title>Campus360 Exam Panel</title>
     <link rel="stylesheet" href="exampanel.css">
     <link rel="stylesheet" href="notification.css">
+    <style>
+        /*
+        The following CSS is already contained in exampanel.css (Section 11) but is kept here 
+        for immediate reference to the review structure.
+        */
+        .review-container {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-section-header {
+            background-color: #f0f6ff;
+            color: #1a4fa0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 1.4em;
+            font-weight: 700;
+            border-left: 5px solid #2d6cdf;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-question {
+            background: #f7faff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0eafc;
+        }
+
+        .review-question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .review-answer-user,
+        .review-answer-correct {
+            padding: 5px 0;
+            font-size: 1em;
+        }
+
+        .review-answer-user {
+            color: #777;
+        }
+
+        .review-explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9f7ef;
+            border-left: 4px solid #4CAF50;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        /* Status classes remain but are no longer printed in the review */
+        .status-correct {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-incorrect {
+            color: #F44336;
+            font-weight: bold;
+        }
+
+        #final-submission-popup button {
+            background: #4B3AFF !important;
+            padding: 12px 25px !important;
+            font-size: 1.1em !important;
+        }
+
+        /* Ensure the main container for review is displayed when needed */
+        #review {
+            display: none;
+            /* Controlled by JS */
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar-top">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+                <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle; display:none;">
                 <span class="navbar-title">EXAM PANEL</span>
             </div>
             <ul class="navbar-menu">
@@ -24,41 +107,36 @@
         </div>
     </nav>
 
-    <!-- Instructions Modal -->
-    <div id="instructions-modal" class="modal" style="display:none;">
+    <div id="instructions-modal" class="modal">
         <div class="modal-content">
             <span id="close-instructions-modal" class="close">&times;</span>
-            <h3>Exam Instructions</h3>
-            <div id="exam-link-info" style="margin-bottom:10px; color:#4B3AFF; font-weight:bold;"></div>
+            <h3 id="modal-subject-title">Exam Instructions</h3>
+            <div id="exam-link-info" style="margin-bottom:15px; color:#4B3AFF; font-weight:bold;">Total Exam Time: 10
+                Minutes</div>
             <ul style="text-align:left; font-size:1.08em; margin-bottom:18px;">
-                <li>Do not switch tabs or windows during the exam. Cheating will be detected and your exam may be
-                    terminated.</li>
+                <li>**Do not switch tabs/windows.** Cheating will be detected and your exam will be terminated after 10
+                    switches.</li>
                 <li>Read each question carefully and select the best answer.</li>
+                <li>You must submit **Section A** before attempting **Section B**.</li>
             </ul>
-            <button id="begin-exam-btn" style="margin-top:12px;">Begin</button>
+
+            <div class="section-btn-group">
+                <button id="section-a-start-btn" class="section-btn section-a-btn" data-section="A">Start Section A (20
+                    Qs, 1 Mark each)</button>
+                <button id="section-b-start-btn" class="section-btn section-b-btn" data-section="B" disabled>Start
+                    Section B (15 Qs, 2 Marks each)</button>
+            </div>
         </div>
     </div>
+
 
     <div class="container">
         <h2 class="main-title">Campus360 Exam Panel</h2>
 
-        <!-- Upcoming Exams -->
         <div id="upcoming-exams">
-            <h3 class="section-title">Upcoming Exams</h3>
-            <div id="attempted-preview"></div>
-            <style>
-                .exam-card.disabled {
-                    opacity: 0.6;
-                    pointer-events: none;
-                }
-
-                .attempted-card {
-                    box-shadow: 0 2px 8px #e0e0ff;
-                }
-            </style>
+            <h3 class="section-title">Select Your Exam</h3>
             <div class="exam-list soft-cards">
 
-                <!-- DBMS Card -->
                 <div class="exam-card exam-card-horizontal" data-subject="dbms" onclick="openExamModal('dbms')">
                     <div class="exam-card-left"
                         style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
@@ -73,7 +151,6 @@
                     </div>
                 </div>
 
-                <!-- OOSE Card -->
                 <div class="exam-card exam-card-horizontal" data-subject="oose" onclick="openExamModal('oose')">
                     <div class="exam-card-left"
                         style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
@@ -88,7 +165,6 @@
                     </div>
                 </div>
 
-                <!-- IoT Card -->
                 <div class="exam-card exam-card-horizontal" data-subject="iot" onclick="openExamModal('iot')">
                     <div class="exam-card-left"
                         style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
@@ -105,46 +181,16 @@
             </div>
         </div>
 
-        <!-- Modal for Exam Link -->
-        <div id="link-entry-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span id="close-modal" class="close">&times;</span>
-                <h3>Exam Link</h3>
-                <div class="exam-link-modal-row">
-                    <input type="text" id="exam-link-input" readonly style="width:90%;padding:8px;">
-                    <button type="button" id="copy-modal-link">Copy</button>
-                </div>
-                <p style="margin:10px 0 0 0; color:#4B3AFF; font-weight:bold;">This is your exam link. Click Start Exam
-                    to proceed.</p>
-                <button id="start-exam-btn" style="margin-top:12px;">Start Exam</button>
-            </div>
-        </div>
-
-        <!-- Countdown Modal -->
-        <div id="countdown-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <h3>Exam will start in <span id="countdown-timer">5</span> seconds...</h3>
-            </div>
-        </div>
-
-        <!-- Cheat Modal -->
-        <div id="cheat-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <h3 style="color:red;">Cheating Detected!</h3>
-                <p>Tab switching or window change is not allowed during the exam.</p>
-            </div>
-        </div>
-
-        <!-- Dynamic Content Placeholders -->
         <form id="exam-form" style="display:none;"></form>
-        <!-- Exam status bar will be injected above questions -->
-        <div id="thankyou" style="display:none; text-align:center;">✅ Thank you! Submitting...</div>
-        <div id="generating" style="display:none; text-align:center;">⏳ Generating Results...</div>
+
         <div id="review" style="display:none;"></div>
+
     </div>
 
     <script>
-        const questions = {
+        // --- Question Data (Extended for 20 Qs A and 15 Qs B) ---
+        // Note: Questions are repeated to meet the 35 Qs total for a realistic scenario.
+        const baseQuestions = {
             dbms: [
                 { q: "What does DBMS stand for?", options: ["Database Management System", "Data Base Main Server", "Data Management Service", "Database Mainframe System"], answer: 0, explanation: "DBMS stands for Database Management System." },
                 { q: "Which SQL command is used to retrieve data?", options: ["INSERT", "SELECT", "UPDATE", "DELETE"], answer: 1, explanation: "SELECT is used to retrieve data from a database." },
@@ -181,257 +227,356 @@
             ]
         };
 
-        let examActive = false;
-        let tabSwitchCount = 0;
-        let examDuration = 10 * 60; // 10 minutes
+        // Function to create enough questions (20 for A, 15 for B = 35 total)
+        const createFullQuestionSet = (base) => {
+            let set = [...base];
+            while (set.length < 35) {
+                // Repeating questions for demo purposes, ensuring at least 35 total.
+                set = set.concat(base.map((q, i) => ({ ...q, q: `${q.q} (Ref Q${set.length + i + 1})` })));
+            }
+            return set.slice(0, 35);
+        };
+
+        const questions = {
+            dbms: createFullQuestionSet(baseQuestions.dbms),
+            oose: createFullQuestionSet(baseQuestions.oose),
+            iot: createFullQuestionSet(baseQuestions.iot)
+        };
+
+        const sectionQuestions = {
+            A: {
+                dbms: questions.dbms.slice(0, 20),
+                oose: questions.oose.slice(0, 20),
+                iot: questions.iot.slice(0, 20)
+            },
+            B: {
+                dbms: questions.dbms.slice(20, 35),
+                oose: questions.oose.slice(20, 35),
+                iot: questions.iot.slice(20, 35)
+            }
+        };
+
+        let examDuration = 10 * 60; // 10 minutes for the whole exam
         let timerInterval = null;
         let selectedSubject = "";
-        let userAnswers = [];
-        let examPaused = false;
+        let currentSection = '';
+        let tabSwitchCount = 0;
         let tabSwitchLimit = 10;
+        let allUserAnswers = { A: new Array(20).fill(-1), B: new Array(15).fill(-1) };
+        let submittedSections = { A: false, B: false };
+        let examStartTimestamp = null;
+        let timeRemaining = examDuration;
 
-        // Display notifications and time duration prominently
-        function startExamTimer() {
-            let timeLeft = examDuration;
-            updateTimerDisplay(timeLeft);
-            showNotification('Exam started. You have 10 minutes.', 'info');
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay(timeLeft);
 
-                if (timeLeft === 60) {
-                    showNotification('1 minute remaining!', 'warning');
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    showNotification('Time is up! Submitting your exam.', 'error');
-                    submitExam(new Event('submit'));
-                }
-            }, 1000);
-        }
-
+        // --- Timer and Notification Functions (Same as before) ---
         function updateTimerDisplay(timeLeft) {
             const min = Math.floor(timeLeft / 60);
             const sec = timeLeft % 60;
-            document.getElementById('exam-timer').textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
+            const timerEl = document.getElementById('exam-timer');
+            if (timerEl) {
+                timerEl.textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
+            }
         }
-
+        function startExamTimer() {
+            if (examStartTimestamp === null) examStartTimestamp = Date.now();
+            updateTimerDisplay(timeRemaining);
+            showNotification('Exam started. You have 10 minutes total.', 'info');
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay(timeRemaining);
+                if (timeRemaining === 60) showNotification('1 minute remaining!', 'warning');
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    showNotification('Time is up! Submitting your exam.', 'error');
+                    submitSection(currentSection, true);
+                }
+            }, 1000);
+        }
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.textContent = message;
             document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            setTimeout(() => { notification.remove(); }, 3000);
         }
-
-        // Tab switching detection
         function handleTabSwitch() {
+            if (submittedSections.A && submittedSections.B) return;
             tabSwitchCount++;
-            document.getElementById('tab-switch-count').textContent = `Tab Switches: ${tabSwitchCount}`;
-
+            const tabSwitchEl = document.getElementById('tab-switch-count');
+            if (tabSwitchEl) tabSwitchEl.textContent = `Tab Switches: ${tabSwitchCount}`;
             showNotification(`Tab switched ${tabSwitchCount} times`, 'warning');
-
             if (tabSwitchCount >= tabSwitchLimit) {
                 showNotification('Tab switching limit reached! Submitting your exam.', 'error');
-                alert('Tab switching limit reached! Redirecting to Completed Exams page.');
-                submitExam(new Event('submit'));
-                navigateToCompletedExams();
+                clearInterval(timerInterval);
+                submitFinalExam();
             }
         }
-
         document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'hidden') {
+            if (document.visibilityState === 'hidden' && timerInterval !== null && (!submittedSections.A || !submittedSections.B)) {
                 handleTabSwitch();
             }
         });
 
-        // Update tab switch count display
-        function initializeTabSwitchDisplay() {
-            const tabSwitchElement = document.createElement('span');
-            tabSwitchElement.id = 'tab-switch-count';
-            tabSwitchElement.textContent = `Tab Switches: ${tabSwitchCount}`;
-            document.getElementById('exam-header').appendChild(tabSwitchElement);
-        }
-
-        const expectedLinks = {
-            dbms: "https://campus360/exam/dbms",
-            oose: "https://campus360/exam/oose",
-            iot: "https://campus360/exam/iot"
-        };
+        // --- Exam Flow Functions ---
 
         function openExamModal(subject) {
+            // Reset state if attempting a new exam or same exam again (for demo)
             selectedSubject = subject;
-            document.getElementById("instructions-modal").style.display = "flex";
-            document.getElementById("exam-duration").textContent = "10";
-            // Show the exam link for reference
-            document.getElementById("exam-link-info").textContent = `Exam Link: ${expectedLinks[selectedSubject]}`;
+            currentSection = '';
+            submittedSections = { A: false, B: false };
+            allUserAnswers = { A: new Array(20).fill(-1), B: new Array(15).fill(-1) };
+
+            const subjectTitle = subject.toUpperCase();
+            document.getElementById('modal-subject-title').textContent = `${subjectTitle} Exam Instructions`;
+
+            // Update button states
+            document.getElementById('section-a-start-btn').disabled = false;
+            document.getElementById('section-b-start-btn').disabled = true;
+
+            // Hide review if visible
+            document.getElementById('review').style.display = 'none';
+            document.getElementById("upcoming-exams").style.display = "block";
+
+
+            document.getElementById('instructions-modal').style.display = 'flex';
         }
 
-        document.getElementById("close-modal").onclick = () => {
-            document.getElementById("link-entry-modal").style.display = "none";
-        };
-
-        document.getElementById("copy-modal-link").onclick = () => {
-            const input = document.getElementById("exam-link-input");
-            const link = input.value;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(link).then(() => alert("Exam link copied!"), () => fallbackCopy(input));
-            } else {
-                fallbackCopy(input);
-            }
-        };
-
-        function fallbackCopy(input) {
-            input.select();
-            input.setSelectionRange(0, 99999);
-            document.execCommand("copy");
-            input.blur();
-            alert("Exam link copied!");
-        }
-
-        document.getElementById("start-exam-btn").onclick = () => {
-            document.getElementById("link-entry-modal").style.display = "none";
-            document.getElementById("instructions-modal").style.display = "flex";
-            document.getElementById("exam-duration").textContent = "10";
-        };
-
-        document.getElementById("begin-exam-btn").onclick = () => {
+        function startSection(section) {
+            currentSection = section;
             document.getElementById("instructions-modal").style.display = "none";
             document.getElementById("upcoming-exams").style.display = "none";
-            renderQuestions(selectedSubject);
+
+            // Ensure timer starts/restarts only once
+            if (timerInterval === null && !submittedSections.A && !submittedSections.B) {
+                // Reset timer for the whole exam duration (10 mins total)
+                timeRemaining = examDuration;
+                startExamTimer();
+            }
+
+            renderQuestions(selectedSubject, section);
+
             const examForm = document.getElementById("exam-form");
             examForm.style.display = "block";
             examForm.scrollIntoView({ behavior: "smooth" });
-            examActive = true;
-            tabSwitchCount = 0;
-            document.getElementById('tab-switch-count').textContent = 'Tab Switches: 0';
-            startExamTimer();
-        };
+        }
 
-        function renderQuestions(subject) {
+        function renderQuestions(subject, section) {
+            const sectionQ = sectionQuestions[section][subject];
             const form = document.getElementById("exam-form");
             form.innerHTML = "";
-            // Add exam status bar at the top
-            form.innerHTML += `<div id='exam-status' style='display:block; margin-bottom:18px; text-align:center;'>
-                <span id='exam-timer' style='font-weight:bold; color:#4B3AFF;'>Time Left: 10:00</span>
-                &nbsp;|&nbsp;
-                <span id='tab-switch-count' style='font-weight:bold; color:#E57373;'>Tab Switches: 0</span>
+
+            form.innerHTML += `<div id='exam-status'>
+                <span style='font-weight:bold; color:var(--primary-color);'>Current: Section ${section}</span>
+                <span id='exam-timer' style='font-weight:bold; color:#4B3AFF;'>Time Left: ${Math.floor(timeRemaining / 60)}:${(timeRemaining % 60).toString().padStart(2, '0')}</span>
+                <span id='tab-switch-count' style='font-weight:bold; color:#E57373;'>Tab Switches: ${tabSwitchCount}</span>
             </div>`;
-            // Add exam title once below status
-            let subjectTitle = "";
-            if (subject === "dbms") subjectTitle = "DBMS";
-            else if (subject === "oose") subjectTitle = "OOSE";
-            else if (subject === "iot") subjectTitle = "IoT";
-            form.innerHTML += `<h3 class='exam-title-header' style='text-align:center; margin-bottom:18px;'>${subjectTitle} Exam</h3>`;
-            questions[subject].forEach((q, idx) => {
+
+            const sectionName = section === 'A' ? 'Section A (20 Questions, 1 Mark each)' : 'Section B (15 Questions, 2 Marks each)';
+            form.innerHTML += `<h3 class='exam-title-header' style='text-align:center; margin-bottom:18px;'>${subject.toUpperCase()} - ${sectionName}</h3>`;
+
+            sectionQ.forEach((q, idx) => {
+                const questionIndex = section === 'A' ? idx : idx + 20;
+                const userAns = allUserAnswers[section][idx];
                 const div = document.createElement("div");
                 div.className = "question";
                 div.innerHTML = `
                     <div class='question-header'>
-                        <span class='question-number'>Q${idx + 1}:</span>
+                        <span class='question-number'>Q${questionIndex + 1}:</span>
                         <span class='question-text'>${q.q}</span>
                     </div>
                     ${q.options.map((opt, i) =>
-                    `<label class='option-label'><input type='radio' name='q${idx}' value='${i}'> ${opt}</label>`
+                    `<label class='option-label'>
+                                <input type='radio' name='q${questionIndex}' value='${i}' ${i === userAns ? 'checked' : ''}> ${opt}
+                            </label>`
                 ).join('')}
                 `;
                 form.appendChild(div);
             });
-            form.innerHTML += '<button type="submit" class="submit-exam-btn">Submit Exam</button>';
-            form.style.display = "block";
-            form.onsubmit = submitExam;
+
+            const buttonText = section === 'A' ? 'Submit Section A and Proceed to Section B' : 'Submit Final Exam';
+            form.innerHTML += `<button type="button" class="submit-section-btn" onclick="submitSection('${section}')">${buttonText}</button>`;
         }
 
-        // Lock exam after submission and redirect to 'Completed Exams' page
-        function submitExam(e) {
-            e.preventDefault();
-            userAnswers = [];
-            questions[selectedSubject].forEach((q, idx) => {
-                const radios = document.querySelectorAll(`input[name='q${idx}']`);
+
+        function submitSection(section, forceSubmit = false) {
+            if (submittedSections[section] && !forceSubmit) {
+                showNotification(`Section ${section} is already submitted.`, 'warning');
+                return;
+            }
+
+            // 1. Collect Answers for current section
+            const sectionQ = sectionQuestions[section][selectedSubject];
+            allUserAnswers[section] = [];
+            const startIndex = section === 'A' ? 0 : 20;
+            sectionQ.forEach((q, idx) => {
+                const questionIndex = startIndex + idx;
+                const radios = document.querySelectorAll(`input[name='q${questionIndex}']`);
                 let ans = -1;
                 radios.forEach(r => { if (r.checked) ans = parseInt(r.value); });
-                userAnswers.push(ans);
+                allUserAnswers[section].push(ans);
             });
+
+            // 2. Mark as submitted
+            submittedSections[section] = true;
             document.getElementById("exam-form").style.display = "none";
-            document.getElementById("exam-status").style.display = "none";
-            if (timerInterval) clearInterval(timerInterval);
-            showSubmissionPopup();
+
+            // Stop timer if it's the final submission or for clarity between sections
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            // 3. Handle subsequent flow
+            if (section === 'A') {
+                showNotification('Section A submitted successfully! You can now start Section B.', 'info');
+                currentSection = '';
+                // Unlock B and show modal
+                document.getElementById('section-b-start-btn').disabled = false;
+                document.getElementById('section-a-start-btn').disabled = true;
+                document.getElementById('instructions-modal').style.display = 'flex';
+                // Timer will restart (using remaining time) when B is selected
+            } else if (section === 'B' || forceSubmit) {
+                submitFinalExam();
+            }
         }
 
-        function showSubmissionPopup() {
+        function submitFinalExam() {
+            document.getElementById("exam-form").style.display = "none";
+            document.getElementById("upcoming-exams").style.display = "none";
+            const examStatus = document.getElementById('exam-status');
+            if (examStatus) examStatus.style.display = 'none';
+
+            // 1. Combine all answers
+            const totalAnswers = allUserAnswers.A.concat(allUserAnswers.B);
+
+            // 2. Show final submission popup
+            showFinalSubmissionPopup(totalAnswers);
+        }
+
+        function showFinalSubmissionPopup(totalAnswers) {
             const popup = document.createElement('div');
+            popup.id = 'final-submission-popup';
             popup.style = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                color: white;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.9); color: white; display: flex;
+                flex-direction: column; align-items: center; justify-content: center;
+                z-index: 1000; text-align: center;
             `;
+
+            // Calculate Score (A=1 point, B=2 points)
+            // Note: This score calculation is still necessary here to pass the correctCount to the review function
+            let score = 0;
+            const allQuestions = questions[selectedSubject];
+            let correctCount = 0;
+            let totalMarks = (20 * 1) + (15 * 2);
+
+            for (let i = 0; i < allQuestions.length; i++) {
+                const correct = totalAnswers[i] === allQuestions[i].answer;
+                if (correct) {
+                    correctCount++;
+                    score += (i < 20 ? 1 : 2);
+                }
+            }
+
+            // The score is passed to the review page function, but will NOT be displayed there.
             popup.innerHTML = `
-                <h1>Exam Submitted Successfully!</h1>
-                <p>Your exam has been submitted. You can review your answers on the Review Answers page.</p>
-                <button style="padding: 10px 20px; background: #4B3AFF; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="navigateToReviewPage()">Review Answers</button>
+                <h1>Exam Submission Complete!</h1>
+                <p style="font-size: 1.2em; margin: 15px 0 30px;">Your responses have been recorded successfully. <br>Click below to view the detailed answers and explanations.</p>
+                <button onclick="navigateToReviewPage(${score}, ${totalMarks}, ${correctCount})">Review Answers and Explanations</button>
             `;
             document.body.appendChild(popup);
         }
 
-        function navigateToReviewPage() {
-            window.location.href = `review-answers.html?subject=${encodeURIComponent(selectedSubject)}`;
+        function navigateToReviewPage(finalScore, totalMarks, correctCount) {
+            const popup = document.getElementById('final-submission-popup');
+            if (popup) popup.remove();
+
+            // Hide the main container elements
+            document.getElementById("upcoming-exams").style.display = "none";
+            document.getElementById("exam-form").style.display = "none";
+
+            // Render the full review page
+            renderReviewPage(finalScore, totalMarks, correctCount);
         }
 
-        function navigateToCompletedExams() {
-            const attemptedExams = JSON.parse(localStorage.getItem('attemptedExams') || '{}');
-            if (Object.keys(attemptedExams).length > 0) {
-                window.location.href = 'completed-exams.html';
-            } else {
-                alert('No exams have been completed yet. Please complete an exam to review answers.');
+        function renderReviewPage(finalScore, totalMarks, correctCount) {
+            const reviewEl = document.getElementById('review');
+            reviewEl.style.display = 'block';
+            reviewEl.innerHTML = ''; // Clear previous content
+
+            const allQuestions = questions[selectedSubject];
+            const allAnswers = allUserAnswers.A.concat(allUserAnswers.B);
+
+            let reviewHTML = `
+                <div class="review-container">
+                    <h2 class="main-title">${selectedSubject.toUpperCase()} Exam Review</h2>
+                    <p style="text-align:center; font-size:1.3em; margin-bottom:30px; color:#1a4fa0;">
+                        Review Summary: ${allQuestions.length} Questions
+                    </p>
+            `;
+
+            // --- Section A Review ---
+            reviewHTML += generateSectionReview('A', 0, 20, allQuestions, allAnswers);
+
+            // --- Section B Review ---
+            reviewHTML += generateSectionReview('B', 20, 35, allQuestions, allAnswers);
+
+            reviewHTML += '</div>';
+            reviewEl.innerHTML = reviewHTML;
+            reviewEl.scrollIntoView({ behavior: "smooth" });
+        }
+
+        /**
+         * Generates the HTML for a specific exam section's review, focusing on user choice and explanation.
+         * @param {string} section - 'A' or 'B'
+         * @param {number} startIndex - Starting index in the full question array.
+         * @param {number} endIndex - Ending index in the full question array.
+         * @param {Array} allQuestions - The full list of question objects.
+         * @param {Array} allAnswers - The full list of user answers (-1 for not attempted).
+         * @returns {string} The HTML string for the section review.
+         */
+        function generateSectionReview(section, startIndex, endIndex, allQuestions, allAnswers) {
+            let sectionQHTML = '';
+            let sectionAnsweredCount = 0;
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = allQuestions[i];
+                const userAns = allAnswers[i];
+                const pointValue = i < 20 ? 1 : 2;
+
+                // Determine user answer display
+                const userAnswerText = userAns >= 0 ? q.options[userAns] : "<em>Not Attempted</em>";
+                if (userAns !== -1) sectionAnsweredCount++;
+
+                sectionQHTML += `
+                    <div class="review-question">
+                        <div class="review-question-text">Q${i + 1} (${pointValue} Mark): ${q.q}</div>
+                        
+                        <div class="review-answer-user">Your Choice: <strong>${userAnswerText}</strong></div>
+                        
+                        <div class="review-answer-correct">Correct Answer: <strong>${q.options[q.answer]}</strong></div>
+                        
+                        <div class="review-explanation"><strong>Explanation:</strong> ${q.explanation}</div>
+                    </div>
+                `;
             }
+
+            // Section Header (Updated to show Answered/Total count)
+            const sectionHeader = `
+                <div class="review-section-header">
+                    <span>Section ${section} Review (${section === 'A' ? '1 Mark Qs' : '2 Mark Qs'})</span>
+                    <span>${sectionAnsweredCount} Answered / ${endIndex - startIndex} Total Questions</span>
+                </div>
+            `;
+
+            return sectionHeader + sectionQHTML;
         }
 
-        function lockExam(subject) {
-            const attempted = getAttemptedExams();
-            attempted[subject] = generateReviewHTML();
-            localStorage.setItem('attemptedExams', JSON.stringify(attempted));
-        }
-
-        function getAttemptedExams() {
-            try {
-                return JSON.parse(localStorage.getItem('attemptedExams') || '{}');
-            } catch {
-                return {};
-            }
-        }
-
-        // Generate review HTML for completed exams
-        function generateReviewHTML() {
-            let html = `<h3>Review</h3>`;
-            questions[selectedSubject].forEach((q, idx) => {
-                const userAns = userAnswers[idx];
-                const correct = userAns === q.answer;
-                html += `<div class="review-question">
-                            <div><strong>Q${idx + 1}:</strong> ${q.q}</div>
-                            <div>Your Answer: ${userAns >= 0 ? q.options[userAns] : "<em>Not Answered</em>"}</div>
-                            <div>Correct Answer: ${q.options[q.answer]}</div>
-                            <div>Explanation: ${q.explanation}</div>
-                            <div style="color:${correct ? 'green' : 'red'};">${correct ? "✔ Correct" : "✖ Incorrect"}</div>
-                            <hr>
-                        </div>`;
-            });
-            return html;
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners for section start buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.onclick = (e) => startSection(e.target.getAttribute('data-section'));
+            });
+
             // Close button functionality for all modals
             document.querySelectorAll('.close').forEach(closeButton => {
                 closeButton.onclick = () => {
@@ -441,6 +586,9 @@
                     }
                 };
             });
+
+            // Initially hide instructions modal
+            document.getElementById('instructions-modal').style.display = 'none';
         });
     </script>
 </body>
