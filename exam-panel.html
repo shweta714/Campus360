@@ -2,102 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus360 Exam Panel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Exam Panel - Campus360</title>
+    <link rel="stylesheet" href="student-dashboard.css">
     <link rel="stylesheet" href="exampanel.css">
-    <link rel="stylesheet" href="notification.css">
-    <style>
-        /*
-        The following CSS is already contained in exampanel.css (Section 11) but is kept here 
-        for immediate reference to the review structure.
-        */
-        .review-container {
-            margin-top: 40px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-        .review-section-header {
-            background-color: #f0f6ff;
-            color: #1a4fa0;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            font-size: 1.4em;
-            font-weight: 700;
-            border-left: 5px solid #2d6cdf;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .review-question {
-            background: #f7faff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            border: 1px solid #e0eafc;
-        }
-
-        .review-question-text {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .review-answer-user,
-        .review-answer-correct {
-            padding: 5px 0;
-            font-size: 1em;
-        }
-
-        .review-answer-user {
-            color: #777;
-        }
-
-        .review-explanation {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e9f7ef;
-            border-left: 4px solid #4CAF50;
-            border-radius: 6px;
-            font-size: 0.95em;
-        }
-
-        /* Status classes remain but are no longer printed in the review */
-        .status-correct {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-
-        .status-incorrect {
-            color: #F44336;
-            font-weight: bold;
-        }
-
-        #final-submission-popup button {
-            background: #4B3AFF !important;
-            padding: 12px 25px !important;
-            font-size: 1.1em !important;
-        }
-
-        /* Ensure the main container for review is displayed when needed */
-        #review {
-            display: none;
-            /* Controlled by JS */
-        }
-    </style>
 </head>
 
 <body>
     <nav class="navbar-top">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle; display:none;">
+                <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
                 <span class="navbar-title">EXAM PANEL</span>
             </div>
             <ul class="navbar-menu">
@@ -107,490 +25,180 @@
         </div>
     </nav>
 
-    <div id="instructions-modal" class="modal">
+
+   
+    </head>
+
+    <main class="dashboard-container">
+        <section class="welcome-section"></section>
+
+        <div class="exam-grid-container">
+            <div class="exam-column upcoming-column" id="upcoming-exams">
+                <h3 class="column-title">Upcoming Exams</h3>
+
+                <!-- Ensure consistent structure with Completed Exams -->
+                <div class="exam-card" id="upcoming-DBMS">
+                    <div class="card-content">
+                        <div class="text-info">
+                            <div class="subject-name">📚 DBMS</div>
+                            <div class="department">Computer Science Department</div>
+                        </div>
+                    </div>
+                    <button class="start-button" onclick="startExam('DBMS', 'upcoming-DBMS')">Start Exam</button>
+                </div>
+
+                <div class="exam-card" id="upcoming-IoT">
+                    <div class="card-content">
+                        <div class="text-info">
+                            <div class="subject-name">🔌 IoT</div>
+                            <div class="department">Electronics Engineering</div>
+                        </div>
+                    </div>
+                    <button class="start-button" onclick="startExam('IoT', 'upcoming-IoT')">Start Exam</button>
+                </div>
+
+                <div class="exam-card" id="upcoming-OOSE">
+                    <div class="card-content">
+                        <div class="text-info">
+                            <div class="subject-name">💻 OOSE</div>
+                            <div class="department">Software Engineering</div>
+                        </div>
+                    </div>
+                    <button class="start-button" onclick="startExam('OOSE', 'upcoming-OOSE')">Start Exam</button>
+                </div>
+
+                <div class="empty-message" id="upcoming-empty-message" style="display: none;">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>No exams currently scheduled.</p>
+                    <p><em>We’ll let <a href="#">you know</a> when new exams are added!</em></p>
+
+                </div>
+            </div>
+
+            <div class="exam-column completed-column" id="completed-exams">
+                <h3 class="column-title">Completed Exams</h3>
+                <div class="empty-message" id="completed-empty-message">
+                    <i class="fas fa-check-circle"></i>
+                    <p>No exams completed yet. Start an exam from the Upcoming list!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="instructions-modal">
         <div class="modal-content">
-            <span id="close-instructions-modal" class="close">&times;</span>
-            <h3 id="modal-subject-title">Exam Instructions</h3>
-            <div id="exam-link-info" style="margin-bottom:15px; color:#4B3AFF; font-weight:bold;">Total Exam Time: 10
-                Minutes</div>
-            <ul style="text-align:left; font-size:1.08em; margin-bottom:18px;">
-                <li>**Do not switch tabs/windows.** Cheating will be detected and your exam will be terminated after 10
-                    switches.</li>
-                <li>Read each question carefully and select the best answer.</li>
-                <li>You must submit **Section A** before attempting **Section B**.</li>
+            <h2>Exam Instructions for <span id="modal-exam-title"></span></h2>
+            <p><strong>Please read the following carefully before starting your exam.</strong></p>
+            <ul>
+                <li>The exam is divided into two sections:
+                    <br>&bull; **Section A:** 10 Questions, **1 Mark** each (Total 10 Marks).
+                    <br>&bull; **Section B:** 10 Questions, **2 Marks** each (Total 20 Marks).
+                </li>
+                <li>**Total Exam Time:** <span class="timer">20 minutes</span>.</li>
+                <li>**Section A must be completed and submitted** before you can access Section B.</li>
+                <li>**Total Exam Time:** <span class="timer">20 minutes</span>.</li>
+                <li>**Section A must be completed and submitted** before you can access Section B.</li>
+                <li>Once Section A is submitted, you cannot go back.</li>
             </ul>
+            <div style="margin: 20px 0; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                **Question Status Guide:**
+                <p style="margin: 5px 0;"><span
+                        style="background-color: #28a745; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
+                    - **Answered** (Green)</p>
+                <p style="margin: 5px 0;"><span
+                        style="background-color: #ff9966; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
+                    - **Visited, Not Answered** (Orange)</p>
+                <p style="margin: 5px 0;"><span
+                        style="background-color: #f0f0f0; color: #333; padding: 2px 8px; border-radius: 3px; border: 1px solid #ccc;">&nbsp;Q&nbsp;</span>
+                    - **Not Visited** (Grey/White)</p>
+                <p style="margin: 5px 0;"><span
+                        style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
+                    - **Current Question** (Blue)</p>
+            </div>
+            <p style="margin-top: 20px; font-weight: bold;">Click "Start Exam" to begin.</p>
+            <button class="start-button modal-button" onclick="openExamPanel()">Start Exam</button>
+        </div>
+    </div>
 
-            <div class="section-btn-group">
-                <button id="section-a-start-btn" class="section-btn section-a-btn" data-section="A">Start Section A (20
-                    Qs, 1 Mark each)</button>
-                <button id="section-b-start-btn" class="section-btn section-b-btn" data-section="B" disabled>Start
-                    Section B (15 Qs, 2 Marks each)</button>
+    <div id="exam-panel-modal">
+        <div class="exam-layout">
+
+            <div class="sidebar">
+                <div class="sidebar-header">Question Palette</div>
+
+                <div class="q-summary">
+                    <div>
+                        <span style="color: #333;">Total Questions:</span>
+                        <span class="count-box" id="total-q-count">20</span>
+                    </div>
+                    <div>
+                        <span style="color: #28a745;">Attempted:</span>
+                        <span class="count-box" id="attempted-q-count">0</span>
+                    </div>
+                    <div>
+                        <span style="color: #ff9966;">Not Answered:</span>
+                        <span class="count-box" id="not-answered-q-count">0</span>
+                    </div>
+                    <div>
+                        <span style="color: #6c757d;">Not Visited:</span>
+                        <span class="count-box" id="not-visited-q-count">20</span>
+                    </div>
+                </div>
+
+                <div id="q-status-grid-A" class="sidebar-grid">
+                </div>
+                <div id="q-status-grid-B" class="sidebar-grid" style="display: none;">
+                </div>
+
+            </div>
+
+            <div class="main-content">
+                <div class="exam-header">
+                    <h2 id="exam-panel-title"></h2>
+                    <div class="timer-display">Time Remaining: <span id="exam-timer" class="timer">20:00</span></div>
+                </div>
+
+                <div class="section-tab-nav">
+                    <div class="section-tab active" id="tab-a" onclick="switchSection('A')">Section A (10 Qs, 1 Mark)
+                    </div>
+                    <div class="section-tab locked" id="tab-b" onclick="switchSection('B')">Section B (10 Qs, 2 Marks)
+                    </div>
+                </div>
+
+                <div class="question-display">
+                    <div class="q-header">Question <span id="current-q-num">1</span> (<span id="current-q-marks">1
+                            Mark</span>)</div>
+                    <div id="current-question-content">
+                    </div>
+                </div>
+
+                <div class="navigation-footer">
+                    <button class="nav-button" id="prev-button" onclick="navigateQuestion(-1)"
+                        disabled>Previous</button>
+                    <div id="section-action-buttons">
+                        <button class="nav-button" id="next-button" onclick="navigateQuestion(1)">Save & Next</button>
+                        <button class="nav-button" id="submit-section-button" onclick="submitSectionA()"
+                            style="display: none;">Submit Section A</button>
+                    </div>
+                    <button class="nav-button" id="submit-final-button" onclick="submitFinalExam()"
+                        style="display: none;">Submit Final Exam</button>
+                </div>
             </div>
         </div>
     </div>
 
-
-    <div class="container">
-        <h2 class="main-title">Campus360 Exam Panel</h2>
-
-        <div id="upcoming-exams">
-            <h3 class="section-title">Select Your Exam</h3>
-            <div class="exam-list soft-cards">
-
-                <div class="exam-card exam-card-horizontal" data-subject="dbms" onclick="openExamModal('dbms')">
-                    <div class="exam-card-left"
-                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
-                        <span role="img" aria-label="DBMS">🗄️</span>
-                    </div>
-                    <div class="exam-card-center">
-                        <div class="exam-title">DBMS</div>
-                        <div class="exam-desc">Database Management Systems</div>
-                    </div>
-                    <div class="exam-card-right">
-                        <span class="exam-card-arrow">&rsaquo;</span>
-                    </div>
-                </div>
-
-                <div class="exam-card exam-card-horizontal" data-subject="oose" onclick="openExamModal('oose')">
-                    <div class="exam-card-left"
-                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
-                        <span role="img" aria-label="OOSE">💻</span>
-                    </div>
-                    <div class="exam-card-center">
-                        <div class="exam-title">OOSE</div>
-                        <div class="exam-desc">Object Oriented Software Engineering</div>
-                    </div>
-                    <div class="exam-card-right">
-                        <span class="exam-card-arrow">&rsaquo;</span>
-                    </div>
-                </div>
-
-                <div class="exam-card exam-card-horizontal" data-subject="iot" onclick="openExamModal('iot')">
-                    <div class="exam-card-left"
-                        style="font-size:2.2em;display:flex;align-items:center;justify-content:center;width:48px;">
-                        <span role="img" aria-label="IoT">🌐</span>
-                    </div>
-                    <div class="exam-card-center">
-                        <div class="exam-title">IoT</div>
-                        <div class="exam-desc">Internet of Things</div>
-                    </div>
-                    <div class="exam-card-right">
-                        <span class="exam-card-arrow">&rsaquo;</span>
-                    </div>
-                </div>
-            </div>
+    <div class="modal-overlay" id="final-submission-modal">
+        <div class="modal-content">
+            <h2>✅ Exam Submitted Successfully!</h2>
+            <p>Your answers for <strong id="submitted-exam-title"></strong> have been securely recorded.</p>
+            <p style="margin-top: 20px; font-weight: bold;"><strong>Thank you for completing the exam</strong>!</p>
+            <button class="review-button modal-button" onclick="closeFinalSubmissionModal()">Close Panel</button>
         </div>
-
-        <form id="exam-form" style="display:none;"></form>
-
-        <div id="review" style="display:none;"></div>
-
     </div>
 
-    <script>
-        // --- Question Data (Extended for 20 Qs A and 15 Qs B) ---
-        // Note: Questions are repeated to meet the 35 Qs total for a realistic scenario.
-        const baseQuestions = {
-            dbms: [
-                { q: "What does DBMS stand for?", options: ["Database Management System", "Data Base Main Server", "Data Management Service", "Database Mainframe System"], answer: 0, explanation: "DBMS stands for Database Management System." },
-                { q: "Which SQL command is used to retrieve data?", options: ["INSERT", "SELECT", "UPDATE", "DELETE"], answer: 1, explanation: "SELECT is used to retrieve data from a database." },
-                { q: "Which of the following is a DBMS software?", options: ["MS Word", "Oracle", "Photoshop", "Excel"], answer: 1, explanation: "Oracle is a DBMS software." },
-                { q: "Which key is used to uniquely identify a record?", options: ["Foreign Key", "Primary Key", "Candidate Key", "Super Key"], answer: 1, explanation: "Primary Key uniquely identifies a record." },
-                { q: "Which normal form removes transitive dependency?", options: ["1NF", "2NF", "3NF", "BCNF"], answer: 2, explanation: "3NF removes transitive dependency." },
-                { q: "Which is not a type of database model?", options: ["Hierarchical", "Network", "Relational", "Linear"], answer: 3, explanation: "Linear is not a database model." },
-                { q: "Which command is used to remove a table?", options: ["DROP", "DELETE", "REMOVE", "ERASE"], answer: 0, explanation: "DROP is used to remove a table." },
-                { q: "Which is a DDL command?", options: ["SELECT", "INSERT", "CREATE", "UPDATE"], answer: 2, explanation: "CREATE is a DDL command." },
-                { q: "Which is not a property of transaction?", options: ["Atomicity", "Consistency", "Isolation", "Redundancy"], answer: 3, explanation: "Redundancy is not a property of transaction." },
-                { q: "Which language is used to define database structure?", options: ["DML", "DDL", "DCL", "TCL"], answer: 1, explanation: "DDL is used to define database structure." }
-            ],
-            oose: [
-                { q: "Which diagram is not UML?", options: ["Class", "Sequence", "Pie", "Use Case"], answer: 2, explanation: "Pie diagram is not a UML diagram." },
-                { q: "Which is a benefit of OOSE?", options: ["Reusability", "Redundancy", "Complexity", "None"], answer: 0, explanation: "Reusability is a benefit of OOSE." },
-                { q: "Which is not an OOSE language?", options: ["Java", "C++", "Python", "HTML"], answer: 3, explanation: "HTML is not an OOSE language." },
-                { q: "Which is not a type of inheritance?", options: ["Single", "Multiple", "Hybrid", "Circular"], answer: 3, explanation: "Circular is not a type of inheritance." },
-                { q: "Which is not a visibility modifier?", options: ["Public", "Private", "Protected", "Visible"], answer: 3, explanation: "Visible is not a visibility modifier." },
-                { q: "Which is not a type of polymorphism?", options: ["Compile-time", "Run-time", "Static", "Dynamic"], answer: 2, explanation: "Static is not a type of polymorphism." },
-                { q: "OOSE is mainly used for?", options: ["System Design", "Web Design", "Database Design", "None"], answer: 0, explanation: "OOSE is mainly used for System Design." },
-                { q: "Which is not a class member?", options: ["Method", "Attribute", "Object", "Constructor"], answer: 2, explanation: "Object is not a class member." }
-            ],
-            iot: [
-                { q: "What does IoT stand for?", options: ["Internet of Things", "Input Output Technology", "Integrated Online Technology", "None of these"], answer: 0, explanation: "IoT stands for Internet of Things." },
-                { q: "Which protocol is commonly used in IoT?", options: ["HTTP", "MQTT", "FTP", "SMTP"], answer: 1, explanation: "MQTT is a lightweight protocol commonly used in IoT." },
-                { q: "Which is not an IoT device?", options: ["Smartwatch", "Smartphone", "Smart TV", "Desktop PC"], answer: 3, explanation: "Desktop PC is not typically considered an IoT device." },
-                { q: "Which layer is not in IoT architecture?", options: ["Perception", "Network", "Application", "Presentation"], answer: 3, explanation: "Presentation is not a layer in IoT architecture." },
-                { q: "Which is a wireless IoT protocol?", options: ["Bluetooth", "Ethernet", "HDMI", "USB"], answer: 0, explanation: "Bluetooth is a wireless IoT protocol." },
-                { q: "Which company is a leader in IoT?", options: ["Google", "Apple", "Microsoft", "All of these"], answer: 3, explanation: "All listed companies are leaders in IoT." },
-                { q: "Which is not a sensor type in IoT?", options: ["Temperature", "Pressure", "Light", "Monitor"], answer: 3, explanation: "Monitor is not a sensor type." },
-                { q: "Which is not a benefit of IoT?", options: ["Automation", "Efficiency", "Security Risk", "Data Collection"], answer: 2, explanation: "Security Risk is not a benefit of IoT." },
-                { q: "Which is not a challenge in IoT?", options: ["Security", "Scalability", "Interoperability", "Simplicity"], answer: 3, explanation: "Simplicity is not a challenge in IoT." },
-                { q: "Which is not a communication protocol in IoT?", options: ["Zigbee", "WiFi", "Bluetooth", "Excel"], answer: 3, explanation: "Excel is not a communication protocol." }
-            ]
-        };
 
-        // Function to create enough questions (20 for A, 15 for B = 35 total)
-        const createFullQuestionSet = (base) => {
-            let set = [...base];
-            while (set.length < 35) {
-                // Repeating questions for demo purposes, ensuring at least 35 total.
-                set = set.concat(base.map((q, i) => ({ ...q, q: `${q.q} (Ref Q${set.length + i + 1})` })));
-            }
-            return set.slice(0, 35);
-        };
-
-        const questions = {
-            dbms: createFullQuestionSet(baseQuestions.dbms),
-            oose: createFullQuestionSet(baseQuestions.oose),
-            iot: createFullQuestionSet(baseQuestions.iot)
-        };
-
-        const sectionQuestions = {
-            A: {
-                dbms: questions.dbms.slice(0, 20),
-                oose: questions.oose.slice(0, 20),
-                iot: questions.iot.slice(0, 20)
-            },
-            B: {
-                dbms: questions.dbms.slice(20, 35),
-                oose: questions.oose.slice(20, 35),
-                iot: questions.iot.slice(20, 35)
-            }
-        };
-
-        let examDuration = 10 * 60; // 10 minutes for the whole exam
-        let timerInterval = null;
-        let selectedSubject = "";
-        let currentSection = '';
-        let tabSwitchCount = 0;
-        let tabSwitchLimit = 10;
-        let allUserAnswers = { A: new Array(20).fill(-1), B: new Array(15).fill(-1) };
-        let submittedSections = { A: false, B: false };
-        let examStartTimestamp = null;
-        let timeRemaining = examDuration;
-
-
-        // --- Timer and Notification Functions (Same as before) ---
-        function updateTimerDisplay(timeLeft) {
-            const min = Math.floor(timeLeft / 60);
-            const sec = timeLeft % 60;
-            const timerEl = document.getElementById('exam-timer');
-            if (timerEl) {
-                timerEl.textContent = `Time Left: ${min}:${sec.toString().padStart(2, '0')}`;
-            }
-        }
-        function startExamTimer() {
-            if (examStartTimestamp === null) examStartTimestamp = Date.now();
-            updateTimerDisplay(timeRemaining);
-            showNotification('Exam started. You have 10 minutes total.', 'info');
-            timerInterval = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay(timeRemaining);
-                if (timeRemaining === 60) showNotification('1 minute remaining!', 'warning');
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    showNotification('Time is up! Submitting your exam.', 'error');
-                    submitSection(currentSection, true);
-                }
-            }, 1000);
-        }
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => { notification.remove(); }, 3000);
-        }
-        function handleTabSwitch() {
-            if (submittedSections.A && submittedSections.B) return;
-            tabSwitchCount++;
-            const tabSwitchEl = document.getElementById('tab-switch-count');
-            if (tabSwitchEl) tabSwitchEl.textContent = `Tab Switches: ${tabSwitchCount}`;
-            showNotification(`Tab switched ${tabSwitchCount} times`, 'warning');
-            if (tabSwitchCount >= tabSwitchLimit) {
-                showNotification('Tab switching limit reached! Submitting your exam.', 'error');
-                clearInterval(timerInterval);
-                submitFinalExam();
-            }
-        }
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'hidden' && timerInterval !== null && (!submittedSections.A || !submittedSections.B)) {
-                handleTabSwitch();
-            }
-        });
-
-        // --- Exam Flow Functions ---
-
-        function openExamModal(subject) {
-            // Reset state if attempting a new exam or same exam again (for demo)
-            selectedSubject = subject;
-            currentSection = '';
-            submittedSections = { A: false, B: false };
-            allUserAnswers = { A: new Array(20).fill(-1), B: new Array(15).fill(-1) };
-
-            const subjectTitle = subject.toUpperCase();
-            document.getElementById('modal-subject-title').textContent = `${subjectTitle} Exam Instructions`;
-
-            // Update button states
-            document.getElementById('section-a-start-btn').disabled = false;
-            document.getElementById('section-b-start-btn').disabled = true;
-
-            // Hide review if visible
-            document.getElementById('review').style.display = 'none';
-            document.getElementById("upcoming-exams").style.display = "block";
-
-
-            document.getElementById('instructions-modal').style.display = 'flex';
-        }
-
-        function startSection(section) {
-            currentSection = section;
-            document.getElementById("instructions-modal").style.display = "none";
-            document.getElementById("upcoming-exams").style.display = "none";
-
-            // Ensure timer starts/restarts only once
-            if (timerInterval === null && !submittedSections.A && !submittedSections.B) {
-                // Reset timer for the whole exam duration (10 mins total)
-                timeRemaining = examDuration;
-                startExamTimer();
-            }
-
-            renderQuestions(selectedSubject, section);
-
-            const examForm = document.getElementById("exam-form");
-            examForm.style.display = "block";
-            examForm.scrollIntoView({ behavior: "smooth" });
-        }
-
-        function renderQuestions(subject, section) {
-            const sectionQ = sectionQuestions[section][subject];
-            const form = document.getElementById("exam-form");
-            form.innerHTML = "";
-
-            form.innerHTML += `<div id='exam-status'>
-                <span style='font-weight:bold; color:var(--primary-color);'>Current: Section ${section}</span>
-                <span id='exam-timer' style='font-weight:bold; color:#4B3AFF;'>Time Left: ${Math.floor(timeRemaining / 60)}:${(timeRemaining % 60).toString().padStart(2, '0')}</span>
-                <span id='tab-switch-count' style='font-weight:bold; color:#E57373;'>Tab Switches: ${tabSwitchCount}</span>
-            </div>`;
-
-            const sectionName = section === 'A' ? 'Section A (20 Questions, 1 Mark each)' : 'Section B (15 Questions, 2 Marks each)';
-            form.innerHTML += `<h3 class='exam-title-header' style='text-align:center; margin-bottom:18px;'>${subject.toUpperCase()} - ${sectionName}</h3>`;
-
-            sectionQ.forEach((q, idx) => {
-                const questionIndex = section === 'A' ? idx : idx + 20;
-                const userAns = allUserAnswers[section][idx];
-                const div = document.createElement("div");
-                div.className = "question";
-                div.innerHTML = `
-                    <div class='question-header'>
-                        <span class='question-number'>Q${questionIndex + 1}:</span>
-                        <span class='question-text'>${q.q}</span>
-                    </div>
-                    ${q.options.map((opt, i) =>
-                    `<label class='option-label'>
-                                <input type='radio' name='q${questionIndex}' value='${i}' ${i === userAns ? 'checked' : ''}> ${opt}
-                            </label>`
-                ).join('')}
-                `;
-                form.appendChild(div);
-            });
-
-            const buttonText = section === 'A' ? 'Submit Section A and Proceed to Section B' : 'Submit Final Exam';
-            form.innerHTML += `<button type="button" class="submit-section-btn" onclick="submitSection('${section}')">${buttonText}</button>`;
-        }
-
-
-        function submitSection(section, forceSubmit = false) {
-            if (submittedSections[section] && !forceSubmit) {
-                showNotification(`Section ${section} is already submitted.`, 'warning');
-                return;
-            }
-
-            // 1. Collect Answers for current section
-            const sectionQ = sectionQuestions[section][selectedSubject];
-            allUserAnswers[section] = [];
-            const startIndex = section === 'A' ? 0 : 20;
-            sectionQ.forEach((q, idx) => {
-                const questionIndex = startIndex + idx;
-                const radios = document.querySelectorAll(`input[name='q${questionIndex}']`);
-                let ans = -1;
-                radios.forEach(r => { if (r.checked) ans = parseInt(r.value); });
-                allUserAnswers[section].push(ans);
-            });
-
-            // 2. Mark as submitted
-            submittedSections[section] = true;
-            document.getElementById("exam-form").style.display = "none";
-
-            // Stop timer if it's the final submission or for clarity between sections
-            clearInterval(timerInterval);
-            timerInterval = null;
-
-            // 3. Handle subsequent flow
-            if (section === 'A') {
-                showNotification('Section A submitted successfully! You can now start Section B.', 'info');
-                currentSection = '';
-                // Unlock B and show modal
-                document.getElementById('section-b-start-btn').disabled = false;
-                document.getElementById('section-a-start-btn').disabled = true;
-                document.getElementById('instructions-modal').style.display = 'flex';
-                // Timer will restart (using remaining time) when B is selected
-            } else if (section === 'B' || forceSubmit) {
-                submitFinalExam();
-            }
-        }
-
-        function submitFinalExam() {
-            document.getElementById("exam-form").style.display = "none";
-            document.getElementById("upcoming-exams").style.display = "none";
-            const examStatus = document.getElementById('exam-status');
-            if (examStatus) examStatus.style.display = 'none';
-
-            // 1. Combine all answers
-            const totalAnswers = allUserAnswers.A.concat(allUserAnswers.B);
-
-            // 2. Show final submission popup
-            showFinalSubmissionPopup(totalAnswers);
-        }
-
-        function showFinalSubmissionPopup(totalAnswers) {
-            const popup = document.createElement('div');
-            popup.id = 'final-submission-popup';
-            popup.style = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0, 0, 0, 0.9); color: white; display: flex;
-                flex-direction: column; align-items: center; justify-content: center;
-                z-index: 1000; text-align: center;
-            `;
-
-            // Calculate Score (A=1 point, B=2 points)
-            // Note: This score calculation is still necessary here to pass the correctCount to the review function
-            let score = 0;
-            const allQuestions = questions[selectedSubject];
-            let correctCount = 0;
-            let totalMarks = (20 * 1) + (15 * 2);
-
-            for (let i = 0; i < allQuestions.length; i++) {
-                const correct = totalAnswers[i] === allQuestions[i].answer;
-                if (correct) {
-                    correctCount++;
-                    score += (i < 20 ? 1 : 2);
-                }
-            }
-
-            // The score is passed to the review page function, but will NOT be displayed there.
-            popup.innerHTML = `
-                <h1>Exam Submission Complete!</h1>
-                <p style="font-size: 1.2em; margin: 15px 0 30px;">Your responses have been recorded successfully. <br>Click below to view the detailed answers and explanations.</p>
-                <button onclick="navigateToReviewPage(${score}, ${totalMarks}, ${correctCount})">Review Answers and Explanations</button>
-            `;
-            document.body.appendChild(popup);
-        }
-
-        function navigateToReviewPage(finalScore, totalMarks, correctCount) {
-            const popup = document.getElementById('final-submission-popup');
-            if (popup) popup.remove();
-
-            // Hide the main container elements
-            document.getElementById("upcoming-exams").style.display = "none";
-            document.getElementById("exam-form").style.display = "none";
-
-            // Render the full review page
-            renderReviewPage(finalScore, totalMarks, correctCount);
-        }
-
-        function renderReviewPage(finalScore, totalMarks, correctCount) {
-            const reviewEl = document.getElementById('review');
-            reviewEl.style.display = 'block';
-            reviewEl.innerHTML = ''; // Clear previous content
-
-            const allQuestions = questions[selectedSubject];
-            const allAnswers = allUserAnswers.A.concat(allUserAnswers.B);
-
-            let reviewHTML = `
-                <div class="review-container">
-                    <h2 class="main-title">${selectedSubject.toUpperCase()} Exam Review</h2>
-                    <p style="text-align:center; font-size:1.3em; margin-bottom:30px; color:#1a4fa0;">
-                        Review Summary: ${allQuestions.length} Questions
-                    </p>
-            `;
-
-            // --- Section A Review ---
-            reviewHTML += generateSectionReview('A', 0, 20, allQuestions, allAnswers);
-
-            // --- Section B Review ---
-            reviewHTML += generateSectionReview('B', 20, 35, allQuestions, allAnswers);
-
-            reviewHTML += '</div>';
-            reviewEl.innerHTML = reviewHTML;
-            reviewEl.scrollIntoView({ behavior: "smooth" });
-        }
-
-        /**
-         * Generates the HTML for a specific exam section's review, focusing on user choice and explanation.
-         * @param {string} section - 'A' or 'B'
-         * @param {number} startIndex - Starting index in the full question array.
-         * @param {number} endIndex - Ending index in the full question array.
-         * @param {Array} allQuestions - The full list of question objects.
-         * @param {Array} allAnswers - The full list of user answers (-1 for not attempted).
-         * @returns {string} The HTML string for the section review.
-         */
-        function generateSectionReview(section, startIndex, endIndex, allQuestions, allAnswers) {
-            let sectionQHTML = '';
-            let sectionAnsweredCount = 0;
-
-            for (let i = startIndex; i < endIndex; i++) {
-                const q = allQuestions[i];
-                const userAns = allAnswers[i];
-                const pointValue = i < 20 ? 1 : 2;
-
-                // Determine user answer display
-                const userAnswerText = userAns >= 0 ? q.options[userAns] : "<em>Not Attempted</em>";
-                if (userAns !== -1) sectionAnsweredCount++;
-
-                sectionQHTML += `
-                    <div class="review-question">
-                        <div class="review-question-text">Q${i + 1} (${pointValue} Mark): ${q.q}</div>
-                        
-                        <div class="review-answer-user">Your Choice: <strong>${userAnswerText}</strong></div>
-                        
-                        <div class="review-answer-correct">Correct Answer: <strong>${q.options[q.answer]}</strong></div>
-                        
-                        <div class="review-explanation"><strong>Explanation:</strong> ${q.explanation}</div>
-                    </div>
-                `;
-            }
-
-            // Section Header (Updated to show Answered/Total count)
-            const sectionHeader = `
-                <div class="review-section-header">
-                    <span>Section ${section} Review (${section === 'A' ? '1 Mark Qs' : '2 Mark Qs'})</span>
-                    <span>${sectionAnsweredCount} Answered / ${endIndex - startIndex} Total Questions</span>
-                </div>
-            `;
-
-            return sectionHeader + sectionQHTML;
-        }
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Attach event listeners for section start buttons
-            document.querySelectorAll('.section-btn').forEach(btn => {
-                btn.onclick = (e) => startSection(e.target.getAttribute('data-section'));
-            });
-
-            // Close button functionality for all modals
-            document.querySelectorAll('.close').forEach(closeButton => {
-                closeButton.onclick = () => {
-                    const modal = closeButton.closest('.modal');
-                    if (modal) {
-                        modal.style.display = 'none';
-                    }
-                };
-            });
-
-            // Initially hide instructions modal
-            document.getElementById('instructions-modal').style.display = 'none';
-        });
-    </script>
+    <script src="exam-panel.js"></script>
 </body>
+
 
 </html>
