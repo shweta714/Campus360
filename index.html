@@ -2,279 +2,704 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus360 - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .otp-section {
-            display: none;
-            margin-top: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus360 - Examination Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
 
-        .otp-container {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 15px 0;
-        }
+    /* Body & Background */
+    body {
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #7b2ff7, #f107a3); /* purplish background */
+      min-height: 100vh;
+      margin: 0;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
 
-        .otp-input {
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1.2rem;
-            margin: 0 4px;
-        }
+    /* Overlay for modal/dialog */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(60, 60, 120, 0.45);
+      backdrop-filter: blur(3px);
+      z-index: 999;
+    }
 
-        .timer {
-            text-align: center;
-            margin: 10px 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
+    /* Navbar */
+    .navbar {
+      width: 100%;
+      background: rgba(100, 3, 202, 0.9);
+      box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
+      padding: 1rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      animation: fadeDown 1s ease;
+    }
 
-        .otp-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-            align-items: center;
-        }
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 2rem;
+    }
 
-        .resend-btn, .verify-btn {
-            background: #6403ca;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 0.95rem;
-            padding: 12px 24px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            width: 200px;
-            font-weight: 600;
-        }
+    .navbar-menu {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
 
-        .resend-btn:hover:not(:disabled),
-        .verify-btn:hover {
-            background: #5002a3;
-        }
+    .navbar-menu li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
 
-        .resend-btn:disabled {
-            background: #6403ca;
-            opacity: 0.7;
-            color: white;
-            cursor: not-allowed;
-        }
+    .navbar-menu li a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
 
-        .success-message, .error-message {
-            text-align: center;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-        }
+    /* Main Content / Home */
+    .main-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh; /* full screen height */
+      padding: 2.5rem;
+      text-align: left;
+      animation: fadeIn 1.5s ease;
+    }
 
-        .success-message {
-            color: #0f5132;
-            background: #d1e7dd;
-        }
+    .left-section {
+      flex: 1;
+      padding-right: 2rem;
+      animation: slideLeft 1s ease;
+    }
 
-        .error-message {
-            color: #842029;
-            background: #f8d7da;
-        }
-    </style>
-    <script>
-        // Check if user came from intro page, if not redirect
-        if (!sessionStorage.getItem('fromIntro')) {
-            window.location.href = 'intro.html';
-        }
+    .right-section {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: slideRight 1s ease;
+    }
 
-        // Wait for DOM to load
-        document.addEventListener('DOMContentLoaded', function () {
-            // Add submit event listener to login form
-            document.getElementById('loginForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const role = document.querySelector('input[name="role"]:checked').value;
+    .illustration {
+      width: 400px;
+      max-width: 90%;
+      border-radius: 28px;
+      box-shadow: 0 8px 32px rgba(78, 84, 200, 0.18);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+    }
 
-                if (role === 'faculty') {
-                    // Store faculty info and redirect to faculty dashboard
-                    sessionStorage.setItem('facultyName', username);
-                    window.location.href = 'faculty.html';
-                } else {
-                    // Store student info and redirect to student dashboard
-                    sessionStorage.setItem('studentName', username);
-                    window.location.href = 'student-dashboard.html';
-                }
-            });
-        });
-    </script>
+    .main-title {
+      font-size: 4rem;
+      font-weight: 900;
+      margin-bottom: 0.7rem;
+      background: linear-gradient(90deg, #ffffff 40%, #ffe6ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: transform 0.5s;
+    }
 
+    .main-title:hover {
+      transform: scale(1.05);
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .desc {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    .getstarted-btn {
+      padding: 0.8rem 2.2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .getstarted-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(78, 84, 200, 0.4);
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    #about {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+      border-radius: 18px;
+      margin: 3rem auto;
+      max-width: 1000px;
+      padding: 3rem 2rem;
+      animation: fadeIn 1.5s ease;
+    }
+
+    #about h2,
+    #feedback h2 {
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #about p,
+    #feedback p {
+      max-width: 800px;
+      margin: auto;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #f0f0f0;
+    }
+
+    /* Feedback Form */
+    .feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 2rem auto 0 auto;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .feedback-form input,
+    .feedback-form textarea {
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .feedback-form button {
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .feedback-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(102, 126, 234, 0.25);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      background: rgba(100, 3, 202, 0.3);
+      padding: 1rem;
+      color: #fff;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 0 0.5rem;
+    }
+
+    .footer a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* Dialog / Choice */
+    .choice-dialog {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      text-align: center;
+      min-width: 300px;
+    }
+
+    .choice-btn {
+      background: #6403ca;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .choice-btn:hover {
+      background: #7a1ef7;
+      transform: translateY(-2px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideRight {
+      0% {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .left-section,
+      .right-section {
+        padding: 0;
+      }
+
+      .illustration {
+        margin-top: 2rem;
+        width: 80%;
+      }
+
+      .navbar-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 1rem;
+      }
+
+      .navbar-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+      }
+    }
+    /* Chat widget styles */
+    .chat-widget {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 320px;
+      max-width: calc(100% - 48px);
+      background: #fff;
+      color: #222;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+      display: none;
+      z-index: 1200;
+      flex-direction: column;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .chat-widget.open { display: flex; }
+    .chat-header { background: linear-gradient(90deg,#6b46ff,#06b6d4); color: #fff; padding: 12px 14px; display:flex; align-items:center; justify-content:space-between; }
+    .chat-header h4 { margin:0; font-size:1rem; }
+    .chat-close { background:transparent; border:none; color:#fff; font-weight:700; cursor:pointer; }
+    .chat-body { padding:12px; height:300px; overflow:auto; background: #f7f8fb; }
+    .chat-footer { display:flex; gap:8px; padding:10px; background:#fff; border-top:1px solid #eee; }
+    .chat-input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #ddd; }
+    .chat-send { background:linear-gradient(90deg,#6b46ff,#06b6d4); color:#fff; border:none; padding:10px 12px; border-radius:8px; cursor:pointer; }
+    .msg { margin:8px 0; max-width:85%; padding:8px 10px; border-radius:8px; display:inline-block; }
+    .msg.user { background:#6b46ff; color:#fff; margin-left:auto; }
+    .msg.bot { background:#fff; border:1px solid #eee; color:#222; }
+    .quick-suggestions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+    .quick-btn { background:#eef2ff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; font-size:0.9rem; }
+
+  </style>
 </head>
 
 <body>
-    <!-- Navigation bar removed from login page -->
-    <div class="overlay"></div>
-    <div class="login-container">
-        <div class="logo"><img src="logo.png" alt="Campus360 Logo" style="width: 48px; height: 48px;"></div>
-        <h1>Login</h1>
-        <p> Welcome to a smarter campus experience!</p>
-        <form id="loginForm">
-            <div class="role-selector">
-                <label class="role-label">
-                    <input type="radio" name="role" value="student" checked>
-                    <div class="role-option">
-                        <span class="role-icon">👨‍🎓</span>
-                        <span class="role-text">Student</span>
-                    </div>
-                </label>
-                <label class="role-label">
-                    <input type="radio" name="role" value="faculty">
-                    <div class="role-option">
-                        <span class="role-icon">👨‍🏫</span>
-                        <span class="role-text">Faculty</span>
-                    </div>
-                </label>
-            </div>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
-            <button type="submit" class="submit-btn">Send OTP</button>
-            
-            <!-- OTP Section -->
-            <div id="otpSection" class="otp-section">
-                <p style="text-align:center;margin:15px 0;">Enter the OTP sent to your email</p>
-                <div class="otp-container">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                </div>
-                <div class="timer">
-                    Resend OTP in <span id="timer">02:00</span>
-                </div>
-                <div class="otp-buttons">
-                    <button id="resendBtn" class="resend-btn" disabled>Resend OTP</button>
-                    <button id="verifyBtn" type="button" class="verify-btn">Verify OTP</button>
-                </div>
-            </div>
-            <div id="successMessage" class="success-message">OTP verified successfully!</div>
-            <div id="errorMessage" class="error-message">Invalid OTP. Please try again.</div>
-        </form>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <ul class="navbar-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#feedback">Feedback</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <script>
-        const loginForm = document.getElementById('loginForm');
-        const otpSection = document.getElementById('otpSection');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const resendBtn = document.getElementById('resendBtn');
-        const timerSpan = document.getElementById('timer');
-        const otpInputs = document.querySelectorAll('.otp-input');
-        
-        // Function to start timer
-        function startTimer(duration, display) {
-            let timer = duration;
-            let minutes, seconds;
-            let countdown = setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
+  <!-- Home Section -->
+  <section id="home" class="main-content">
+    <div class="left-section">
+      <div class="main-title">Campus <span>360</span></div>
+      <div class="subtitle">Smarter Exams, Smarter Campus.</div>
+      <div class="desc">
+        Manage exams, schedules, results, notifications, and more for students and faculty.
+        Experience seamless exam administration and performance tracking.
+      </div>
+      <button class="getstarted-btn" onclick="showChoiceDialog()">Get Started</button>
+    </div>
+    <div class="right-section">
+      <img class="illustration" src="Home.jpeg" alt="Campus360 Home Image">
+    </div>
+  </section>
 
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
+  <!-- About Section -->
+<!-- About Section -->
+<section id="about">
+  <h2>About Campus360</h2>
+  <p>
+    Campus360 is a complete Examination Management System designed to simplify academic administration.
+    Manage exams, quizzes, notifications, seating arrangements, and results all in one place with ease and transparency.
+  </p>
 
-                display.textContent = minutes + ":" + seconds;
+  <!-- Modern Flashcards -->
+  <div class="flashcards">
+    <div class="card">
+      <h3>Quizzes</h3>
+      <p>Create and manage quizzes with automatic grading and instant feedback for students.</p>
+    </div>
+    <div class="card">
+      <h3>Exam Timer</h3>
+      <p>Integrated countdown timer ensures smooth exam conduction without delays or confusions.</p>
+    </div>
+    <div class="card">
+      <h3>Seating Arrangement</h3>
+      <p>Automatically generate seating charts to avoid clashes and maintain proper spacing.</p>
+    </div>
+    <div class="card">
+      <h3>Notifications</h3>
+      <p>Send alerts and reminders to students and faculty instantly about schedules or updates.</p>
+    </div>
+    <div class="card">
+      <h3>Results & Analytics</h3>
+      <p>Track performance, generate reports, and analyze trends to improve learning outcomes.</p>
+    </div>
+  </div>
+</section>
 
-                if (--timer < 0) {
-                    clearInterval(countdown);
-                    resendBtn.disabled = false;
-                    display.textContent = "00:00";
-                }
-            }, 1000);
-            return countdown;
+<style>
+/* Modern flashcards styling */
+.flashcards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.card {
+  background: rgba(100, 3, 202, 0.85);
+  color: #fff;
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: default;
+}
+
+.card h3 {
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.card p {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .flashcards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+</style>
+
+
+  <!-- Feedback Section -->
+  <section id="feedback">
+    <h2>Share Your Feedback</h2>
+    <p>We value your suggestions to improve Campus360!</p>
+    <div style="margin-top:2rem;">
+      <button id="showFeedbackForm" class="getstarted-btn">Give Feedback</button>
+    </div>
+    <form class="feedback-form" id="feedbackForm" style="display:none;">
+      <input type="text" id="fbName" placeholder="Your Name" required>
+      <input type="email" id="fbEmail" placeholder="Your Email" required>
+      <textarea id="fbMessage" placeholder="Your Feedback" rows="5" required></textarea>
+
+      <!-- contact option moved to footer -->
+
+      <button type="submit">Submit Feedback</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#" id="footerHelp">Help</a>
+    <a href="#" id="footerContact" style="margin-left:12px;">Contact</a>
+  <span id="footerContactInfo" style="display:none; margin-left:12px; color:#fff; font-size:0.95rem;">You can also contact us at: <a href="mailto:campus360@gmail.com" style="color:#fff; text-decoration:underline;">campus360@gmail.com</a></span>
+    <p>&copy; 2025 Campus360. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal / Choice Dialog -->
+  <div class="overlay" id="overlay"></div>
+  <div class="choice-dialog" id="choiceDialog">
+    <p style="margin:0 0 8px 0; font-size:1.05rem; color:#8114ca; font-weight:600;">WELCOME TO  Campus360 </p>
+    
+    <div>
+      <button class="choice-btn" onclick="window.location.href='login.html'; sessionStorage.setItem('fromIntro','true')">Login</button>
+      <button class="choice-btn" onclick="window.location.href='signup.html'">Sign Up</button>
+    </div>
+  </div>
+
+  <script>
+    // Show Login/Signup modal
+    function showChoiceDialog() {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('choiceDialog').style.display = 'block';
+    }
+
+    document.getElementById('overlay').addEventListener('click', function () {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('choiceDialog').style.display = 'none';
+    });
+
+    // Show feedback form
+    const feedbackBtn = document.getElementById('showFeedbackForm');
+    const feedbackForm = document.getElementById('feedbackForm');
+
+    feedbackBtn.addEventListener('click', function () {
+      feedbackForm.style.display = 'flex';
+      feedbackBtn.style.display = 'none';
+      feedbackForm.scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // simple submit handler to show a thank you message (demo)
+    const fbForm = document.getElementById('feedbackForm');
+    fbForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('fbName').value.trim();
+      const email = document.getElementById('fbEmail').value.trim();
+      const msg = document.getElementById('fbMessage').value.trim();
+      // In production, post this to backend. For now, just show a confirmation.
+      alert('Thanks, ' + (name || 'user') + '! We received your feedback.');
+      fbForm.reset();
+    });
+
+    // Footer contact toggle
+    const footerContact = document.getElementById('footerContact');
+    const footerContactInfo = document.getElementById('footerContactInfo');
+    footerContact.addEventListener('click', function(e){
+      e.preventDefault();
+      footerContactInfo.style.display = footerContactInfo.style.display === 'none' ? 'inline' : 'none';
+    });
+    
+    // --- Chat widget markup and behavior ---
+    (function(){
+      // create chat widget HTML and append to body
+      const chatHtml = `
+        <div id="chatWidget" class="chat-widget" role="dialog" aria-label="Campus360 Assistant">
+          <div class="chat-header">
+            <h4>Campus360 Assistant</h4>
+            <button id="chatClose" class="chat-close">✕</button>
+          </div>
+          <div id="chatBody" class="chat-body"></div>
+          <div class="chat-footer">
+            <input id="chatInput" class="chat-input" placeholder="Ask about timetable, seating, courses...">
+            <button id="chatSend" class="chat-send">Send</button>
+          </div>
+        </div>
+      `;
+      const tmp = document.createElement('div'); tmp.innerHTML = chatHtml;
+      document.body.appendChild(tmp.firstElementChild);
+
+      const chatWidget = document.getElementById('chatWidget');
+      const chatBody = document.getElementById('chatBody');
+      const chatInput = document.getElementById('chatInput');
+      const chatSend = document.getElementById('chatSend');
+      const chatClose = document.getElementById('chatClose');
+
+      function appendMessage(text, who='bot'){
+        const d = document.createElement('div');
+        d.className = 'msg ' + (who==='user' ? 'user' : 'bot');
+        d.textContent = text;
+        chatBody.appendChild(d);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function botReply(input){
+        const lower = input.toLowerCase();
+        if (!input.trim()) return "Can you type your question?";
+
+        // Start / run app
+        if (/start|run|how to start|how to run/.test(lower)) {
+          return "To start the app locally: open `index.html` in your browser. For a local web server (recommended), run e.g. `python -m http.server` in the project folder and visit `http://localhost:8000`. Click 'Get Started' to go to Login or Sign Up.";
         }
 
-        // Auto-move to next input
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', function() {
-                if (this.value.length === 1) {
-                    if (index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                }
-            });
-            
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && !this.value) {
-                    if (index > 0) {
-                        otpInputs[index - 1].focus();
-                    }
-                }
-            });
-        });
+        // Where to login
+        if (/where to login|where.*login|how to login|where do i login/.test(lower)) {
+          return "To log in: click 'Get Started' on the home page and choose Login, or open `login.html` directly. Use your username/email and password. Students also require OTP verification (if enabled).";
+        }
 
-        // Handle login form submission
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const role = document.querySelector('input[name="role"]:checked').value;
-            
-            // Show OTP section
-            otpSection.style.display = 'block';
-            this.querySelector('[type="submit"]').style.display = 'none';
-            
-            // Start timer
-            resendBtn.disabled = true;
-            const twoMinutes = 120;
-            startTimer(twoMinutes, timerSpan);
+        // Features
+        if (/feature|what.*feature|what are the features|features of the app/.test(lower)) {
+          return "Campus360 features include:\n- Manage exams, quizzes and automatic grading\n- Timetable viewing and scheduling\n- Seating arrangement generation and seat lookup\n- Notifications and alerts\n- Results & analytics dashboards\n- Course listings and basic enrollment info\n- Feedback and support pages";
+        }
 
-            // Simulate sending OTP to email
-            console.log('OTP sent to:', email);
-            alert('OTP has been sent to ' + email);
-        });
+        if (/timetable|schedule/.test(lower)) return "You can view your timetable on the Timetable page. Would you like me to open it?";
+        if (/seating|seat/.test(lower)) return "Seating arrangements are under the 'Seating' page — you can view assigned seats there.";
+        if (/course|enroll|register/.test(lower)) return "For courses, check the Courses page or contact administration@campus360.example for enrollment help.";
+        if (/exam|quiz|results/.test(lower)) return "Exam and quiz results are available in your dashboard under 'Results'. Need me to open the dashboard?";
+        if (/contact|office|who to contact/.test(lower)) return "You can contact the administration at admin@campus360.example or the exam office during working hours.";
+        if (/help|support/.test(lower)) return "I'm here to help — ask about timetable, seating, courses, or account issues.";
+        // fallback helpful message
+        return "I can help with starting the app, where to login, timetable, seating, courses and account issues. Try: 'How to start the app?' or 'Where to login?'";
+      }
 
-        // Handle resend OTP
-        resendBtn.addEventListener('click', function() {
-            resendBtn.disabled = true;
-            startTimer(120, timerSpan);
-            const email = document.getElementById('email').value;
-            alert('New OTP has been sent to ' + email);
-        });
+      // open chat
+      function openChat(){
+        chatWidget.classList.add('open');
+        appendMessage("Hello! I'm Campus360 Assistant. How can I help you today?");
+        appendSuggestions();
+        chatInput.focus();
+      }
 
-        // Handle OTP verification
-        document.getElementById('verifyBtn').addEventListener('click', function() {
-            const otp = Array.from(otpInputs).map(input => input.value).join('');
-            const role = document.querySelector('input[name="role"]:checked').value;
-            const email = document.getElementById('email').value;
-            
-            // For demo purposes, any 6-digit OTP is considered valid
-            if (otp.length === 6 && /^\d+$/.test(otp)) {
-                successMessage.style.display = 'block';
-                errorMessage.style.display = 'none';
-                
-                // Store user info and redirect after successful verification
-                setTimeout(() => {
-                    if (role === 'faculty') {
-                        sessionStorage.setItem('facultyName', email);
-                        window.location.href = 'faculty.html';
-                    } else {
-                        sessionStorage.setItem('studentName', email);
-                        window.location.href = 'student-dashboard.html';
-                    }
-                }, 1500);
-            } else {
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
-            }
+      function appendSuggestions(){
+        const suggestions = [
+          'How to start the app',
+          'Where to login',
+          'What are the features of the app',
+          'How to view timetable'
+        ];
+        const container = document.createElement('div');
+        container.className = 'quick-suggestions';
+        suggestions.forEach(text => {
+          const btn = document.createElement('button');
+          btn.className = 'quick-btn';
+          btn.type = 'button';
+          btn.textContent = text;
+          btn.addEventListener('click', ()=>{
+            appendMessage(text, 'user');
+            setTimeout(()=> appendMessage(botReply(text)), 250);
+          });
+          container.appendChild(btn);
         });
-    </script>
+        chatBody.appendChild(container);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      // close chat and clear conversation
+      // when closed we remove all messages so the next open starts fresh
+      chatClose.addEventListener('click', ()=>{
+        chatWidget.classList.remove('open');
+        chatBody.innerHTML = '';
+      });
+
+      // send
+      chatSend.addEventListener('click', ()=>{
+        const val = chatInput.value.trim();
+        if (!val) return;
+        appendMessage(val, 'user');
+        chatInput.value = '';
+        setTimeout(()=> appendMessage(botReply(val)), 400);
+      });
+
+      // enter key
+      chatInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); chatSend.click(); }});
+
+      // wire footer help link to open chat
+      const footerHelp = document.querySelector('footer.footer a[href="#"]');
+      if (footerHelp) {
+        footerHelp.addEventListener('click', function(e){ e.preventDefault(); openChat(); });
+      }
+    })();
+  </script>
 </body>
 
 </html>

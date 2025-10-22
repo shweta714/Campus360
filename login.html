@@ -116,7 +116,7 @@
     .timer {
       text-align: center;
       margin-top: 10px;
-      color: #666;
+      color: #444;
       font-size: 0.9rem;
     }
 
@@ -150,149 +150,122 @@
       display: none;
     }
   </style>
+  <style>
+    /* Page background (use same image as signup) */
+    body {
+      margin: 0;
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      background: url('https://live.staticflickr.com/65535/51706490974_0f075484c9_k.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* Centered frosted panel */
+    main { max-width: 420px; width: 100%; }
+    .panel {
+      background: rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 12px 30px rgba(16,24,40,0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-sizing: border-box;
+    }
+
+    .logo-badge { width:64px;height:64px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center; background: linear-gradient(90deg,#6b46ff,#8b5cf6); box-shadow:0 10px 28px rgba(99,102,241,0.12); }
+    .panel h1 { text-align:center;color:#6b46ff;margin:6px 0 6px;font-size:28px; }
+  .panel p.subtitle { text-align:center;color:#222;margin:0 0 16px;font-size:0.95rem; }
+
+    .role-toggle { display:flex; gap:12px; justify-content:center; margin-bottom:18px; }
+    .role-option { padding:10px 16px; border-radius:10px; background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.06); cursor:pointer; font-weight:700; color:#222; }
+    .role-option.active { background: linear-gradient(90deg,#6b46ff,#06b6d4); color:#fff; transform:translateY(-4px); }
+
+  label.field-label { display:block; font-weight:600; color:#111; margin-bottom:6px; font-size:0.9rem; }
+  input.field { width:100%; padding:12px 14px; border-radius:10px; border:none; background:#fff; box-sizing:border-box; font-size:1rem; color: #111; }
+  /* lighter placeholder but darker input text for readability */
+  input.field::placeholder { color: #8b8b91; }
+
+    .btn-login { width:100%; padding:14px; margin-top:18px; border-radius:10px; border:none; color:#fff; font-weight:800; font-size:1rem; cursor:pointer; background: linear-gradient(90deg,#6b46ff,#8b5cf6); box-shadow: 0 10px 30px rgba(99,102,241,0.12); }
+
+  .links-row { display:flex; justify-content:space-between; margin-top:12px; font-size:0.95rem; }
+  .links-row a { color:#2b2b8f; text-decoration:none; font-weight:600; }
+    .links-row a:hover { text-decoration:underline; }
+
+    @media (max-width:480px) { .panel { padding:20px; } }
+  </style>
 </head>
 <body>
-  <main style="max-width:420px;margin:60px auto;padding:20px;">
-    <section style="background:white;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-      <h2>Login</h2>
-      <div class="social-buttons">
-        <button class="social-btn" id="googleSignIn">
-          <img src="images/google.svg" alt="Google">
-          Sign in with Google
-        </button>
+  <main>
+    <section class="panel">
+      <div class="logo-badge"><img src="logo.png" alt="logo" style="width:36px;height:36px"></div>
+      <h1>Login</h1>
+      <p class="subtitle">Welcome to a smarter campus experience!</p>
+
+      <div class="role-toggle">
+        <div class="role-option active" id="role-student">👩‍🎓 Student</div>
+        <div class="role-option" id="role-faculty">👨‍🏫 Faculty</div>
       </div>
-      <div class="or-divider">
-        <span>OR</span>
-      </div>
+
       <form id="loginForm">
-        <label>Email<br><input type="email" id="email" required style="width:100%;padding:8px;margin-top:6px;"/></label>
-        <label style="display:block;margin-top:12px;">Password<br><input type="password" id="password" required style="width:100%;padding:8px;margin-top:6px;"/></label>
-        <div style="margin-top:16px;display:flex;gap:8px;justify-content:space-between;align-items:center;">
-          <button type="submit" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Send OTP</button>
-          <a href="signup.html">Sign up</a>
+        <div>
+          <label class="field-label">Username or Email</label>
+          <input class="field" id="email" type="text" placeholder="Enter your username or email" required>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label class="field-label">Password</label>
+          <input class="field" id="password" type="password" placeholder="Enter your password" required>
+        </div>
+
+        <button class="btn-login" type="submit">Login</button>
+
+        <div class="links-row">
+          <a href="forgot-password.html">Forgot Password?</a>
+          <a href="signup.html" id="signupLink"> Sign up </a>
         </div>
       </form>
-
-      <!-- OTP Section -->
-      <div id="otpSection" class="otp-section">
-        <p style="text-align:center;margin:15px 0;">Enter the OTP sent to your email</p>
-        <div class="otp-container">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        </div>
-        <div class="timer">
-          Resend OTP in <span id="timer">02:00</span>
-        </div>
-        <button id="resendBtn" class="resend-btn" disabled>Resend OTP</button>
-        <div style="text-align:center;margin-top:15px;">
-          <button id="verifyBtn" style="padding:8px 14px;background:#4e54c8;border:none;color:#fff;border-radius:8px;">Verify OTP</button>
-        </div>
-      </div>
-
-      <div id="successMessage" class="success-message">OTP verified successfully!</div>
-      <div id="errorMessage" class="error-message">Invalid OTP. Please try again.</div>
-
-      <div class="links-section">
-        <a href="forgot-password.html">Forgot Password?</a>
-      </div>
     </section>
   </main>
 
   <script>
     const loginForm = document.getElementById('loginForm');
-    const otpSection = document.getElementById('otpSection');
-    const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
-    const resendBtn = document.getElementById('resendBtn');
-    const timerSpan = document.getElementById('timer');
-    const otpInputs = document.querySelectorAll('.otp-input');
-    
-    // Function to start timer
-    function startTimer(duration, display) {
-      let timer = duration;
-      let minutes, seconds;
-      let countdown = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+    // Role toggle behavior (student/faculty)
+    const roleStudent = document.getElementById('role-student');
+    const roleFaculty = document.getElementById('role-faculty');
+    let selectedRole = 'student';
 
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-          clearInterval(countdown);
-          resendBtn.disabled = false;
-          display.textContent = "00:00";
-        }
-      }, 1000);
-      return countdown;
+    function setRoleUI(role) {
+      selectedRole = role;
+      if (role === 'student') {
+        roleStudent.style.background = 'linear-gradient(90deg,#7c3aed,#06b6d4)';
+        roleStudent.style.color = '#fff';
+        roleFaculty.style.background = 'rgba(255,255,255,0.08)';
+        roleFaculty.style.color = '#333';
+      } else {
+        roleFaculty.style.background = 'linear-gradient(90deg,#7c3aed,#06b6d4)';
+        roleFaculty.style.color = '#fff';
+        roleStudent.style.background = 'rgba(255,255,255,0.08)';
+        roleStudent.style.color = '#333';
+      }
     }
 
-    // Auto-move to next input
-    otpInputs.forEach((input, index) => {
-      input.addEventListener('input', function() {
-        if (this.value.length === 1) {
-          if (index < otpInputs.length - 1) {
-            otpInputs[index + 1].focus();
-          }
-        }
-      });
+    roleStudent.addEventListener('click', () => setRoleUI('student'));
+    roleFaculty.addEventListener('click', () => setRoleUI('faculty'));
 
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' && !this.value && index > 0) {
-          otpInputs[index - 1].focus();
-        }
-      });
-    });
-
-    // Handle login form submission
+    // Handle login form submission — redirect based on selected role
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      
-      // Show OTP section
-      otpSection.style.display = 'block';
-      loginForm.style.display = 'none';
-      
-      // Start timer
-      resendBtn.disabled = true;
-      const twoMinutes = 120;
-      startTimer(twoMinutes, timerSpan);
-
-      // Simulate sending OTP to email
-      console.log('OTP sent to:', email);
-      alert('OTP has been sent to ' + email);
-    });
-
-    // Handle resend OTP
-    resendBtn.addEventListener('click', function() {
-      resendBtn.disabled = true;
-      startTimer(120, timerSpan);
-      alert('New OTP has been sent to your email');
-    });
-
-    // Handle OTP verification
-    document.getElementById('verifyBtn').addEventListener('click', function() {
-      const otp = Array.from(otpInputs).map(input => input.value).join('');
-      
-      // For demo purposes, any 6-digit OTP is considered valid
-      if (otp.length === 6 && /^\d+$/.test(otp)) {
-        successMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        
-        // Redirect to dashboard after successful verification
-        setTimeout(() => {
-          try { localStorage.setItem('authToken','demo-token'); } catch(e){}
-          window.location.href = 'student-dashboard.html';
-        }, 1500);
+      try { localStorage.setItem('authToken','demo-token'); } catch(e){}
+      if (selectedRole === 'student') {
+        window.location.href = 'student-dashboard.html';
       } else {
-        successMessage.style.display = 'none';
-        errorMessage.style.display = 'block';
+        window.location.href = 'faculty-dashboard.html';
       }
     });
 
@@ -320,10 +293,13 @@
       window.location.href = 'student-dashboard.html';
     }
 
-    // Initialize Google Sign-In button
-    document.getElementById('googleSignIn').addEventListener('click', function() {
-      google.accounts.id.prompt();
-    });
+    // Initialize Google Sign-In button (if present)
+    const googleBtn = document.getElementById('googleSignIn');
+    if (googleBtn) {
+      googleBtn.addEventListener('click', function() {
+        if (window.google && google.accounts && google.accounts.id) google.accounts.id.prompt();
+      });
+    }
 
     // Load Google Sign-In when page loads
     loadGoogleSignIn();
