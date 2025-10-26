@@ -5,91 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus360 - Student Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        // early theme fallback: apply stored theme ASAP so CSS picks it up before render
+        (function(){
+            try{
+                const raw = localStorage.getItem('campus360_prefs');
+                if(!raw) return;
+                const prefs = JSON.parse(raw);
+                if(prefs && prefs.theme === 'dark'){
+                    try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
+                    try{ document.body.classList.add('dark-theme'); }catch(e){}
+                    try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+                }
+            }catch(e){}
+        })();
+    </script>
     <link rel="stylesheet" href="student-dashboard.css">
+    <script src="theme.js" defer></script>
 </head>
 <body>
+    <!-- App Sidebar -->
+    <aside class="app-sidebar" id="appSidebar" aria-label="Main navigation">
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="sidebar-item" data-target="student-dashboard.html" title="Home">
+                    <button class="sidebar-btn" data-href="student-dashboard.html">
+                        <!-- Home SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 10.5v7a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="sidebar-label">Home</span>
+                    </button>
+                </li>
+
+                <li class="sidebar-item" data-target="profile.html" title="Profile Overview">
+                    <button class="sidebar-btn" data-href="profile.html">
+                        <!-- User SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="sidebar-label">Profile</span>
+                    </button>
+                </li>
+
+                <li class="sidebar-item" data-target="exam-panel.html" title="Exam Panel">
+                    <button class="sidebar-btn" data-href="exam-panel.html">
+                        <!-- Exams SVG (book) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M21 4v14a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 17.5V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M8 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="sidebar-label">Exam Panel</span>
+                    </button>
+                </li>
+                
+                    <li class="sidebar-item" data-target="courses.html" title="Resources">
+                        <button class="sidebar-btn" data-href="courses.html">
+                            <!-- Resources SVG -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="sidebar-label">Resources</span>
+                        </button>
+                    </li>
+
+                <li class="sidebar-item" data-target="settings.html" title="Settings">
+                    <button class="sidebar-btn" data-href="settings.html">
+                        <!-- Settings SVG -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.8 1.8 0 0 0-2 .3l-.2.2a1 1 0 0 1-1.4 0l-.2-.2a1.8 1.8 0 0 0-2-.3l-.2.1a1 1 0 0 1-1-.2l-.1-.1a1.8 1.8 0 0 0-.3-2l-.1-.1a1 1 0 0 1 0-1.4l.1-.1a1.8 1.8 0 0 0 .3-2l-.1-.2a1 1 0 0 1 1.1-1.4l.2.1a1.8 1.8 0 0 0 2-.3l.2-.2a1 1 0 0 1 1.4 0l.2.2a1.8 1.8 0 0 0 2 .3l.2-.1a1 1 0 0 1 1 .2l.1.1a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1 0 1.4l-.1.1z" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="sidebar-label">Settings</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </aside>
     <!-- Main Content -->
     <div class="main-content">
         <!-- Theme Toggle Switch removed: toggling only from settings -->
-        <!-- Top Navigation Bar -->
-        <nav class="navbar-top">
-            <div class="navbar-container">
-                <div class="navbar-logo">
-                    <a href="intro.html" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
-                        <span class="navbar-title">STUDENT DASHBOARD</span>
-                    </a>
-                </div>
-                <ul class="navbar-menu">
-                    <li onclick="window.location.href='student-dashboard.html'" class="active">
-                        <span class="nav-icon">&#8962;</span> Home
-                    </li>
-                    <li onclick="window.location.href='profile.html'">
-                        <span class="nav-icon">&#128202;</span> Profile Overview
-                    </li>
-                    <li onclick="window.location.href='exam-panel.html'">
-                        <span class="nav-icon">&#9997;</span> Exam Panel
-                    </li>
-                    <li onclick="window.location.href='settings.html'">
-                        <span class="nav-icon">&#9881;</span> Settings
-                    </li>
-
-                </ul>
-            </div>
-        </nav>
+        <!-- Top Navigation Bar removed (sidebar used instead) -->
 
         <!-- Dashboard Container -->
         <div class="dashboard-container">
-            <!-- Dashboard Header -->
+            <!-- Dashboard Header: user topbar (shows logged-in name, settings, logout) -->
             <div class="dashboard-header">
-                <div class="header-left">
-                    <div class="header-info">
-                           <h1><span class="logo" aria-hidden="true">🎓</span> Welcome to Your Dashboard</h1>
-                        <p>Manage your academic journey with ease</p>
+                <div class="user-topbar">
+                    <div class="user-left">
+                        <div class="user-avatar" id="userAvatar" aria-hidden="true">👤</div>
+                        <div class="user-meta">
+                            <div class="user-name" id="topbarName">Student</div>
+                            <div class="user-role muted">Student portal</div>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <a href="settings.html" class="btn" title="Settings">Settings</a>
+                        <button onclick="logout()" class="btn logout-btn" title="Logout">Logout</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Main two-column layout: left stacked cards, right chatbot -->
+            <!-- Main two-column layout: left content grid, right updates + chatbot -->
             <div class="dashboard-main">
                 <div class="left-column">
-                    <!-- unified left-column card style: same palette/size -->
-                    <div class="left-card" id="openCourses" onclick="window.location.href='courses.html'">
-                        <div class="card-icon">📚</div>
-                        <div class="card-body">
-                            <h3 style="margin:0;color:#fff">Courses</h3>
-                            <p>View and manage your enrolled subjects</p>
-                        </div>
-                        <div class="card-arrow">›</div>
-                    </div>
-
-                    <div class="left-card" id="openTimetable" onclick="window.location.href='timetable.html'">
-                        <div class="card-icon">🗓️</div>
-                        <div class="card-body">
-                            <h3 style="margin:0;color:#fff">Timetable</h3>
-                            <p>View upcoming exams in a calendar</p>
-                        </div>
-                        <div class="card-arrow">›</div>
-                    </div>
-
-                    <div style="margin-top:6px;">
-                        <div class="left-card" onclick="window.location.href='seating.html'">
-                            <div class="seat-icon">💺</div>
+                    <!-- Welcome banner -->
+                    <div class="welcome-card left-card">
+                        <div class="welcome-inner">
                             <div>
-                                <h3>Seating Arrangement</h3>
-                                <p>View the seating layout for upcoming exams</p>
+                                <h2 style="margin:0;">Hello, <span id="userName">Student</span>!</h2>
+                                <p class="muted" style="margin:6px 0 0;">Ready for your day?</p>
                             </div>
-                            <div class="card-arrow">›</div>
+                            <div>
+                                <button class="btn" title="Notifications" id="notifBtn">
+                                    <!-- notification SVG -->
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Overview grid: two-column card layout -->
+                    <div class="overview-grid">
+                        <section class="card big-card next-exam left-card highlight-purple">
+                            <h3>Next Exam</h3>
+                            <div class="exam-progress">
+                                <div class="exam-progress-track">
+                                    <div class="exam-progress-fill" style="width:36%;"></div>
+                                </div>
+                                <div class="muted" style="margin-top:8px;">Database Systems (DDMS) - 3 Days Left</div>
+                            </div>
+                        </section>
+
+                        <section class="card small-card courses-card left-card highlight-blue">
+                            <h3>Courses</h3>
+                            <div id="recentCourse" style="margin-top:8px;">
+                                <a id="recentCourseLink" href="#" class="course-tile" aria-label="Open recent course">
+                                    <div class="tile-top">
+                                        <div style="display:flex;gap:12px;align-items:center">
+                                            <div class="tile-icon" aria-hidden="true">DS</div>
+                                            <div style="min-width:0">
+                                                <div id="recentCourseTitle" class="tile-title">No recent course</div>
+                                                <div class="tile-instructor muted">No recent attempts</div>
+                                            </div>
+                                        </div>
+                                        <div class="tile-code" id="recentCourseBadge">--</div>
+                                    </div>
+                                    <div class="progress-row">
+                                        <div class="course-progress" style="flex:1;margin-right:12px">
+                                            <div id="recentCourseProgress" class="progress-fill" style="width:0%"></div>
+                                        </div>
+                                        <div class="muted" id="recentCoursePercent">0%</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </section>
+
+                        <!-- timetable card removed (duplicate) -->
+
+                        <section class="card map-card seating-card left-card highlight-orange">
+                            <h3>Seating Plan</h3>
+                            <div id="reservedSeat" class="reserved-seat">
+                                <div class="muted">Loading reserved seat...</div>
+                            </div>
+                        </section>
+
+                        <section class="card table-card left-card highlight-teal">
+                            <h3>Timetable</h3>
+                            <div style="margin-top:8px;overflow:auto;">
+                                <table>
+                                    <tr><td>Mon</td><td>AI</td><td>9:00</td></tr>
+                                    <tr><td>Tue</td><td>DBMS</td><td>11:00</td></tr>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Large footer card removed per request -->
                 </div>
 
-                <!-- Chatbot card on the right -->
+                <!-- Right column: Important updates + Chatbot -->
                 <div class="right-column">
+                    <aside class="updates-card">
+                        <h4>Important Updates</h4>
+                        <ul class="updates-list">
+                            <li style="display:flex;gap:12px;align-items:flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" stroke="#7ec1ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div>New Seating Updates Posted</div></li>
+                            <li style="display:flex;gap:12px;align-items:flex-start;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 8c0-1.657-1.343-3-3-3H9a3 3 0 0 0 0 6h6c1.657 0 3-1.343 3-3zM6 20v-6" stroke="#7ec1ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Final Exam Schedule Released</div></li>
+                        </ul>
+                        <!-- Chat button removed; chatbot opens when robot face is clicked -->
+                    </aside>
+
                     <div id="chatOuter" class="chat-outer">
                         <div class="chat-header">
                             <div>
-                                <strong>Campus360 Chat</strong>
+                                <strong>Campus360 Chat Assistant</strong>
                                 <div class="muted">Ask about timetable, seating, or courses.</div>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px">
@@ -107,6 +220,10 @@
                             <button id="sendChat" class="btn primary">Send</button>
                         </div>
                     </div>
+
+                    <div class="chat-assistant-fab">
+                        <div id="chatFab" role="button" aria-label="Open Chat" class="chat-fab">🤖</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,15 +240,10 @@
 
         }
 
-        // Theme is now only toggled from settings page
+        // Use the central theme runtime API. Call it with the expected string values
+        // ('dark' or 'light') so we don't accidentally pass booleans that confuse
+        // the shared `theme.js` API. PREF_KEY is used to read persisted preference.
         const PREF_KEY = 'campus360_prefs';
-        function setTheme(dark) {
-            document.body.classList.toggle('dark-theme', dark);
-            const raw = localStorage.getItem(PREF_KEY);
-            let prefs = raw ? JSON.parse(raw) : { theme: dark ? 'dark' : 'light', notify: true };
-            prefs.theme = dark ? 'dark' : 'light';
-            localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
-        }
 
         // Logout function: clear client storage and go to login page
         function logout() {
@@ -147,7 +259,25 @@
             const CHAT_KEY = 'campus360_chat_msgs';
             function readMsgs() { try { return JSON.parse(localStorage.getItem(CHAT_KEY) || '[]'); } catch (e) { return []; } }
             function saveMsgs(m) { localStorage.setItem(CHAT_KEY, JSON.stringify(m)); }
-            function renderMsgs() { const win = document.getElementById('chatWindow'); if (!win) return; win.innerHTML = ''; const msgs = readMsgs(); msgs.forEach(m => { const d = document.createElement('div'); d.style.marginBottom = '8px'; if (m.role === 'user') { d.innerHTML = `<div style="text-align:right"><span style="display:inline-block;background:#e6f3ff;padding:8px;border-radius:10px;">${escapeHtml(m.text)}</span></div>` } else { d.innerHTML = `<div style="text-align:left"><span style="display:inline-block;background:#fff;padding:8px;border-radius:10px;border:1px solid #eef3ff;">${escapeHtml(m.text)}</span></div>` } win.appendChild(d); }); win.scrollTop = win.scrollHeight; }
+            function renderMsgs() {
+                const win = document.getElementById('chatWindow');
+                if (!win) return;
+                win.innerHTML = '';
+                const msgs = readMsgs();
+                msgs.forEach(m => {
+                    const d = document.createElement('div');
+                    d.style.marginBottom = '8px';
+                    const wrapper = document.createElement('div');
+                    wrapper.style.textAlign = (m.role === 'user') ? 'right' : 'left';
+                    const span = document.createElement('span');
+                    span.className = 'msg ' + (m.role === 'user' ? 'user' : 'bot');
+                    span.textContent = escapeHtml(m.text);
+                    wrapper.appendChild(span);
+                    d.appendChild(wrapper);
+                    win.appendChild(d);
+                });
+                win.scrollTop = win.scrollHeight;
+            }
             function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
             async function mockReply(text) {
                 // Professional reply generator that attempts to answer from site data (timetable/seating)
@@ -249,7 +379,19 @@ If you need further details, tell me the course or exact exam name.`;
                 // Polite fallback asking for clarification and examples
                 return `${greet} I didn't fully understand that. Could you please rephrase or provide more details? Examples you can try: "When is DBMS exam?", "Find seat for Roll 12345", or "DBMS resources".`;
             }
-            function sizeChat() { const outer = document.getElementById('chatOuter'); if (!outer) return; const topOffset = outer.getBoundingClientRect().top; const avail = window.innerHeight - topOffset - 24; outer.style.height = avail + 'px'; }
+            function sizeChat() { 
+                const outer = document.getElementById('chatOuter');
+                if (!outer) return;
+                const topOffset = outer.getBoundingClientRect().top;
+                const avail = Math.max(200, window.innerHeight - topOffset - 40);
+                // set maxHeight so chat stays within viewport; internal window will scroll
+                outer.style.maxHeight = avail + 'px';
+                const win = document.getElementById('chatWindow');
+                if (win) {
+                    // reserve ~120px for header+input
+                    win.style.maxHeight = Math.max(120, avail - 120) + 'px';
+                }
+            }
             document.addEventListener('DOMContentLoaded', function () {
                 sizeChat(); renderMsgs();
                 const send = document.getElementById('sendChat');
@@ -281,21 +423,153 @@ If you need further details, tell me the course or exact exam name.`;
             });
         })();
 
-        // Auto-apply dark mode from settings
+        // Auto-apply persisted theme (use central runtime API).
         document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
                 try {
                     const raw = localStorage.getItem(PREF_KEY);
-                    let dark = false;
+                    let theme = 'light';
                     if (raw) {
                         const prefs = JSON.parse(raw);
-                        dark = prefs.theme === 'dark';
+                        theme = prefs.theme === 'dark' ? 'dark' : 'light';
                     }
-                    setTheme(dark);
-                } catch (e) { setTheme(false); }
+                    if (window.setTheme && typeof window.setTheme === 'function') {
+                        try { window.setTheme(theme); } catch (e) { /* ignore */ }
+                    } else {
+                        // safe fallback if runtime missing: apply classes directly
+                        try { document.documentElement.classList.toggle('dark-theme', theme === 'dark'); } catch (e) {}
+                        try { if (document.body) document.body.classList.toggle('dark-theme', theme === 'dark'); } catch (e) {}
+                        try { document.documentElement.setAttribute('data-theme', theme); } catch (e) {}
+                    }
+                } catch (e) {
+                    try { if (window.setTheme) window.setTheme('light'); } catch (e) {}
+                }
             }, 0);
         });
+        
+                // Sidebar navigation: active state and click handling
+                (function () {
+                    function initSidebar() {
+                        const sidebar = document.getElementById('appSidebar');
+                        if (!sidebar) return;
+                        const items = sidebar.querySelectorAll('.sidebar-item');
+                        const current = window.location.pathname.split('/').pop() || 'student-dashboard.html';
+                        items.forEach(li => {
+                            const target = li.getAttribute('data-target');
+                            if (target === current) li.classList.add('active');
+                            const btn = li.querySelector('.sidebar-btn');
+                            if (btn) {
+                                btn.addEventListener('click', function () {
+                                    const href = btn.getAttribute('data-href');
+                                    // set active state
+                                    items.forEach(x => x.classList.remove('active'));
+                                    li.classList.add('active');
+                                    // navigate
+                                    if (href) window.location.href = href;
+                                });
+                                // keyboard: Enter/Space
+                                btn.addEventListener('keydown', function (e) {
+                                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+                                });
+                            }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', initSidebar);
+                })();
     </script>
+            <script>
+                // populate topbar and greeting with logged-in user's name/avatar
+                (function () {
+                    function populateUserTopbar() {
+                        try {
+                            const raw = localStorage.getItem('campus360_profile');
+                            const prof = raw ? JSON.parse(raw) : null;
+                            const name = prof && (prof.name || prof.fullName || prof.firstName) ? (prof.name || prof.fullName || prof.firstName) : (localStorage.getItem('campus360_user') || 'Student');
+                            const nameEls = document.querySelectorAll('#userName, #topbarName');
+                            nameEls.forEach(el => { if (el) el.innerText = name; });
+
+                            const avatar = document.getElementById('userAvatar');
+                            if (avatar) {
+                                if (prof && prof.avatarUrl) {
+                                    avatar.innerHTML = '';
+                                    const img = document.createElement('img');
+                                    img.src = prof.avatarUrl;
+                                    img.alt = name;
+                                    img.style.width = '100%'; img.style.height = '100%'; img.style.borderRadius = '50%'; img.style.objectFit = 'cover';
+                                    avatar.appendChild(img);
+                                } else {
+                                    const initials = (name.split(' ').map(n => n[0]).join('') || 'S').slice(0,2).toUpperCase();
+                                    avatar.textContent = initials;
+                                }
+                            }
+                        } catch (e) { /* ignore */ }
+                    }
+                    document.addEventListener('DOMContentLoaded', populateUserTopbar);
+
+                    // chatbot initially closed; open only when robot FAB is clicked
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const chatOuter = document.getElementById('chatOuter');
+                        if (chatOuter) chatOuter.classList.remove('visible');
+
+                        const fab = document.getElementById('chatFab');
+                        if (fab) {
+                            fab.addEventListener('click', function () {
+                                try {
+                                    if (!chatOuter) return;
+                                    const input = document.getElementById('chatInput');
+                                    const isVisible = chatOuter.classList.contains('visible');
+                                            if (isVisible) {
+                                                chatOuter.classList.remove('visible');
+                                            } else {
+                                                chatOuter.classList.add('visible');
+                                                // do not scroll the page; constrain chat height so it stays within the first screen
+                                                setTimeout(() => { if (input) input.focus(); }, 300);
+                                            }
+                                } catch (e) { }
+                            });
+                        }
+
+                        // notification button placeholder
+                        const nb = document.getElementById('notifBtn');
+                        if (nb) nb.addEventListener('click', function () { alert('No new notifications.'); });
+                        // populate dashboard cards (recent course, reserved seat)
+                            try {
+                                const recentRaw = localStorage.getItem('campus360_recent_course');
+                                const recent = recentRaw ? JSON.parse(recentRaw) : null;
+                                const recentTitle = document.getElementById('recentCourseTitle');
+                                const recentProg = document.getElementById('recentCourseProgress');
+                                const recentPercent = document.getElementById('recentCoursePercent');
+                                const recentBadge = document.getElementById('recentCourseBadge');
+                                const recentLink = document.getElementById('recentCourseLink');
+                                if (recent && recentTitle) {
+                                    recentTitle.innerText = recent.title || 'Recent Course';
+                                    if (recentProg) recentProg.style.width = (Number(recent.progress) || 0) + '%';
+                                    if (recentPercent) recentPercent.innerText = (Number(recent.progress) || 0) + '%';
+                                    if (recentBadge) recentBadge.innerText = recent.code || ((recent.title||'').slice(0,2).toUpperCase() || '--');
+                                    if (recentLink) recentLink.href = 'exam-panel.html';
+                                } else if (recentTitle) {
+                                    recentTitle.innerText = 'No recent course attempted';
+                                    if (recentProg) recentProg.style.width = '0%';
+                                    if (recentPercent) recentPercent.innerText = '0%';
+                                    if (recentBadge) recentBadge.innerText = '--';
+                                    if (recentLink) recentLink.href = '#';
+                                }
+                            
+
+                            const seatRaw = localStorage.getItem('campus360_reserved_seat');
+                            const seat = seatRaw ? JSON.parse(seatRaw) : null;
+                            const seatBox = document.getElementById('reservedSeat');
+                            if (seatBox) {
+                                if (seat) {
+                                    seatBox.innerHTML = `<div class="seating-info"><div><strong>${seat.course || 'Course'}</strong> — <span class="muted">${seat.date || ''} ${seat.time || ''}</span></div><div class="seat-badge">Seat ${seat.seat || 'N/A'}</div></div>`;
+                                } else {
+                                    seatBox.innerHTML = `<div class="muted">No reserved seat found for upcoming exams.</div>`;
+                                }
+                            }
+                        } catch (e) { /* ignore */ }
+                    });
+                })();
+            </script>
 </body>
 
 </html>

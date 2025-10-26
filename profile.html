@@ -6,22 +6,75 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Profile - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
+  <script>
+    (function(){
+      try{
+        const raw = localStorage.getItem('campus360_prefs');
+        if(!raw) return;
+        const prefs = JSON.parse(raw);
+        if(prefs && prefs.theme === 'dark'){
+          try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
+          try{ document.body.classList.add('dark-theme'); }catch(e){}
+          try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+        }
+      }catch(e){}
+    })();
+  </script>
+  <script src="theme.js" defer></script>
   
 </head>
 
 <body>
-  <nav class="navbar-top">
-    <div class="navbar-container">
-      <div class="navbar-logo">
-        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
-        <span class="navbar-title">PROFILE</span>
-      </div>
-      <ul class="navbar-menu">
-        <li onclick="window.location.href='student-dashboard.html'">&larr; Dashboard</li>
-        <li onclick="window.location.href='settings.html'">Settings</li>
+  <!-- App Sidebar (shared) -->
+  <aside class="app-sidebar" id="appSidebar" aria-label="Main navigation">
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="sidebar-item" data-target="student-dashboard.html" title="Home">
+          <button class="sidebar-btn" data-href="student-dashboard.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M5 10.5v7a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </li>
+        <li class="sidebar-item" data-target="profile.html" title="Profile Overview">
+          <button class="sidebar-btn" data-href="profile.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </li>
+        <li class="sidebar-item" data-target="exam-panel.html" title="Exam Panel">
+          <button class="sidebar-btn" data-href="exam-panel.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M21 4v14a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 17.5V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M8 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </li>
+        <li class="sidebar-item" data-target="courses.html" title="Resources">
+          <button class="sidebar-btn" data-href="courses.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </li>
+        <li class="sidebar-item" data-target="settings.html" title="Settings">
+          <button class="sidebar-btn" data-href="settings.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.8 1.8 0 0 0-2 .3l-.2.2a1 1 0 0 1-1.4 0l-.2-.2a1.8 1.8 0 0 0-2-.3l-.2.1a1 1 0 0 1-1-.2l-.1-.1a1.8 1.8 0 0 0-.3-2l-.1-.1a1 1 0 0 1 0-1.4l.1-.1a1.8 1.8 0 0 0 .3-2l-.1-.2a1 1 0 0 1 1.1-1.4l.2.1a1.8 1.8 0 0 0 2-.3l.2-.2a1 1 0 0 1 1.4 0l.2.2a1.8 1.8 0 0 0 2 .3l.2-.1a1 1 0 0 1 1 .2l.1.1a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1 0 1.4l-.1.1z" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </li>
       </ul>
-    </div>
-  </nav>
+    </nav>
+  </aside>
+  
+  <!-- top navbar removed in favor of sidebar navigation -->
 
   <main class="profile-page">
     <div class="profile-card">
@@ -234,6 +287,22 @@
             // previously applied theme: intentionally a no-op now
           }
         } catch (e) { }
+      });
+    })();
+  </script>
+  <script>
+    (function initSidebarPage(){
+      const sidebar = document.getElementById('appSidebar'); if(!sidebar) return;
+      const items = sidebar.querySelectorAll('.sidebar-item');
+      const current = window.location.pathname.split('/').pop() || 'profile.html';
+      items.forEach(li => {
+        const target = li.getAttribute('data-target');
+        if (target === current) li.classList.add('active');
+        const btn = li.querySelector('.sidebar-btn');
+        if (btn) {
+          btn.addEventListener('click', function () { items.forEach(x => x.classList.remove('active')); li.classList.add('active'); const href = btn.getAttribute('data-href'); if (href) window.location.href = href; });
+          btn.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); } });
+        }
       });
     })();
   </script>

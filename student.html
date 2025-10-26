@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Student - Campus360</title>
-		<link rel="stylesheet" href="student-dashboard.css">
+	<script>
+		(function(){
+			try{
+				const raw = localStorage.getItem('campus360_prefs');
+				if(!raw) return;
+				const prefs = JSON.parse(raw);
+				if(prefs && prefs.theme === 'dark'){
+					document.documentElement.classList.add('dark-theme');
+					try{ document.body.classList.add('dark-theme'); }catch(e){}
+					document.documentElement.setAttribute('data-theme','dark');
+				}
+			}catch(e){}
+		})();
+	</script>
+	<script src="theme.js" defer></script>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Student - Campus360</title>
+    	<link rel="stylesheet" href="student-dashboard.css">
 </head>
 <body>
 	<main style="padding:40px;">

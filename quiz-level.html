@@ -4,8 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quiz - Campus360</title>
-<link rel="stylesheet" href="student-dashboard.css">
-<style>
+  <script>
+    // early theme fallback: apply stored theme asap so CSS picks it up before render
+    (function(){
+      try{
+        const raw = localStorage.getItem('campus360_prefs');
+        if(!raw) return;
+        const prefs = JSON.parse(raw);
+        if(prefs && prefs.theme === 'dark'){
+          try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
+          try{ document.body.classList.add('dark-theme'); }catch(e){}
+          try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+        }
+      }catch(e){}
+    })();
+  </script>
+  <link rel="stylesheet" href="student-dashboard.css">
+  <script src="theme.js" defer></script>
+  <style>
   .quiz-page{max-width:900px;margin:84px auto;padding:20px}
   .quiz-header{display:flex;justify-content:space-between;align-items:center}
   .quiz-container{margin-top:18px}
@@ -15,6 +31,22 @@
   .wrong{background:#fff1f1}
   .muted{color:#666}
   .btn.primary{background:#4e54c8;color:#fff}
+
+  /* Dark mode overrides for quiz page (applies when .dark-theme is on <html> or <body>) */
+  .dark-theme .quiz-page { background: var(--dm-bg, #071025); color: var(--dm-text, #e6eef8); }
+  .dark-theme .quiz-question { background: var(--dm-card, #0f1724); color: var(--dm-text, #e6eef8); box-shadow: 0 6px 18px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); }
+  .dark-theme .quiz-opts label { color: var(--dm-text, #e6eef8); }
+  .dark-theme .muted { color: var(--dm-muted, #9aa0b2); }
+  .dark-theme .btn.primary { background: linear-gradient(90deg,#7c3aed,#37a9ff) !important; color: #fff !important; }
+  .dark-theme .navbar-top { background: var(--dm-surface, #0b1220) !important; }
+
+  /* Make correct/wrong highlights readable in dark mode and ensure result text contrasts */
+  .correct { background: #e6fff1 }
+  .wrong { background: #fff1f1 }
+  .dark-theme .correct { background: rgba(34,197,94,0.12) !important; color: var(--dm-text, #e6eef8) !important; border-left: 4px solid rgba(34,197,94,0.6); }
+  .dark-theme .wrong { background: rgba(239,68,68,0.08) !important; color: var(--dm-text, #e6eef8) !important; border-left: 4px solid rgba(239,68,68,0.6); }
+  .dark-theme #quizResult { color: var(--dm-text, #e6eef8) !important; }
+  .dark-theme .quiz-question h4 { color: var(--dm-text, #e6eef8) !important; }
 </style>
 </head>
 <body>
@@ -26,7 +58,12 @@
   </div>
 
   <div id="quizContainer" class="quiz-container"></div>
-  <div style="margin-top:12px;display:flex;gap:8px;align-items:center"><button id="evalBtn" class="btn primary">Evaluate</button><div id="quizResult" style="font-weight:700;margin-left:8px"></div></div>
+  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+    <button id="prevBtn" class="btn" style="display:none;">&larr; Previous</button>
+    <button id="nextBtn" class="btn">Next &rarr;</button>
+    <button id="evalBtn" class="btn primary" style="display:none;">Submit & Evaluate</button>
+    <div id="quizResult" style="font-weight:700;margin-left:8px"></div>
+  </div>
 </main>
 <script>
 function getQuery(n){ return new URLSearchParams(location.search).get(n); }
@@ -52,51 +89,120 @@ const LEVEL_QUIZ_DB = {
   medium: [], hard: []
 };
 
-const qlist = LEVEL_QUIZ_DB[level] || [];
+// Topic-specific question banks (overrides level-based DB when topic query param is present)
+const TOPIC_QUIZ_DB = {
+  'Loop': [
+    { q: 'What will happen if the condition in a for loop is always true and there is no break statement inside it?', opts: ['The loop executes only once','The program crashes immediately','The loop runs infinitely until stopped manually','The compiler throws an error'], a: 2 },
+    { q: 'In Java, how many times is the initialization part of a for loop executed?', opts: ['Every iteration','Once before the loop starts','Every time the condition is true','Once after the loop ends'], a: 1 },
+    { q: 'Which of the following statements about do-while and while loops is true?', opts: ['while loop executes at least once','do-while loop may not execute even once','do-while loop executes at least once regardless of condition','Both loops behave identically'], a: 2 },
+    { q: 'Consider nested loops: for (int i = 0; i < n; i++) for (int j = 0; j < n; j++); What is the time complexity of this code?', opts: ['O(n)','O(n²)','O(2n)','O(log n)'], a: 1 },
+    { q: 'Which of the following is NOT valid in Java?', opts: ['for(;;)','for(int i=0; ; i++)','for(; i<10; )','for(int i=0, j=10; i<j; i++, j--) System.out.println(i+j);'], a: 3 },
+
+    // Part B: Output based
+    { q: 'for(int i=0; i<5; i++);\nSystem.out.println(i); What is the output?', opts: ['5','4','Compilation error','Infinite loop'], a: 0 },
+    { q: 'int i = 0;\nwhile(i < 3) {\n   System.out.print(i);\n   i++;\n}\nWhat is the output?', opts: ['123','012','013','Infinite loop'], a: 1 },
+    { q: 'int i = 0;\ndo {\n   System.out.print(i);\n   i++;\n} while(i < 0);\nWhat is the output?', opts: ['0','None','Infinite loop','No output'], a: 0 },
+    { q: 'What is the output of the nested star loop that prints a triangle of height 3?', opts: ['*\n**\n***','\n**\n*','', 'Compilation error'], a: 0 },
+    { q: 'int sum = 0;\nfor(int i=1; i<=5; i++) {\n   if(i%2==0)\n      continue;\n   sum += i;\n}\nSystem.out.println(sum); What is the output?', opts: ['15','9','10','12'], a: 1 }
+  ],
+
+  'Recursion': [
+    { q: 'What is recursion in programming?', opts: ['A loop that repeats until condition','A function calling itself','A data structure','A conditional statement'], a: 1 },
+    { q: 'Why is a base case necessary in recursion?', opts: ['To improve performance','To prevent infinite recursion and terminate calls','To allow multiple return types','To manage memory allocation'], a: 1 },
+    { q: 'What is the output of: int fact(int n){ if(n<=1) return 1; return n*fact(n-1);} System.out.println(fact(5));', opts: ['120','24','720','60'], a: 0 },
+    { q: 'What is the time complexity of the naive recursive Fibonacci implementation?', opts: ['O(n)','O(n²)','O(2^n)','O(log n)'], a: 2 },
+    { q: 'Which definition describes tail recursion?', opts: ['A recursive call performed as the last operation in a function','A recursion with multiple recursive calls','Recursion that uses loops internally','Recursion that never returns'], a: 0 },
+    { q: 'Which of these implementations is tail-recursive?', opts: ['int sum(int n){ if(n==0) return 0; return n + sum(n-1);}','int sumTail(int n,int acc){ if(n==0) return acc; return sumTail(n-1,acc+n);}','Both','None'], a: 1 },
+    { q: 'What typically causes a StackOverflowError during recursion in Java?', opts: ['Too many local variables','Deep recursion exceeding call stack','Syntax errors','Missing return statements'], a: 1 },
+    { q: 'What is the output of: int fib(int n){ if(n<=1) return n; return fib(n-1)+fib(n-2);} System.out.println(fib(4));', opts: ['2','3','5','1'], a: 1 },
+    { q: 'Recursion is especially useful for which data structure?', opts: ['Arrays','Linked Lists','Trees','HashMaps'], a: 2 },
+    { q: 'Which statement is true about recursion vs iteration?', opts: ['Recursion is always faster','Iteration uses more memory','Recursion can be more intuitive for divide-and-conquer problems','Recursion cannot be converted to iteration'], a: 2 }
+  ]
+};
+
+const topic = getQuery('topic') || '';
+const qlist = (topic && TOPIC_QUIZ_DB[topic]) ? TOPIC_QUIZ_DB[topic] : (LEVEL_QUIZ_DB[level] || []);
 const container = document.getElementById('quizContainer');
-if(!qlist.length){ container.innerHTML = '<p class="muted">No questions for this level.</p>'; }
-else{
-  qlist.forEach((item,idx)=>{
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const evalBtn = document.getElementById('evalBtn');
+const resultEl = document.getElementById('quizResult');
+
+let currentIndex = 0;
+let answers = Array(qlist.length).fill(null);
+
+function renderQuestion(i){
+  container.innerHTML = '';
+  if(!qlist.length){ container.innerHTML = '<p class="muted">No questions for this level.</p>'; prevBtn.style.display='none'; nextBtn.style.display='none'; evalBtn.style.display='none'; return; }
+  const item = qlist[i];
+  const div = document.createElement('div'); div.className='quiz-question';
+  const h = document.createElement('h4'); h.textContent = (i+1)+'. '+item.q; div.appendChild(h);
+  const opts = document.createElement('div'); opts.className='quiz-opts';
+  item.opts.forEach((o,optIdx)=>{
+    const id = `q${i}_o${optIdx}`;
+    const checked = answers[i] === optIdx ? 'checked' : '';
+    opts.innerHTML += `<label data-opt="${optIdx}"><input type="radio" name="q${i}" value="${optIdx}" style="margin-right:8px" ${checked}> ${o}</label>`;
+  });
+  div.appendChild(opts);
+  container.appendChild(div);
+
+  // store selection when changed
+  container.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', function(){
+    answers[i] = parseInt(this.value,10);
+  }));
+
+  // update nav visibility
+  prevBtn.style.display = i > 0 ? 'inline-block' : 'none';
+  nextBtn.style.display = i < qlist.length - 1 ? 'inline-block' : 'none';
+  evalBtn.style.display = i === qlist.length - 1 ? 'inline-block' : 'none';
+  resultEl.textContent = '';
+}
+
+function renderReview(results){
+  // show all questions with correct/wrong highlights
+  container.innerHTML = '';
+  results.forEach(r => {
+    const item = qlist[r.idx];
     const div = document.createElement('div'); div.className='quiz-question';
-    const h = document.createElement('h4'); h.textContent = (idx+1)+'. '+item.q; div.appendChild(h);
+    const h = document.createElement('h4'); h.textContent = (r.idx+1)+'. '+item.q; div.appendChild(h);
     const opts = document.createElement('div'); opts.className='quiz-opts';
-    item.opts.forEach((o,i)=>{ opts.innerHTML += `<label data-idx="${idx}" data-opt="${i}"><input type="radio" name="q${idx}" value="${i}" style="margin-right:8px"> ${o}</label>`; });
-    div.appendChild(opts); container.appendChild(div);
-  });
-}
-
-function highlightResults(results){
-  // results: array of {idx, correctOpt, selected}
-  results.forEach(r=>{
-    const qWrap = container.querySelectorAll('.quiz-question')[r.idx];
-    if(!qWrap) return;
-    const labels = qWrap.querySelectorAll('label');
-    labels.forEach(lbl=>{
-      const opt = parseInt(lbl.getAttribute('data-opt'),10);
-      lbl.classList.remove('correct','wrong');
-      if(opt === r.correctOpt){ lbl.classList.add('correct'); }
-      if(r.selected !== null && opt === r.selected && r.selected !== r.correctOpt){ lbl.classList.add('wrong'); }
+    item.opts.forEach((o,optIdx)=>{
+      const lbl = document.createElement('label'); lbl.style.display='block'; lbl.style.marginTop='6px';
+      lbl.textContent = ' ' + o;
+      lbl.insertAdjacentHTML('afterbegin', `<input type="radio" disabled style="margin-right:8px">`);
+      if(optIdx === r.correctOpt) lbl.classList.add('correct');
+      if(r.selected !== null && optIdx === r.selected && r.selected !== r.correctOpt) lbl.classList.add('wrong');
+      opts.appendChild(lbl);
     });
+    div.appendChild(opts);
+    container.appendChild(div);
   });
+  // hide nav in review
+  prevBtn.style.display='none'; nextBtn.style.display='none'; evalBtn.style.display='none';
 }
 
-document.getElementById('evalBtn').addEventListener('click', function(){
+// initial render
+renderQuestion(currentIndex);
+
+prevBtn.addEventListener('click', ()=>{ if(currentIndex>0){ currentIndex--; renderQuestion(currentIndex); } });
+nextBtn.addEventListener('click', ()=>{ if(currentIndex<qlist.length-1){ currentIndex++; renderQuestion(currentIndex); } });
+
+evalBtn.addEventListener('click', function(){
   if(!qlist.length) return;
   const results = [];
   let score = 0;
   qlist.forEach((item, idx)=>{
-    const sel = container.querySelector(`input[name='q${idx}']:checked`);
-    const selected = sel ? parseInt(sel.value,10) : null;
+    const selected = answers[idx] !== null ? answers[idx] : null;
     if(selected === item.a) score++;
     results.push({ idx, correctOpt: item.a, selected });
   });
   const pct = Math.round((score/qlist.length)*100);
-  document.getElementById('quizResult').textContent = `${score}/${qlist.length} (${pct}%)`;
-  highlightResults(results);
+  resultEl.textContent = `${score}/${qlist.length} (${pct}%)`;
   // update best
   try{ const key = 'course_level_best_'+level+'_'+courseName; const prev = parseInt(localStorage.getItem(key)||'0',10); if(pct>prev) localStorage.setItem(key,pct); }catch(e){}
   // increase completion by 10% per attempt (capped at 100)
   try{ const PROG_KEY = 'course_progress_'+courseName; let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10); p = Math.min(100, p + 10); localStorage.setItem(PROG_KEY, p); }catch(e){}
+  renderReview(results);
 });
 
 </script>

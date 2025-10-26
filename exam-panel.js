@@ -266,6 +266,20 @@ function saveAnswer() {
             questionStatus[currentQIndex] = 1;
             delete userAnswers[qID];
         }
+        // Persist a lightweight "recent course" entry so dashboard can show live progress
+        try {
+            if (currentExamName) {
+                const attempted = questionStatus.filter(s => s === 2).length;
+                const progressPercent = Math.round((attempted / totalQuestions) * 100);
+                const recent = {
+                    title: currentExamName,
+                    progress: progressPercent,
+                    // badge code is first 2 letters of exam name (fallback)
+                    code: (currentExamName && String(currentExamName).slice(0,2).toUpperCase()) || '--'
+                };
+                localStorage.setItem('campus360_recent_course', JSON.stringify(recent));
+            }
+        } catch (e) { /* ignore storage errors */ }
     }
 }
 function navigateQuestion(direction) {
@@ -399,6 +413,17 @@ function submitFinalExam(isAutoSubmit = false) {
     // 2. Hide the main exam panel
     document.getElementById('exam-panel-modal').style.display = 'none';  
     // 3. Move the card from Upcoming to Completed
+    // Persist final completed course as the most recent attempt (100% progress)
+    try {
+        if (currentExamName) {
+            const recentFinal = {
+                title: currentExamName,
+                progress: 100,
+                code: (currentExamName && String(currentExamName).slice(0,2).toUpperCase()) || '--'
+            };
+            localStorage.setItem('campus360_recent_course', JSON.stringify(recentFinal));
+        }
+    } catch (e) { /* ignore */ }
     moveExamCard(currentExamName, currentExamCardId);
     // 4. Show final confirmation pop-up
     document.getElementById('submitted-exam-title').textContent = currentExamName;

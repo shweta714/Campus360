@@ -2,123 +2,8 @@
 .navbar-top {
     width: 100%;
     background: #6403ca;
-    box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
-    padding: 0.7rem 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-}
 
-/* Reserve space for the fixed navbar so page content doesn't sit underneath it */
-body {
-    padding-top: 64px; /* matches navbar approximate height */
-}
-
-/* Center main headings so they sit nicely below the fixed navbar */
-main > h1, .main-content > h1 {
-    text-align: center;
-    margin-top: 6px;
-    margin-bottom: 8px;
-    font-size: 1.8rem;
-    color: #2b2b6b;
-}
-
-.navbar-container {
-    /* center navbar content and keep a comfortable page width */
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-}
-
-/* Navbar menu and logo improvements */
-.navbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-    font-weight: 700;
-}
-
-.navbar-logo img {
-    height: 28px;
-    width: auto;
-    display: inline-block;
-}
-
-.navbar-title {
-    color: #fff;
-    font-size: 0.98rem;
-    letter-spacing: 0.6px;
-}
-
-.navbar-menu {
-    list-style: none;
-    display: flex;
-    gap: 12px;
-    margin: 0;
-    padding: 0;
-    align-items: center;
-}
-
-.navbar-menu li {
-    color: #fff;
-    padding: 8px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background .12s ease, transform .06s ease;
-}
-
-.navbar-menu li:hover {
-    background: rgba(255,255,255,0.06);
-    transform: translateY(-1px);
-}
-
-.navbar-menu li.active {
-    background: rgba(255,255,255,0.10);
-}
-
-/* Mobile: stack navbar items under the brand */
-@media (max-width: 900px) {
-    .navbar-container {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 8px 12px;
-    }
-    .navbar-logo {
-        justify-content: space-between;
-        width: 100%;
-    }
-    .navbar-menu {
-        flex-direction: column;
-        gap: 6px;
-        margin-top: 8px;
-    }
-    .navbar-menu li {
-        padding: 10px 12px;
-    }
-}
-
-/* Mobile nav toggle */
-.nav-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.06);
-    color: #fff;
-    border: none;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    min-width: 44px; /* ensure comfortable touch target */
-    min-height: 44px;
+    z-index: 1; /* Ensure card is above other elements */
 }
 
 /* Hide the toggle on wide screens */
@@ -142,6 +27,12 @@ main > h1, .main-content > h1 {
 }
 .courses-hero {
     box-shadow: 0 8px 30px rgba(16, 24, 40, 0.06);
+    /* make hero span across the page (not centered) so tiles can be full-bleed
+       content will be offset from the fixed sidebar using left margin */
+    margin-top: 24px;
+    margin-left: 120px; /* leave room for the fixed sidebar */
+    margin-right: 48px;
+    max-width: none;
 }
 
 .profile-left {
@@ -450,6 +341,9 @@ label textarea {
     gap: 6px; /* icon to text spacing */
     justify-content: center;
     margin: 0; /* remove default h1 margins so spacing is controlled by flex gap */
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #f8fafc;
 }
 
 .dashboard-header .header-info h1 .logo {
@@ -462,7 +356,15 @@ label textarea {
 .dashboard-header .header-info p {
     margin: 0; /* remove default p margin */
     margin-top: 2px; /* micro spacing to keep text close but readable */
-    color: #666;
+    color: #9ac7ff;
+    font-size: 0.98rem;
+}
+
+/* Large page title area (mimic the reference) */
+.dashboard-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 24px 36px;
 }
 
 @media (max-width: 640px) {
@@ -798,17 +700,17 @@ label textarea {
 }
 
 .courses-hero .hero-left {
-    /* Centered card-like hero (restored): constrained width, softer backdrop */
+    /* Wide hero: span full available width inside the hero container */
     flex: none;
     width: 100%;
-    max-width: 880px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.35));
+    max-width: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
     padding: 22px;
     border-radius: 12px;
     backdrop-filter: blur(6px);
     box-shadow: 0 8px 30px rgba(11, 12, 28, 0.06);
-    margin: 0 auto; /* center the hero section */
-    position: static; /* ensure it scrolls normally and remains centered */
+    margin: 0; /* not centered; spans from left margin to right margin */
+    position: static;
 }
 
 .courses-hero .hero-left h1 {
@@ -864,10 +766,79 @@ label textarea {
 
 .course-grid {
     display: grid;
-    /* Aim for 3 cards per row on wide screens, with a sensible min width */
-    grid-template-columns: repeat(3, minmax(240px, 1fr));
+    /* Full-width cards: one column so each tile spans available width */
+    grid-template-columns: 1fr;
     gap: 18px;
 }
+
+/* New course tile style that matches the reference (white cards with icon badge and progress) */
+.course-tile {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 28px rgba(12,13,20,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #0b1220;
+}
+.course-tile .tile-top {
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.course-tile .tile-icon{
+    width:48px;height:48px;border-radius:10px;display:grid;place-items:center;font-size:22px;background:linear-gradient(90deg,#60a5fa,#7c3aed);color:#fff;flex:0 0 48px;
+}
+.course-tile .tile-code{
+    margin-left:auto;background:#f3f4f6;padding:6px 10px;border-radius:999px;font-size:12px;color:#374151;font-weight:700;
+}
+.course-tile .tile-title{font-size:1.15rem;margin:0;color:#0b1220;font-weight:700}
+.course-tile .tile-instructor{font-size:0.95rem;color:#6b7280}
+.course-tile .tile-meta{display:flex;flex-direction:column;gap:6px;font-size:0.95rem;color:#6b7280}
+.course-tile .progress-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:#0b1220}
+.course-tile .progress-bar{height:10px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+.course-tile .progress-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#7c3aed)}
+.course-tile .view-btn{margin-top:8px;padding:12px;border-radius:10px;border:1px solid rgba(12,13,20,0.04);background:#f8fafc;color:#0b1220;font-weight:700;cursor:pointer}
+.course-tile .view-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(12,13,20,0.06)}
+
+/* Ensure recent course tile is readable when placed inside the left-card (highlighted) */
+.courses-card .course-tile {
+    display: block;
+    text-decoration: none; /* remove default link underline */
+    background: rgba(255,255,255,0.06); /* slight contrast against left-card */
+    color: #e6eef8 !important;
+    padding: 10px; border-radius: 10px;
+}
+.courses-card .course-tile .tile-title,
+.courses-card .course-tile .tile-instructor,
+.courses-card .course-tile .tile-code,
+.courses-card .course-tile .progress-row {
+    color: #e6eef8 !important;
+}
+.courses-card .course-tile .tile-code {
+    background: rgba(255,255,255,0.08) !important;
+    color: #0b1220 !important;
+}
+
+/* Dark theme: make tile slightly darker but keep text bright */
+.dark-theme .courses-card .course-tile {
+    background: rgba(255,255,255,0.02) !important;
+    color: var(--dm-text) !important;
+}
+.dark-theme .courses-card .course-tile .tile-title,
+.dark-theme .courses-card .course-tile .tile-instructor,
+.dark-theme .courses-card .course-tile .progress-row {
+    color: var(--dm-text) !important;
+}
+.dark-theme .courses-card .course-tile .tile-code {
+    background: rgba(255,255,255,0.06) !important;
+    color: #0b1220 !important;
+}
+
+@media (max-width:900px){
+    /* on small screens keep single column but slightly reduce gaps */
+    .course-grid{grid-template-columns: 1fr; gap: 12px;}
+}
+
 
 .course-card-grid {
     position: relative;
@@ -1089,8 +1060,8 @@ label textarea {
 }
 
 .left-column {
-    width: 720px;
-    max-width: 68%;
+    width: 760px;
+    max-width: 70%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -1237,12 +1208,27 @@ label textarea {
 }
 
 .chat-outer {
-    background: #fff;
-    border-radius: 12px;
+    background: linear-gradient(180deg,#0b1220,#0d1626);
+    border-radius: 14px;
     padding: 12px;
-    box-shadow: 0 12px 40px rgba(16, 24, 40, 0.06);
-    display: flex;
+    box-shadow: 0 30px 80px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    display: none; /* hidden by default; opened via FAB */
     flex-direction: column;
+    color: #e6eef8;
+    border: 1px solid rgba(255,255,255,0.03);
+    /* constrain chat to viewport so opening it doesn't push the page down */
+    max-height: calc(100vh - 120px);
+    overflow: hidden;
+    position: sticky;
+    top: 80px; /* keep it visible within the first screen */
+}
+
+.chat-outer.visible { display: flex; }
+
+/* internal window should scroll when content exceeds available height */
+.chat-outer .chat-window {
+    overflow: auto;
+    max-height: calc(100vh - 220px);
 }
 
 .chat-header {
@@ -1254,11 +1240,12 @@ label textarea {
 .chat-window {
     flex: 1;
     overflow: auto;
-    padding: 10px;
+    padding: 14px;
     margin-top: 10px;
-    border-radius: 8px;
-    background: #f7f9fc;
-    border: 1px solid #eef3ff;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.03);
+    color: #dbe9ff;
 }
 
 .chat-input-row {
@@ -1270,13 +1257,23 @@ label textarea {
 .chat-input-row input {
     flex: 1;
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #e6eaf7;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    color: #e6eef8;
 }
 
 .chat-input-row .btn.primary {
     padding: 10px 14px;
 }
+
+/* Chat message bubbles (used by student-dashboard renderMsgs) */
+.chat-window .msg { margin:8px 0; max-width:85%; padding:8px 10px; border-radius:8px; display:inline-block; }
+.chat-window .msg.user { background: linear-gradient(90deg,#7c3aed,#06b6d4); color:#fff; margin-left:auto; }
+.chat-window .msg.bot { background:#fff; border:1px solid #eef3ff; color:#222; }
+
+.dark-theme .chat-window .msg.bot { background: var(--dm-card) !important; color: var(--dm-text) !important; border:1px solid rgba(255,255,255,0.03) !important; }
+.dark-theme .chat-window .msg.user { box-shadow: none; }
 
 @media(max-width:900px) {
     .dashboard-main {
@@ -1385,3 +1382,639 @@ label textarea {
 /* Attachments / notes list styling */
 .resource-list { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-direction: column; gap: 8px; }
 .resource-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 10px; background: linear-gradient(180deg,#fff,#fbfbff); }
+
+/* App Sidebar (left) */
+.app-sidebar {
+    position: fixed;
+    left: 16px;
+    top: 24px; /* align below page chrome now that top navbar is gone */
+    bottom: 24px;
+    width: 76px; /* slightly wider for icon comfort */
+    background: linear-gradient(180deg, rgba(8,12,20,0.9), rgba(6,10,18,0.88));
+    border-radius: 0 14px 14px 0; /* rounded right edge like reference */
+    box-shadow: 0 24px 60px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 120;
+    display: flex;
+    align-items: stretch;
+    padding: 14px 8px;
+    transition: width 240ms cubic-bezier(.2,.9,.2,1), box-shadow 240ms ease;
+}
+
+.sidebar-nav { width: 100%; overflow: auto; }
+.sidebar-nav ul { list-style: none; padding: 6px 4px; margin: 0; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.sidebar-item { width: 100%; position: relative; }
+.sidebar-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+}
+.sidebar-btn svg { display: block; color: #cbd5e1; }
+.sidebar-label {
+    display: inline-block;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+}
+
+.sidebar-item.active .sidebar-btn {
+    background: linear-gradient(90deg, rgba(6,46,79,0.16), rgba(12,32,54,0.12));
+    color: #fff;
+}
+
+/* vertical highlight strip */
+.sidebar-item.active::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    width: 6px;
+    height: 48px;
+    top: calc(50% - 24px);
+    background: linear-gradient(180deg, #06b6d4, #7c3aed);
+    border-radius: 6px;
+    box-shadow: 0 12px 30px rgba(92, 77, 255, 0.28), 0 4px 14px rgba(6,182,212,0.06) inset;
+}
+
+/* custom scrollbar for sidebar */
+.sidebar-nav::-webkit-scrollbar { width: 8px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#1f2937,#0b1220); border-radius: 8px; border: 2px solid rgba(0,0,0,0); }
+
+/* make room for the sidebar by shifting main layout when the sidebar is visible */
+/* Sidebar is hidden on small screens (<=900px). Apply left margin at widths
+   where the sidebar is shown so content does not sit under it. */
+@media (min-width: 900px) {
+    /* keep main content offset from the sidebar (collapsed width + gap) */
+    /* Apply to several common top-level containers so pages that use different
+       wrapper classes (main, .profile-page, .dashboard-container) are covered. */
+    .main-content,
+    main,
+    .profile-page,
+    .dashboard-container {
+        margin-left: 100px;
+        transition: margin 160ms ease;
+    }
+
+    /* When the sidebar expands (hover or explicit .expanded), push the main
+       container further to avoid overlap. Target the common container selectors
+       as general siblings of the aside so the content shifts regardless of the
+       specific wrapper class used by the page. */
+    .app-sidebar:hover ~ .main-content,
+    .app-sidebar.expanded ~ .main-content,
+    .app-sidebar:hover ~ main,
+    .app-sidebar.expanded ~ main,
+    .app-sidebar:hover ~ .profile-page,
+    .app-sidebar.expanded ~ .profile-page,
+    .app-sidebar:hover ~ .dashboard-container,
+    .app-sidebar.expanded ~ .dashboard-container {
+        margin-left: 244px; /* 220px sidebar + 24px gap */
+        transition: margin 200ms cubic-bezier(.2,.9,.2,1);
+    }
+}
+
+/* shrink sidebar on small screens */
+@media (max-width: 900px) {
+    /* hide the vertical sidebar on small screens; pages may show a top nav instead */
+    .app-sidebar { display: none; }
+    .main-content { margin-left: 0; }
+}
+
+/* keyboard focus */
+.sidebar-btn:focus { outline: none; box-shadow: 0 6px 18px rgba(124,58,237,0.12); }
+
+/* reveal labels on hover for discoverability */
+/* reveal labels visually when sidebar is hovered (or when .expanded is present) */
+.app-sidebar:hover { width: 220px; }
+.app-sidebar:hover .sidebar-label,
+.app-sidebar.expanded .sidebar-label {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+/* show a subtle chevron or pill to emphasize label area (using pseudo element of the button) */
+.sidebar-btn::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 120ms ease;
+
+/* When showing the courses list we want the section to be full-bleed
+   (edge-to-edge between the fixed sidebar and the right viewport edge).
+   Add a page-scoped modifier so this doesn't affect other profile pages. */
+.profile-page.courses-page {
+    justify-content: flex-start; /* align content to left so hero can expand */
+    padding-left: 24px;
+}
+
+/* Make the courses hero span the viewport horizontally while leaving
+   room for the fixed sidebar on the left. Using viewport units avoids
+   being constrained by a centered parent. */
+.profile-page.courses-page .courses-hero {
+    margin-top: 24px;
+    margin-left: calc(16px + 76px + 12px); /* left offset: left gap + sidebar width + small gutter */
+    margin-right: 16px;
+    width: calc(100vw - (16px + 76px + 12px) - 16px); /* full viewport minus left offset and right margin */
+    max-width: none;
+}
+
+/* Ensure course tiles stretch to fill the hero area */
+.profile-page.courses-page .course-grid,
+.profile-page.courses-page .course-grid .course-tile {
+    width: 100%;
+}
+
+/* Make the action button align to the right but not force a narrow card */
+.profile-page.courses-page .course-tile .view-btn {
+    min-width: 140px;
+}
+}
+.app-sidebar:hover .sidebar-btn::after { opacity: 0.06; }
+
+/* make svg icons slightly larger for clarity */
+.sidebar-btn svg { width: 28px; height: 28px; }
+
+/* ensure the activated icon is highlighted */
+.sidebar-item.active svg { color: #fff; }
+
+/* small accessibility tweak: visible focus ring when keyboard navigating */
+.sidebar-btn:focus-visible { box-shadow: 0 0 0 4px rgba(7,89,133,0.18); }
+
+/* Stat grid (top of left column) - three matte cards */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    align-items: stretch;
+}
+
+.stat-card {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 18px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    color: #e6eef8;
+    box-shadow: 0 18px 40px rgba(3,6,18,0.6);
+    text-decoration: none;
+    overflow: visible;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+/* stat-card accent: full-height rounded vertical strip on the left + soft halo */
+.stat-card { padding-left: 28px; }
+.stat-card::before {
+    /* left vertical rounded accent */
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: 10px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(6,182,212,0.9), rgba(124,58,237,0.9));
+    box-shadow: 0 10px 30px rgba(92, 77, 255, 0.14), inset 0 2px 6px rgba(255,255,255,0.02);
+    pointer-events: none;
+    z-index: 0;
+}
+.stat-card::after {
+    /* soft merged halo behind the card to remove any visible straight border */
+    content: '';
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: -8px;
+    bottom: -8px;
+    border-radius: 18px;
+    background: radial-gradient(100% 80% at 6% 50%, rgba(6,182,212,0.12), transparent 18%),
+                radial-gradient(100% 80% at 94% 50%, rgba(124,58,237,0.08), transparent 20%);
+    filter: blur(12px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ensure content sits above pseudo elements */
+.stat-card > * { position: relative; z-index: 2; }
+
+.stat-card:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(6,8,30,0.75); }
+
+.stat-card .stat-icon { width: 64px; height: 64px; display:flex; align-items:center; justify-content:center; border-radius:12px; background: linear-gradient(135deg, rgba(124,58,237,0.14), rgba(6,182,212,0.06)); color:#fff; z-index:2; }
+.stat-card .stat-body { display:flex; flex-direction:column; z-index:2; }
+.stat-card .stat-title { font-weight:700; font-size:1.05rem; color:#fff; }
+.stat-card .stat-sub { font-size:0.9rem; color:#9fb9dd; margin-top:6px; }
+
+@media (max-width: 900px) {
+    .stat-grid { grid-template-columns: 1fr; }
+}
+
+/* New dashboard structure styles */
+.welcome-card {
+    padding: 18px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 18px 40px rgba(3,6,18,0.6);
+    position: relative;
+}
+
+/* Top user bar (inside dashboard) */
+.user-topbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 12px 30px rgba(3,6,18,0.5);
+    margin-bottom: 12px;
+}
+
+/* Layout: place avatar and name side-by-side (avatar on left, name/meta on the right) */
+.user-left {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* space between avatar and meta */
+}
+
+.user-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* allow text to ellipsize if needed */
+}
+
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(90deg,#7c3aed,#06b6d4);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight:700;
+    box-shadow: 0 8px 20px rgba(7,10,20,0.6);
+}
+
+.welcome-deco {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    font-size: 42px;
+    opacity: 0.12;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 18px rgba(124,58,237,0.06));
+}
+
+.open-chat-btn { font-weight:700; }
+
+.chat-highlight { box-shadow: 0 0 0 6px rgba(124,58,237,0.08); transition: box-shadow 320ms ease; }
+
+/* notification button accent to match primary gradient */
+#notifBtn {
+    border: 1px solid rgba(124,58,237,0.28);
+    box-shadow: inset 0 -6px 18px rgba(7,12,30,0.06), 0 6px 18px rgba(124,58,237,0.04);
+}
+
+.user-meta .user-name { font-size: 1rem; }
+.user-meta .user-role { font-size: 12px; color: #9fb9dd; }
+
+@media (max-width: 900px) {
+    .user-topbar { padding: 10px; flex-direction: row; gap: 8px; }
+    .user-avatar { width: 40px; height: 40px; }
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+}
+/* colored highlight accent for cards: turn the small marker into a full-height rounded strip
+   and add a soft blended halo so there are no visible straight border lines */
+.card::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: 10px;
+    border-radius: 10px;
+    opacity: 1;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.24), inset 0 2px 6px rgba(255,255,255,0.02);
+    z-index: 0;
+}
+.card::after {
+    /* soft merged halo behind the card to avoid straight-edge appearance */
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: -12px;
+    right: -12px;
+    bottom: -12px;
+    border-radius: 18px;
+    z-index: 0;
+    background: radial-gradient(100% 70% at 6% 50%, rgba(6,182,212,0.08), transparent 18%),
+                radial-gradient(100% 70% at 94% 50%, rgba(124,58,237,0.06), transparent 20%);
+    filter: blur(14px);
+    opacity: 0.12;
+    pointer-events: none;
+}
+.highlight-teal::before { background: linear-gradient(180deg,#06b6d4,#38d9ff); }
+.highlight-blue::before { background: linear-gradient(180deg,#3b82f6,#7c3aed); }
+.highlight-purple::before { background: linear-gradient(180deg,#7c3aed,#a78bfa); }
+.highlight-orange::before { background: linear-gradient(180deg,#fb923c,#f97316); }
+
+.highlight-teal::after { background: linear-gradient(90deg, rgba(6,182,212,0.18), rgba(60,173,255,0.12)); }
+.highlight-blue::after { background: linear-gradient(90deg, rgba(59,130,246,0.18), rgba(124,58,237,0.12)); }
+.highlight-purple::after { background: linear-gradient(90deg, rgba(124,58,237,0.18), rgba(167,139,250,0.12)); }
+.highlight-orange::after { background: linear-gradient(90deg, rgba(251,146,60,0.16), rgba(249,115,22,0.10)); }
+
+/* neon border (sharp gradient stroke) for highlighted cards */
+.highlight-teal {
+    /* soft neon rim using blurred shadows (no sharp border-image) */
+    border: 1px solid rgba(6,182,212,0.12);
+    box-shadow: 0 12px 40px rgba(6,182,212,0.06), 0 0 28px rgba(6,182,212,0.16), inset 0 0 10px rgba(6,182,212,0.04);
+}
+.highlight-blue {
+    border: 1px solid rgba(59,130,246,0.10);
+    box-shadow: 0 12px 40px rgba(59,130,246,0.06), 0 0 28px rgba(124,58,237,0.14), inset 0 0 10px rgba(59,130,246,0.03);
+}
+.highlight-purple {
+    border: 1px solid rgba(124,58,237,0.12);
+    box-shadow: 0 12px 40px rgba(124,58,237,0.06), 0 0 32px rgba(124,58,237,0.18), inset 0 0 12px rgba(124,58,237,0.04);
+}
+.highlight-orange {
+    border: 1px solid rgba(251,146,60,0.10);
+    box-shadow: 0 12px 40px rgba(251,146,60,0.06), 0 0 28px rgba(251,146,60,0.14), inset 0 0 10px rgba(251,146,60,0.03);
+}
+
+/* reduce glow on small screens to avoid heavy visual noise */
+@media (max-width: 900px) {
+    .card::after { filter: blur(10px); opacity: 0.10; left: -8px; right: -8px; top: -8px; bottom: -8px; border-radius: 14px; }
+}
+
+/* course progress small text */
+.course-progress { height: 10px; border-radius: 999px; overflow: hidden; }
+.course-progress .progress-fill { height:100%; background: linear-gradient(90deg,#06b6d4,#7c3aed); }
+
+/* Small helpers for elements moved from inline styles in student-dashboard.html */
+.exam-progress { margin-top: 8px; }
+.exam-progress-track { height:8px; background:rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; }
+.exam-progress-fill { height:100%; background: linear-gradient(90deg,#06b6d4,#7c3aed); }
+
+.reserved-seat { margin-top:10px; padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); }
+
+/* Table normalization: remove per-cell inline styles and make tables theme-aware */
+table { width:100%; border-collapse:collapse; }
+table td { padding:8px; border:1px solid rgba(255,255,255,0.03); color: #cfe8ff; }
+
+/* Chat FAB - theme-aware */
+.chat-fab { width:72px; height:72px; border-radius:50%; display:grid; place-items:center; color:#fff; font-size:28px; box-shadow:0 10px 30px rgba(7,10,20,0.5); cursor:pointer; background: linear-gradient(90deg,#7c3aed,#06b6d4); }
+.dark-theme .chat-fab { box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+
+/* improve table contrast so it displays on dark background */
+.table-card table { width:100%; border-collapse: separate; border-spacing: 0; }
+.table-card table td, .table-card table th { padding:8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.table-card table tr:nth-child(even) td { background: rgba(255,255,255,0.01); }
+.table-card table tr:first-child td { font-weight:700; color:#e6f4ff; }
+
+.seating-info { display:flex; flex-direction:column; gap:6px; }
+.seat-badge { background: linear-gradient(90deg,#7c3aed,#06b6d4); color:#fff; padding:8px 10px; border-radius:8px; display:inline-block; font-weight:700; }
+
+.card {
+    padding: 14px 14px 14px 30px; /* leave space for the left accent strip */
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow: 0 12px 30px rgba(3,6,18,0.5);
+    color: #dbe9ff;
+    position: relative;
+    overflow: visible;
+}
+
+/* make sure card contents sit above the accent and halo */
+.card > * { position: relative; z-index: 2; }
+
+.big-card { min-height: 150px; }
+.small-card { min-height: 88px; }
+.map-card img { width: 100%; height: auto; display: block; border-radius: 10px; }
+.table-card table td { color: #cfe8ff; }
+
+.updates-card { border-radius: 12px; }
+.updates-list li { color: #cfe8ff; }
+
+/* make grid stack on small screens */
+@media (max-width: 900px) {
+    .overview-grid { grid-template-columns: 1fr; }
+    .welcome-card { margin-bottom: 8px; }
+}
+
+/* Dark theme overrides (applied when <html> or <body> has .dark-theme or html[data-theme='dark']) */
+:root[data-theme='dark'], html[data-theme='dark'], html.dark-theme, body.dark-theme, .dark-theme {
+    --dm-bg: #071025;
+    --dm-surface: #0b1220;
+    --dm-card: #0f1724;
+    --dm-text: #e6eef8;
+    --dm-muted: #9aa0b2;
+    background: var(--dm-bg);
+    color: var(--dm-text);
+}
+.dark-theme body, .dark-theme html { background: #071025; color: #e6eef8; }
+.dark-theme .app-sidebar { background: linear-gradient(180deg,#071025,#0b1220); color: #dbe9ff; box-shadow: 0 24px 60px rgba(0,0,0,0.6); }
+.dark-theme .sidebar-btn { color: #cfdaf0; }
+.dark-theme .sidebar-btn svg { color: #cfdaf0; }
+.dark-theme .sidebar-label { color: #cfdaf0; }
+.dark-theme .profile-card,
+.dark-theme .course-tile,
+.dark-theme .quiz-card,
+.dark-theme .tab-content,
+.dark-theme .settings-card,
+.dark-theme .course-card-grid,
+.dark-theme .card,
+.dark-theme .resource-item,
+.dark-theme .profile-left,
+.dark-theme .profile-right { background: #0f1724 !important; color: #e6eef8 !important; box-shadow: 0 8px 30px rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.03); }
+.dark-theme .muted { color: #9aa0b2 !important; }
+.dark-theme a { color: #8fb8ff !important; }
+.dark-theme .btn { background: #24272d !important; color: #e6eef8 !important; border-color: #333 !important; }
+.dark-theme .btn.primary { background: linear-gradient(90deg,#7c3aed,#37a9ff) !important; color:#fff !important; }
+.dark-theme input, .dark-theme textarea, .dark-theme select { background: #0b1220 !important; color: #e6eef8 !important; border-color: #333 !important; }
+.dark-theme .navbar-top { background: #0b1220 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.45); }
+.dark-theme .dashboard-header { background: #0b1220 !important; color: #e6eef8 !important; }
+.dark-theme .chat-outer { background: #0b1220 !important; color: #e6eef8 !important; border-color: #222 !important; }
+.dark-theme .course-hero-card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.dark-theme .cc-percent { color: #111; }
+.dark-theme .card::before, .dark-theme .card::after { filter: blur(8px); }
+
+/* ensure specific contrast on the quiz section */
+.dark-theme .quiz-grid { background: transparent; }
+.dark-theme .qc-title, .dark-theme .qc-sub, .dark-theme .qc-meta, .dark-theme .qc-footer { color: #e6eef8 !important; }
+
+/* Ensure the QUIZZES header and Start Quiz button remain readable in dark mode */
+.dark-theme .quiz-section-title { color: var(--dm-text) !important; }
+.dark-theme .qc-cta { color: #fff !important; }
+
+/* small helper to ensure topbar links remain readable */
+.dark-theme .navbar-menu li a { color: #e6eef8 !important; }
+
+/* Stronger overrides to handle inline styles and ensure readable contrast on dashboard pages */
+html.dark-theme, .dark-theme {
+    --dm-bg: #071025;
+    --dm-surface: #0b1220;
+    --dm-card: #0f1724;
+    --dm-text: #e6eef8;
+    --dm-muted: #9aa0b2;
+}
+
+/* Force main backgrounds and text colors (use !important to override inline styles) */
+html.dark-theme body, .dark-theme body, html.dark-theme .main-content, .dark-theme .main-content {
+    background: var(--dm-bg) !important;
+    color: var(--dm-text) !important;
+}
+
+/* Make core containers readable */
+html.dark-theme .profile-card,
+.dark-theme .profile-card,
+html.dark-theme .welcome-card,
+.dark-theme .welcome-card,
+html.dark-theme .card,
+.dark-theme .card,
+html.dark-theme .left-card,
+.dark-theme .left-card,
+html.dark-theme .stat-card,
+.dark-theme .stat-card,
+html.dark-theme .updates-card,
+.dark-theme .updates-card,
+html.dark-theme .profile-left,
+.dark-theme .profile-left,
+html.dark-theme .profile-right,
+.dark-theme .profile-right,
+html.dark-theme .course-tile,
+.dark-theme .course-tile,
+html.dark-theme .quiz-card,
+.dark-theme .quiz-card,
+html.dark-theme .tab-content,
+.dark-theme .tab-content {
+    background: var(--dm-card) !important;
+    color: var(--dm-text) !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
+    border-color: rgba(255,255,255,0.03) !important;
+}
+
+/* Headings and paragraphs */
+html.dark-theme h1, html.dark-theme h2, html.dark-theme h3, html.dark-theme h4,
+.dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme h4,
+html.dark-theme p, .dark-theme p {
+    color: var(--dm-text) !important;
+}
+
+/* Muted text */
+html.dark-theme .muted, .dark-theme .muted { color: var(--dm-muted) !important; }
+
+/* Buttons and inputs */
+html.dark-theme .btn, .dark-theme .btn { background: #1b2026 !important; color: var(--dm-text) !important; border-color: #222 !important; }
+html.dark-theme .btn.primary, .dark-theme .btn.primary { background: linear-gradient(90deg,#7c3aed,#37a9ff) !important; color: #fff !important; }
+html.dark-theme input, .dark-theme input, html.dark-theme textarea, .dark-theme textarea, html.dark-theme select, .dark-theme select { background: #071022 !important; color: var(--dm-text) !important; border-color: #222 !important; }
+
+/* Sidebar ensure icon/text contrast (strong) */
+html.dark-theme .app-sidebar, .dark-theme .app-sidebar { background: linear-gradient(180deg,#05060a,#071021) !important; color: #cfe8ff !important; }
+html.dark-theme .sidebar-btn, .dark-theme .sidebar-btn { color: #cfe8ff !important; }
+html.dark-theme .sidebar-btn svg, .dark-theme .sidebar-btn svg { color: #cfe8ff !important; }
+
+/* Ensure navbar/topbar contrast */
+html.dark-theme .dashboard-header, .dark-theme .dashboard-header, html.dark-theme .user-topbar, .dark-theme .user-topbar { background: var(--dm-surface) !important; color: var(--dm-text) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important; }
+
+/* small helpers for quiz readability */
+html.dark-theme .qc-title, .dark-theme .qc-title, html.dark-theme .qc-sub, .dark-theme .qc-sub { color: var(--dm-text) !important; }
+/* Course page helpers: normalize elements moved from inline styles */
+.navbar-logo-img { height: 28px; vertical-align: middle; }
+.course-progress-row { margin-top: 12px; display:flex; align-items:center; gap:12px; }
+.notes-textarea { width:100%; margin-top:8px; padding:10px; border-radius:8px; border:1px solid #e6e8f0; }
+.notes-controls { margin-top:8px; display:flex; gap:8px; align-items:center; }
+.notes-attachments { margin-top:14px; }
+
+.course-alert { margin-top:12px; display:none; padding:10px; border-radius:8px; background: linear-gradient(180deg,#fff6f6,#fffaf9); color:#7a1b1b; border:1px solid #ffd6d6; }
+.note-link { color:#7c3aed; text-decoration:underline; }
+
+.cc-progress { max-width: 180px; }
+.cc-progress .cc-progress-fill, .cc-progress .progress-fill { height:100%; background: linear-gradient(90deg,#06b6d4,#7c3aed); }
+
+/* Dark theme overrides for course page */
+.dark-theme .course-alert { background: linear-gradient(180deg,var(--dm-card), rgba(255,255,255,0.02)) !important; color: var(--dm-text) !important; border-color: rgba(255,255,255,0.03) !important; }
+.dark-theme .note-link { color: #8fb8ff !important; }
+.dark-theme .navbar-logo-img { filter: brightness(0.95) contrast(1.05); }
+.dark-theme .cc-percent { color: #fff !important; }
+
+
+/* Course page alerts and note links */
+.course-alert { background: #fff6f6; border: 1px solid #ffd6d6; color: #7a1b1b; }
+.note-link { margin-left: 8px; color: #7c3aed; }
+.meta-strong { color: #374151; }
+.meta-right { float: right; }
+
+/* Dark-mode overrides for course-specific elements */
+.dark-theme .course-alert { background: var(--dm-card) !important; color: var(--dm-text) !important; border-color: rgba(255,255,255,0.04) !important; }
+.dark-theme .note-link { color: var(--dm-text) !important; text-decoration: underline; }
+.dark-theme .meta-strong { color: var(--dm-muted) !important; }
+.dark-theme .meta-right { float: right; color: var(--dm-text) !important; }
+
+/* Ensure cc-percent text/color is theme-aware */
+.cc-percent { color: #111; }
+.dark-theme .cc-percent { color: var(--dm-text) !important; }
+
+/* Settings page: ensure full dark-mode adaptation */
+.dark-theme .settings-card {
+    background: var(--dm-card) !important;
+    color: var(--dm-text) !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6) !important;
+    border: 1px solid rgba(255,255,255,0.03) !important;
+}
+.dark-theme .settings-card h1,
+.dark-theme .settings-card h3,
+.dark-theme .settings-card p {
+    color: var(--dm-text) !important;
+}
+.dark-theme .settings-item {
+    background: rgba(255,255,255,0.02) !important;
+    color: var(--dm-text) !important;
+    border: 1px solid rgba(255,255,255,0.03) !important;
+}
+.dark-theme .settings-item .muted,
+.dark-theme .settings-item p { color: var(--dm-muted) !important; }
+.dark-theme .btn-group { background: transparent !important; }
+.dark-theme .seg-btn { background: transparent !important; color: var(--dm-text) !important; border: 1px solid rgba(255,255,255,0.04); }
+.dark-theme .seg-btn.active { background: linear-gradient(90deg,#7c3aed,#06b6d4) !important; color: #fff !important; box-shadow: 0 8px 18px rgba(124,58,237,0.12); }
+.dark-theme .btn { background: #1b2026 !important; color: var(--dm-text) !important; border-color: #222 !important; }
+.dark-theme .btn.danger { background: #ff4757 !important; color: #fff !important; }
+
+/* bubbles/decoration should be subtle in dark mode */
+.dark-theme .settings-bubbles::before { background: linear-gradient(135deg,#5b21b6,#1e3a8a) !important; opacity: 0.08; }
+.dark-theme .settings-bubbles::after { background: linear-gradient(135deg,#0ea5a3,#7c3aed) !important; opacity: 0.06; }
+
+/* course progress row and normalized progress fill */
+.course-progress-row { align-items: center; gap: 12px; }
+.cc-progress { margin-top: 6px; width: 180px; max-width: 50vw; }
+.cc-progress-fill { height:100%; background: linear-gradient(90deg,#06b6d4,#7c3aed); }
+
+

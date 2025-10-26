@@ -5,56 +5,120 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course - Campus360</title>
   <link rel="stylesheet" href="student-dashboard.css">
+  <script>
+    (function(){
+      try{
+        const raw = localStorage.getItem('campus360_prefs');
+        if(!raw) return;
+        const prefs = JSON.parse(raw);
+        if(prefs && prefs.theme === 'dark'){
+          try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
+          try{ document.body.classList.add('dark-theme'); }catch(e){}
+          try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+        }
+      }catch(e){}
+    })();
+  </script>
+  <script src="theme.js" defer></script>
   <style>
+  /* hide the top breadcrumb/menu and top navbar for this page (we use the in-hero back arrow instead) */
+  .navbar-menu { display: none !important; }
+  .navbar-top { display: none !important; }
+    /* back link inside course hero */
+  .course-hero-card{position:relative}
+    /* make the hero card compact and aligned with the quiz card below */
+    .course-hero-card{
+  max-width: min(80vw,960px);
+      margin: 18px auto;
+      padding: 10px !important;
+      box-sizing: border-box;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .course-hero-left{flex:0 0 36%;}
+    .course-hero-right{flex:1;}
+    @media (max-width:900px){
+      .course-hero-card{display:block;padding:12px !important}
+      .course-hero-left,.course-hero-right{flex:none;width:100%}
+    }
+
+    /* make progress circle smaller to reduce hero card height */
+    .cc-percent{width:64px !important;height:64px !important;font-size:14px !important}
+    .cc-percent::before{height:64px !important;width:64px !important}
+    .cc-progress{max-width:180px}
+  /* back link styled as a small pill above the centered content */
+  .back-link{position:static;display:inline-grid;place-items:center;width:40px;height:36px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,250,255,0.95));box-shadow:0 6px 18px rgba(12,13,20,0.06);text-decoration:none;color:#0b1220;font-weight:700;margin-bottom:8px}
+  /* center wrapper widened so hero and quiz cards have room and don't overlap */
+  .centered-wrap{width:min(80vw,960px);margin:8px auto 0;}
     .course-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
     .course-controls{display:flex;gap:12px;align-items:center}
     .resource-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
     .resource-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbff);}
+  /* quiz cards container and card styles (two cards side-by-side on wide screens) */
+  /* quiz grid: wider and larger gap to prevent overlap; grid -> single column on narrower screens */
+  .quiz-grid{width:min(80vw,960px);margin:22px auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;box-sizing:border-box}
+  .quiz-card{background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 8px 20px rgba(12,13,20,0.06);border:1px solid rgba(10,11,16,0.04);width:100%;box-sizing:border-box}
+  .quiz-card .qc-top{display:flex;align-items:center;gap:10px}
+  .qc-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,#f6e9ff,#f0e6ff);display:grid;place-items:center;font-size:16px}
+  .qc-title{font-size:1rem;margin:0 0 2px}
+  .qc-sub{color:#6b7280;margin:0;font-size:0.85rem}
+  .qc-meta{display:flex;gap:10px;color:#6b7280;margin-top:8px;align-items:center;font-size:0.9rem}
+  .qc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .qc-cta{background:linear-gradient(90deg,#7c3aed,#37a9ff);color:#fff;border:none;padding:8px 14px;border-radius:999px;font-weight:700;box-shadow:0 8px 18px rgba(124,58,237,0.12);cursor:pointer;font-size:0.9rem}
+  .qc-badge{background:#f5f7fb;padding:6px 8px;border-radius:999px;color:#374151;font-size:0.88rem}
+    /* reduce spacing for smaller screens and ensure the two cards stack on medium/smaller viewports */
+    @media (max-width:980px){
+      .quiz-grid{grid-template-columns:1fr;width:92vw;gap:16px}
+      .quiz-card{width:100%;padding:12px}
+      .qc-title{font-size:1rem}
+      .qc-cta{padding:8px 14px;font-size:0.95rem}
+    }
+    /* small heading above quiz grid */
+    .quiz-section-title{width:min(80vw,960px);margin:14px auto 8px;font-weight:700;font-size:1.02rem;color:#0b1220;padding-left:6px}
   </style>
 </head>
 <body>
   <nav class="navbar-top">
     <div class="navbar-container">
       <div class="navbar-logo">
-        <img src="logo.png" alt="Campus360 Logo" style="height:28px;vertical-align:middle;">
+        <img src="logo.png" alt="Campus360 Logo" class="navbar-logo-img">
         <span class="navbar-title" id="courseTitle">COURSE</span>
       </div>
-      <ul class="navbar-menu">
-        <li onclick="window.location.href='courses.html'">&larr; Courses</li>
-        <li onclick="window.location.href='student-dashboard.html'">Dashboard</li>
-      </ul>
+      <!-- breadcrumb removed; back arrow added inside the course hero card -->
     </div>
   </nav>
 
   <main class="profile-page">
-    <div class="course-hero-card profile-card" style="padding:20px;">
+    <div class="centered-wrap">
+      <a class="back-link" href="courses.html" aria-label="Back to courses">←</a>
+      <div class="course-hero-card profile-card">
       <div class="course-hero-left">
         <h1 id="titleH">Course</h1>
         <p class="muted" id="courseSubtitle">Course subtitle / instructor</p>
-        <p class="muted" id="courseInstructor" style="margin-top:6px;">Instructor: -</p>
+  <p class="muted" id="courseInstructor">Instructor: -</p>
   <p class="muted" id="courseDuration">Duration: -</p>
   <p class="muted" id="courseLectures">Lectures: -</p>
   <p class="muted" id="courseCredits">Credits: -</p>
 
-        <div style="margin-top:18px;display:flex;align-items:center;gap:14px;">
-          <div class="cc-percent" id="bigPercent" style="--p:0;width:96px;height:96px;display:grid;place-items:center;font-size:18px;border-radius:999px;color:#fff;"></div>
-          <div>
-            <p class="muted" style="margin:0;" id="progressText">0% complete</p>
-            <div class="cc-progress" style="margin-top:8px;width:240px;max-width:60vw;"><div class="cc-progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="course-progress-row">
+            <div class="cc-percent" id="bigPercent" aria-hidden="true"></div>
+            <div>
+              <p class="muted" id="progressText">0% complete</p>
+              <div class="cc-progress"><div class="cc-progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
           </div>
-        </div>
 
   <!-- Start/Resume button removed per request -->
 
-  <div id="courseAlert" style="margin-top:12px;display:none;padding:10px;border-radius:8px;background:#fff6f6;border:1px solid #ffd6d6;color:#7a1b1b;">
-          <strong>Note:</strong> No course selected. <a href="courses.html" style="margin-left:8px;color:#7c3aed;">Open Courses list</a>
-        </div>
-      </div>
+  <div id="courseAlert" class="course-alert alert-warning">
+    <strong>Note:</strong> No course selected. <a href="courses.html" class="note-link">Open Courses list</a>
+  </div>
+  </div>
 
-      <div class="course-hero-right">
+  <div class="course-hero-right">
         <div class="course-tabs">
           <button class="tab active" data-tab="resources">Resources</button>
-          <button class="tab" data-tab="quiz">Quiz</button>
           <button class="tab" data-tab="notes">Notes</button>
         </div>
 
@@ -64,45 +128,19 @@
             <ul id="resList" class="resource-list"></ul>
           </div>
 
-          <div id="tab-quiz" class="tab-content" style="display:none;">
-            <h3>Quiz</h3>
-            <p class="muted" id="quizIntro">Choose a level and test your understanding.</p>
+          
 
-            <div class="quiz-levels" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
-              <div class="quiz-card level-card active" data-level="basic" role="button" tabindex="0" onclick="selectLevel('basic')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#f8fbff,#eef6ff);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Basic MCQ <span class="best-badge" data-level="basic"></span></strong>
-                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Short warm-up questions</div>
-              </div>
-              <div class="quiz-card level-card" data-level="medium" role="button" tabindex="0" onclick="selectLevel('medium')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff8f0,#fff3e8);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Medium MCQ <span class="best-badge" data-level="medium"></span></strong>
-                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Moderate difficulty</div>
-              </div>
-              <div class="quiz-card level-card" data-level="hard" role="button" tabindex="0" onclick="selectLevel('hard')" style="flex:1 1 120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff6fb,#f9eefb);cursor:pointer;box-shadow:0 4px 14px rgba(30,40,80,0.06);">
-                <strong>Hard MCQ <span class="best-badge" data-level="hard"></span></strong>
-                <div class="muted" style="font-size:0.9rem;margin-top:6px;">Challenging questions</div>
-              </div>
-            </div>
-
-            <div id="quizArea" style="margin-top:14px;">
-              <div id="quizPrompt" class="muted" style="margin-bottom:8px;">Select a level to begin the quiz.</div>
-              <div id="quizContainer" class="quiz-container"></div>
-              <div id="quizControls" style="margin-top:12px; display:flex;gap:8px;align-items:center;">
-                <div id="quizResult" style="margin-left:12px; font-weight:600;"></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="tab-notes" class="tab-content" style="display:none;">
+          <div id="tab-notes" class="tab-content">
             <h3>Notes</h3>
             <p class="muted">Save personal notes for this course. Notes are stored locally in your browser.</p>
-            <textarea id="notesText" rows="6" style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e6e8f0;"></textarea>
-            <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+            <textarea id="notesText" rows="6" class="notes-textarea"></textarea>
+            <div class="notes-controls">
               <button id="saveNotes" class="btn primary">Save Notes</button>
               <div id="notesSaved" class="muted" style="font-size:0.95rem;"></div>
             </div>
                     <!-- Pre-attached notes / attachments for this course -->
-                    <div id="notesAttachments" style="margin-top:14px;">
-                      <h4 style="margin:6px 0 8px;">Attachments</h4>
+                    <div id="notesAttachments" class="notes-attachments">
+                      <h4>Attachments</h4>
                       <ul id="notesList" class="resource-list"></ul>
                     </div>
           </div>
@@ -110,6 +148,96 @@
       </div>
     </div>
   </main>
+
+  <!-- Quiz cards placed where Topics used to be (Arrays and Linked Lists) -->
+  <section id="course-quiz" aria-label="Course quiz">
+    <div class="quiz-section-title">QUIZZES</div>
+    <div class="quiz-grid">
+      <div class="quiz-card" data-topic="Loop">
+        <div class="qc-top">
+          <div class="qc-icon">🔁</div>
+          <div style="flex:1">
+            <h3 class="qc-title">Loop</h3>
+            <div class="qc-sub">CS201 - Programming Concepts</div>
+          </div>
+          <div class="qc-badge">Available</div>
+        </div>
+        <div class="qc-meta">
+          <div class="muted">❓ 8 Questions</div>
+          <div class="muted">⏱ 15 Minutes</div>
+        </div>
+        <div class="meta-strong" style="margin-top:8px">Attempts Allowed: <strong class="meta-right">1</strong></div>
+        <div class="meta-strong" style="margin-top:6px">Deadline: <strong class="meta-right">29/10/2024</strong></div>
+        <div class="qc-footer">
+          <div></div>
+          <button class="qc-cta start-quiz" data-topic="Loop">Start Quiz</button>
+        </div>
+      </div>
+
+      <div class="quiz-card" data-topic="Recursion">
+        <div class="qc-top">
+          <div class="qc-icon">🔁</div>
+          <div style="flex:1">
+            <h3 class="qc-title">Recursion</h3>
+            <div class="qc-sub">CS201 - Programming Concepts</div>
+          </div>
+          <div class="qc-badge">Available</div>
+        </div>
+        <div class="qc-meta">
+          <div class="muted">❓ 10 Questions</div>
+          <div class="muted">⏱ 20 Minutes</div>
+        </div>
+        <div class="meta-strong" style="margin-top:8px">Attempts Allowed: <strong class="meta-right">1</strong></div>
+        <div class="meta-strong" style="margin-top:6px">Deadline: <strong class="meta-right">29/10/2024</strong></div>
+        <div class="qc-footer">
+          <div></div>
+          <button class="qc-cta start-quiz" data-topic="Recursion">Start Quiz</button>
+        </div>
+      </div>
+
+      <div class="quiz-card" data-topic="Array">
+        <div class="qc-top">
+          <div class="qc-icon">🧠</div>
+          <div style="flex:1">
+            <h3 class="qc-title">Array</h3>
+            <div class="qc-sub">CS201 - Data Structures</div>
+          </div>
+          <div class="qc-badge">Available</div>
+        </div>
+        <div class="qc-meta">
+          <div class="muted">❓ 12 Questions</div>
+          <div class="muted">⏱ 25 Minutes</div>
+        </div>
+        <div class="meta-strong" style="margin-top:8px">Attempts Allowed: <strong class="meta-right">1</strong></div>
+        <div class="meta-strong" style="margin-top:6px">Deadline: <strong class="meta-right">29/10/2024</strong></div>
+        <div class="qc-footer">
+          <div></div>
+          <button class="qc-cta start-quiz" data-topic="Array">Start Quiz</button>
+        </div>
+      </div>
+
+      <div class="quiz-card" data-topic="String">
+        <div class="qc-top">
+          <div class="qc-icon">🔤</div>
+          <div style="flex:1">
+            <h3 class="qc-title">String</h3>
+            <div class="qc-sub">CS201 - Data Structures</div>
+          </div>
+          <div class="qc-badge">Available</div>
+        </div>
+        <div class="qc-meta">
+          <div class="muted">❓ 10 Questions</div>
+          <div class="muted">⏱ 20 Minutes</div>
+        </div>
+        <div class="meta-strong" style="margin-top:8px">Attempts Allowed: <strong class="meta-right">1</strong></div>
+        <div class="meta-strong" style="margin-top:6px">Deadline: <strong class="meta-right">29/10/2024</strong></div>
+        <div class="qc-footer">
+          <div></div>
+          <button class="qc-cta start-quiz" data-topic="String">Start Quiz</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script>
     function getQuery(name){
@@ -232,8 +360,17 @@
       }}
     }
 
-    document.addEventListener('DOMContentLoaded', function(){
-      loadCourse();
+      // render course and wire quiz start button
+      document.addEventListener('DOMContentLoaded', function(){
+        loadCourse();
+        // wire Start Quiz buttons for each topic card
+          document.querySelectorAll('.start-quiz').forEach(btn => {
+            btn.addEventListener('click', function(){
+              const topic = this.getAttribute('data-topic') || '';
+              const target = 'quiz-level.html?name=' + encodeURIComponent(courseName || 'DSA (C++)') + (topic ? '&topic=' + encodeURIComponent(topic) : '');
+              window.location.href = target;
+            });
+          });
   // enroll toggle and manual +10 button removed per request
       // notes save
       document.getElementById('saveNotes').addEventListener('click', function(){

@@ -6,16 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Campus360 - Examination Management System</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    // early theme fallback: apply stored theme ASAP so CSS picks it up before render
+    (function(){
+      try{
+        const raw = localStorage.getItem('campus360_prefs');
+        if(!raw) return;
+        const prefs = JSON.parse(raw);
+        if(prefs && prefs.theme === 'dark'){
+          try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
+          try{ document.body.classList.add('dark-theme'); }catch(e){}
+          try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+        }
+      }catch(e){}
+    })();
+  </script>
   <style>
-    /* Smooth scroll */
     html {
       scroll-behavior: smooth;
     }
-
-    /* Body & Background */
     body {
       font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #7b2ff7, #f107a3); /* purplish background */
+      background: linear-gradient(135deg, #7b2ff7, #f107a3); 
       min-height: 100vh;
       margin: 0;
       color: #fff;
@@ -23,8 +35,6 @@
       flex-direction: column;
       overflow-x: hidden;
     }
-
-    /* Overlay for modal/dialog */
     .overlay {
       display: none;
       position: fixed;
@@ -37,7 +47,7 @@
       z-index: 999;
     }
 
-    /* Navbar */
+  
     .navbar {
       width: 100%;
       background: rgba(100, 3, 202, 0.9);
@@ -390,6 +400,31 @@
     .quick-suggestions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
     .quick-btn { background:#eef2ff; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; font-size:0.9rem; }
 
+  </style>
+  <script src="theme.js" defer></script>
+  <style>
+    /* Page-local dark-mode overrides */
+    html.dark-theme, body.dark-theme, html[data-theme='dark'] {
+      --dm-bg: #071025;
+      --dm-surface: #0b1220;
+      --dm-card: #0f1724;
+      --dm-text: #e6eef8;
+      --dm-muted: #9aa0b2;
+      background: var(--dm-bg) !important;
+      color: var(--dm-text) !important;
+    }
+    html.dark-theme .navbar, body.dark-theme .navbar { background: linear-gradient(180deg,#05061a,#071426) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important; }
+    html.dark-theme .main-title, html.dark-theme .subtitle, html.dark-theme .desc { color: var(--dm-text) !important; }
+    html.dark-theme .illustration { background: rgba(255,255,255,0.02) !important; border: 1px solid rgba(255,255,255,0.03) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important; }
+    html.dark-theme .card, html.dark-theme .flashcards .card { background: var(--dm-card) !important; color: var(--dm-text) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important; }
+    html.dark-theme .choice-dialog { background: var(--dm-card) !important; color: var(--dm-text) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important; }
+    html.dark-theme .choice-dialog p { color: var(--dm-text) !important; }
+    html.dark-theme .chat-widget { background: var(--dm-surface) !important; color: var(--dm-text) !important; }
+    html.dark-theme .chat-body { background: var(--dm-card) !important; }
+    html.dark-theme .msg.user { background: linear-gradient(90deg,#7c3aed,#06b6d4) !important; color: #fff !important; }
+    html.dark-theme .msg.bot { background: var(--dm-card) !important; color: var(--dm-text) !important; border:1px solid rgba(255,255,255,0.03) !important; }
+    html.dark-theme .footer { background: transparent !important; color: var(--dm-text) !important; }
+    html.dark-theme .footer a { color: var(--dm-text) !important; }
   </style>
 </head>
 
