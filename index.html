@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- api added -->
- <!-- added api -->
 
 <head>
   <meta charset="UTF-8">
@@ -9,7 +7,6 @@
   <title>Campus360 - Examination Management System</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
   <script>
-    // early theme fallback: apply stored theme ASAP so CSS picks it up before render
     (function () {
       try {
         const raw = localStorage.getItem('campus360_prefs');
@@ -30,7 +27,7 @@
 
     body {
       font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #7b2ff7, #f107a3);
+      background: #0f172a;
       min-height: 100vh;
       margin: 0;
       color: #fff;
@@ -39,29 +36,15 @@
       overflow-x: hidden;
     }
 
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(60, 60, 120, 0.45);
-      backdrop-filter: blur(3px);
-      z-index: 999;
-    }
-
-
     .navbar {
       width: 100%;
-      background: rgba(100, 3, 202, 0.9);
-      box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
+      background: #1e293b;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       padding: 1rem 0;
       position: fixed;
       top: 0;
       left: 0;
       z-index: 100;
-      animation: fadeDown 1s ease;
     }
 
     .navbar-container {
@@ -81,7 +64,7 @@
     }
 
     .navbar-menu li a {
-      color: #fff;
+      color: #cbd5e1;
       text-decoration: none;
       font-weight: 600;
       padding: 0.5rem 1rem;
@@ -90,11 +73,10 @@
     }
 
     .navbar-menu li a:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
 
-    /* Main Content / Home */
     .main-content {
       display: flex;
       flex-direction: row;
@@ -102,16 +84,15 @@
       justify-content: center;
       width: 100%;
       height: 100vh;
-      /* full screen height */
       padding: 2.5rem;
       text-align: left;
-      animation: fadeIn 1.5s ease;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .left-section {
       flex: 1;
-      padding-right: 2rem;
-      animation: slideLeft 1s ease;
+      padding-right: 1rem;
     }
 
     .right-section {
@@ -119,43 +100,36 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      animation: slideRight 1s ease;
     }
 
     .illustration {
       width: 400px;
-      max-width: 90%;
+      max-width: 100%;
+      height: auto;
       border-radius: 28px;
-      box-shadow: 0 8px 32px rgba(78, 84, 200, 0.18);
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .main-title {
-      font-size: 4rem;
+      font-size: 3.8rem;
       font-weight: 900;
       margin-bottom: 0.7rem;
-      background: linear-gradient(90deg, #ffffff 40%, #ffe6ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: transform 0.5s;
-    }
-
-    .main-title:hover {
-      transform: scale(1.05);
+      color: #cbd5e1;
     }
 
     .subtitle {
       font-size: 1.4rem;
       margin-bottom: 1rem;
-      opacity: 0.9;
+      color: #94a3b8;
     }
 
     .desc {
       font-size: 1.1rem;
       margin-bottom: 1.5rem;
       line-height: 1.6;
-      opacity: 0.85;
+      color: #94a3b8;
     }
 
     .getstarted-btn {
@@ -163,7 +137,7 @@
       font-size: 1.1rem;
       font-weight: 700;
       color: #fff;
-      background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);
+      background: #2563eb;
       border: none;
       border-radius: 10px;
       cursor: pointer;
@@ -172,10 +146,9 @@
 
     .getstarted-btn:hover {
       transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 10px 25px rgba(78, 84, 200, 0.4);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
     }
 
-    /* Sections */
     section {
       padding: 6rem 2rem;
       text-align: center;
@@ -208,7 +181,6 @@
       color: #f0f0f0;
     }
 
-    /* Feedback Form */
     .feedback-form {
       display: flex;
       flex-direction: column;
@@ -244,7 +216,6 @@
       box-shadow: 0 8px 18px rgba(102, 126, 234, 0.25);
     }
 
-    /* Footer */
     .footer {
       text-align: center;
       background: rgba(100, 3, 202, 0.3);
@@ -264,7 +235,6 @@
       color: #fff;
     }
 
-    /* Dialog / Choice */
     .choice-dialog {
       display: none;
       position: fixed;
@@ -297,7 +267,6 @@
       transform: translateY(-2px);
     }
 
-    /* Animations */
     @keyframes fadeIn {
       0% {
         opacity: 0;
@@ -344,51 +313,87 @@
       }
     }
 
-/* Responsive Design */
     @media (max-width: 900px) {
       .main-content {
         flex-direction: row;
-        flex-wrap: wrap;
-        padding: 2rem;
-        text-align: left;
+        flex-wrap: nowrap;
+        height: auto;
+        padding: 6rem 1rem 2rem 1rem;
+        text-align: center;
+        overflow-x: auto;
       }
 
-      .left-section,
+      .left-section {
+        padding-right: 0.5rem;
+        min-width: 180px;
+        margin-bottom: 0;
+      }
+
       .right-section {
-        flex: 1 1 48%;
+        order: initial;
+        min-width: 280px;
+        margin-bottom: 0;
       }
 
       .illustration {
         width: 100%;
-        max-width: 320px;
+        max-width: 300px;
       }
 
-      header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+      .main-title {
+        font-size: 3.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .desc {
+        font-size: 1rem;
       }
     }
 
     @media (max-width: 600px) {
       .main-content {
-        flex-direction: column;
-        text-align: center;
-        padding: 2rem;
+        padding: 1rem;
+        padding-top: 6rem;
       }
 
-      .left-section,
-      .right-section {
-        flex: 1 1 100%;
+      .main-title {
+        font-size: 2.5rem;
       }
 
-      .illustration {
-        max-width: 80%;
-        margin-top: 2rem;
+      .subtitle {
+        font-size: 1.1rem;
+      }
+
+      .desc {
+        font-size: 0.95rem;
+      }
+
+      .getstarted-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 1rem;
+      }
+
+      .footer {
+        padding: 1rem 0.5rem;
+      }
+
+      .footer a,
+      .footer span {
+        display: block;
+        margin: 0.5rem 0 !important;
+      }
+
+      .chat-widget {
+        width: calc(100% - 20px);
+        right: 10px;
+        bottom: 10px;
       }
     }
 
-    /* Chat widget styles */
     .chat-widget {
       position: fixed;
       right: 24px;
@@ -499,90 +504,9 @@
       font-size: 0.9rem;
     }
   </style>
-  </head>
-  <script src="theme.js" defer></script>
-  <style>
-    /* Page-local dark-mode overrides */
-    html.dark-theme,
-    body.dark-theme,
-    html[data-theme='dark'] {
-      --dm-bg: #071025;
-      --dm-surface: #0b1220;
-      --dm-card: #0f1724;
-      --dm-text: #e6eef8;
-      --dm-muted: #9aa0b2;
-      background: var(--dm-bg) !important;
-      color: var(--dm-text) !important;
-    }
-
-    html.dark-theme .navbar,
-    body.dark-theme .navbar {
-      background: linear-gradient(180deg, #05061a, #071426) !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    html.dark-theme .main-title,
-    html.dark-theme .subtitle,
-    html.dark-theme .desc {
-      color: var(--dm-text) !important;
-    }
-
-    html.dark-theme .illustration {
-      background: rgba(255, 255, 255, 0.02) !important;
-      border: 1px solid rgba(255, 255, 255, 0.03) !important;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    html.dark-theme .card,
-    html.dark-theme .flashcards .card {
-      background: var(--dm-card) !important;
-      color: var(--dm-text) !important;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    html.dark-theme .choice-dialog {
-      background: var(--dm-card) !important;
-      color: var(--dm-text) !important;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    html.dark-theme .choice-dialog p {
-      color: var(--dm-text) !important;
-    }
-
-    html.dark-theme .chat-widget {
-      background: var(--dm-surface) !important;
-      color: var(--dm-text) !important;
-    }
-
-    html.dark-theme .chat-body {
-      background: var(--dm-card) !important;
-    }
-
-    html.dark-theme .msg.user {
-      background: linear-gradient(90deg, #7c3aed, #06b6d4) !important;
-      color: #fff !important;
-    }
-
-    html.dark-theme .msg.bot {
-      background: var(--dm-card) !important;
-      color: var(--dm-text) !important;
-      border: 1px solid rgba(255, 255, 255, 0.03) !important;
-    }
-
-    html.dark-theme .footer {
-      background: transparent !important;
-      color: var(--dm-text) !important;
-    }
-
-    html.dark-theme .footer a {
-      color: var(--dm-text) !important;
-    }
-  </style>
 </head>
 
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="navbar-container">
       <ul class="navbar-menu">
@@ -592,25 +516,18 @@
       </ul>
     </div>
   </nav>
-
-  <!-- Home Section -->
   <section id="home" class="main-content">
     <div class="left-section">
       <div class="main-title">Campus <span>360</span></div>
       <div class="subtitle">Smarter Exams, Smarter Campus.</div>
-      <div class="desc">
-        Manage exams, schedules, results, notifications, and more for students and faculty.
-        Experience seamless exam administration and performance tracking.
-      </div>
+      <div class="desc">Manage exams, schedules, results, notifications, and more for students and faculty. Experience
+        seamless exam administration and performance tracking.</div>
       <button class="getstarted-btn" onclick="showChoiceDialog()">Get Started</button>
     </div>
     <div class="right-section">
       <img class="illustration" src="Home.jpeg" alt="Campus360 Home Image">
     </div>
   </section>
-
-  <!-- About Section -->
-  <!-- About Section -->
   <section id="about">
     <h2>About Campus360</h2>
     <p>
@@ -618,8 +535,6 @@
       Manage exams, quizzes, notifications, seating arrangements, and results all in one place with ease and
       transparency.
     </p>
-
-    <!-- Modern Flashcards -->
     <div class="flashcards">
       <div class="card">
         <h3>Quizzes</h3>
@@ -643,9 +558,7 @@
       </div>
     </div>
   </section>
-
   <style>
-    /* Modern flashcards styling */
     .flashcards {
       display: flex;
       flex-wrap: wrap;
@@ -655,11 +568,13 @@
     }
 
     .card {
+      min-width: 200px;
+      max-width: 280px;
+      flex-grow: 1;
       background: rgba(100, 3, 202, 0.85);
       color: #fff;
       border-radius: 15px;
       padding: 2rem 1.5rem;
-      width: 250px;
       text-align: center;
       transition: transform 0.3s, box-shadow 0.3s;
       cursor: default;
@@ -680,7 +595,6 @@
       box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
     }
 
-    /* Responsive */
     @media (max-width: 900px) {
       .flashcards {
         flex-direction: column;
@@ -688,9 +602,6 @@
       }
     }
   </style>
-
-
-  <!-- Feedback Section -->
   <section id="feedback">
     <h2>Share Your Feedback</h2>
     <p>We value your suggestions to improve Campus360!</p>
@@ -701,14 +612,9 @@
       <input type="text" id="fbName" placeholder="Your Name" required>
       <input type="email" id="fbEmail" placeholder="Your Email" required>
       <textarea id="fbMessage" placeholder="Your Feedback" rows="5" required></textarea>
-
-      <!-- contact option moved to footer -->
-
       <button type="submit">Submit Feedback</button>
     </form>
   </section>
-
-  <!-- Footer -->
   <footer class="footer">
     <a href="#" id="footerHelp">Help</a>
     <a href="#" id="footerContact" style="margin-left:12px;">Contact</a>
@@ -717,64 +623,47 @@
         style="color:#fff; text-decoration:underline;">campus360@gmail.com</a></span>
     <p>&copy; 2025 Campus360. All rights reserved.</p>
   </footer>
-
-  <!-- Modal / Choice Dialog -->
   <div class="overlay" id="overlay"></div>
   <div class="choice-dialog" id="choiceDialog">
     <p style="margin:0 0 8px 0; font-size:1.05rem; color:#8114ca; font-weight:600;">WELCOME TO Campus360 </p>
-
     <div>
       <button class="choice-btn"
         onclick="window.location.href='login.html'; sessionStorage.setItem('fromIntro','true')">Login</button>
       <button class="choice-btn" onclick="window.location.href='signup.html'">Sign Up</button>
     </div>
   </div>
-
   <script>
-    // Show Login/Signup modal
     function showChoiceDialog() {
       document.getElementById('overlay').style.display = 'block';
       document.getElementById('choiceDialog').style.display = 'block';
     }
-
     document.getElementById('overlay').addEventListener('click', function () {
       document.getElementById('overlay').style.display = 'none';
       document.getElementById('choiceDialog').style.display = 'none';
     });
-
-    // Show feedback form
     const feedbackBtn = document.getElementById('showFeedbackForm');
     const feedbackForm = document.getElementById('feedbackForm');
-
     feedbackBtn.addEventListener('click', function () {
       feedbackForm.style.display = 'flex';
       feedbackBtn.style.display = 'none';
       feedbackForm.scrollIntoView({ behavior: 'smooth' });
     });
-
-    // simple submit handler to show a thank you message (demo)
     const fbForm = document.getElementById('feedbackForm');
     fbForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const name = document.getElementById('fbName').value.trim();
       const email = document.getElementById('fbEmail').value.trim();
       const msg = document.getElementById('fbMessage').value.trim();
-      // In production, post this to backend. For now, just show a confirmation.
       alert('Thanks, ' + (name || 'user') + '! We received your feedback.');
       fbForm.reset();
     });
-
-    // Footer contact toggle
     const footerContact = document.getElementById('footerContact');
     const footerContactInfo = document.getElementById('footerContactInfo');
     footerContact.addEventListener('click', function (e) {
       e.preventDefault();
       footerContactInfo.style.display = footerContactInfo.style.display === 'none' ? 'inline' : 'none';
     });
-
-    // --- Chat widget markup and behavior ---
     (function () {
-      // create chat widget HTML and append to body
       const chatHtml = `
         <div id="chatWidget" class="chat-widget" role="dialog" aria-label="Campus360 Assistant">
           <div class="chat-header">
@@ -790,13 +679,11 @@
       `;
       const tmp = document.createElement('div'); tmp.innerHTML = chatHtml;
       document.body.appendChild(tmp.firstElementChild);
-
       const chatWidget = document.getElementById('chatWidget');
       const chatBody = document.getElementById('chatBody');
       const chatInput = document.getElementById('chatInput');
       const chatSend = document.getElementById('chatSend');
       const chatClose = document.getElementById('chatClose');
-
       function appendMessage(text, who = 'bot') {
         const d = document.createElement('div');
         d.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
@@ -804,44 +691,32 @@
         chatBody.appendChild(d);
         chatBody.scrollTop = chatBody.scrollHeight;
       }
-
       function botReply(input) {
         const lower = input.toLowerCase();
         if (!input.trim()) return "Can you type your question?";
-
-        // Start / run app
         if (/start|run|how to start|how to run/.test(lower)) {
           return "To start the app locally: open `index.html` in your browser. For a local web server (recommended), run e.g. `python -m http.server` in the project folder and visit `http://localhost:8000`. Click 'Get Started' to go to Login or Sign Up.";
         }
-
-        // Where to login
         if (/where to login|where.*login|how to login|where do i login/.test(lower)) {
           return "To log in: click 'Get Started' on the home page and choose Login, or open `login.html` directly. Use your username/email and password. Students also require OTP verification (if enabled).";
         }
-
-        // Features
         if (/feature|what.*feature|what are the features|features of the app/.test(lower)) {
           return "Campus360 features include:\n- Manage exams, quizzes and automatic grading\n- Timetable viewing and scheduling\n- Seating arrangement generation and seat lookup\n- Notifications and alerts\n- Results & analytics dashboards\n- Course listings and basic enrollment info\n- Feedback and support pages";
         }
-
         if (/timetable|schedule/.test(lower)) return "You can view your timetable on the Timetable page. Would you like me to open it?";
         if (/seating|seat/.test(lower)) return "Seating arrangements are under the 'Seating' page — you can view assigned seats there.";
         if (/course|enroll|register/.test(lower)) return "For courses, check the Courses page or contact administration@campus360.example for enrollment help.";
         if (/exam|quiz|results/.test(lower)) return "Exam and quiz results are available in your dashboard under 'Results'. Need me to open the dashboard?";
         if (/contact|office|who to contact/.test(lower)) return "You can contact the administration at admin@campus360.example or the exam office during working hours.";
         if (/help|support/.test(lower)) return "I'm here to help — ask about timetable, seating, courses, or account issues.";
-        // fallback helpful message
         return "I can help with starting the app, where to login, timetable, seating, courses and account issues. Try: 'How to start the app?' or 'Where to login?'";
       }
-
-      // open chat
       function openChat() {
         chatWidget.classList.add('open');
         appendMessage("Hello! I'm Campus360 Assistant. How can I help you today?");
         appendSuggestions();
         chatInput.focus();
       }
-
       function appendSuggestions() {
         const suggestions = [
           'How to start the app',
@@ -865,15 +740,10 @@
         chatBody.appendChild(container);
         chatBody.scrollTop = chatBody.scrollHeight;
       }
-
-      // close chat and clear conversation
-      // when closed we remove all messages so the next open starts fresh
       chatClose.addEventListener('click', () => {
         chatWidget.classList.remove('open');
         chatBody.innerHTML = '';
       });
-
-      // send
       chatSend.addEventListener('click', () => {
         const val = chatInput.value.trim();
         if (!val) return;
@@ -881,11 +751,7 @@
         chatInput.value = '';
         setTimeout(() => appendMessage(botReply(val)), 400);
       });
-
-      // enter key
       chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); chatSend.click(); } });
-
-      // wire footer help link to open chat
       const footerHelp = document.querySelector('footer.footer a[href="#"]');
       if (footerHelp) {
         footerHelp.addEventListener('click', function (e) { e.preventDefault(); openChat(); });
