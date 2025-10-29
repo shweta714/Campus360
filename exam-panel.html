@@ -131,38 +131,42 @@
     <div class="modal-overlay" id="instructions-modal">
         <div class="modal-content">
             <h2>Exam Instructions for <span id="modal-exam-title"></span></h2>
+    
             <p><strong>Please read the following carefully before starting your exam.</strong></p>
+    
             <ul>
-                <li>The exam is divided into two sections:
-                    <br>&bull; **Section A:** 10 Questions, **1 Mark** each (Total 10 Marks).
-                    <br>&bull; **Section B:** 10 Questions, **2 Marks** each (Total 20 Marks).
+                <li>
+                    The exam is divided into two sections:
+                    <br>&bull; <strong>Section A:</strong> 10 Questions, <strong>1 Mark</strong> each (Total 10 Marks).
+                    <br>&bull; <strong>Section B:</strong> 10 Questions, <strong>2 Marks</strong> each (Total 20 Marks).
                 </li>
-                <li>**Total Exam Time:** <span class="timer">20 minutes</span>.</li>
-                <li>**Section A must be completed and submitted** before you can access Section B.</li>
-                <li>**Total Exam Time:** <span class="timer">20 minutes</span>.</li>
-                <li>**Section A must be completed and submitted** before you can access Section B.</li>
+                <li><strong>Total Exam Time:</strong> <span class="timer">20 minutes</span>.</li>
+                <li><strong>Section A must be completed and submitted</strong> before you can access Section B.</li>
                 <li>Once Section A is submitted, you cannot go back.</li>
             </ul>
+    
             <div style="margin: 20px 0; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-                **Question Status Guide:**
+                <strong>Question Status Guide:</strong>
                 <p style="margin: 5px 0;"><span
-                        style="background-color: #28a745; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
-                    - **Answered** (Green)</p>
+                        style="background-color: #28a745; color: white; padding: 2px 8px; border-radius: 3px; font-weight: bold;">&nbsp;Q&nbsp;</span>
+                    - <strong>Answered</strong> (Green)</p>
                 <p style="margin: 5px 0;"><span
-                        style="background-color: #ff9966; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
-                    - **Visited, Not Answered** (Orange)</p>
+                        style="background-color: #ff9966; color: white; padding: 2px 8px; border-radius: 3px; font-weight: bold;">&nbsp;Q&nbsp;</span>
+                    - <strong>Visited, Not Answered</strong> (Orange)</p>
                 <p style="margin: 5px 0;"><span
-                        style="background-color: #f0f0f0; color: #333; padding: 2px 8px; border-radius: 3px; border: 1px solid #ccc;">&nbsp;Q&nbsp;</span>
-                    - **Not Visited** (Grey/White)</p>
+                        style="background-color: #f0f0f0; color: #333; padding: 2px 8px; border-radius: 3px; border: 1px solid #ccc; font-weight: bold;">&nbsp;Q&nbsp;</span>
+                    - <strong>Not Visited</strong> (Grey/White)</p>
                 <p style="margin: 5px 0;"><span
-                        style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 3px;">&nbsp;Q&nbsp;</span>
-                    - **Current Question** (Blue)</p>
+                        style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 3px; font-weight: bold;">&nbsp;Q&nbsp;</span>
+                    - <strong>Current Question</strong> (Blue)</p>
             </div>
+    
             <p style="margin-top: 20px; font-weight: bold;">Click "Start Exam" to begin.</p>
+    
             <button class="start-button modal-button" onclick="openExamPanel()">Start Exam</button>
+    
         </div>
     </div>
-
     <div id="exam-panel-modal">
         <div class="exam-layout">
 
