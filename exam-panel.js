@@ -192,6 +192,7 @@ function loadQuestion(index) {
     currentQIndex = index;  
     // Determine the section of the new question
     const newSection = index < questionsPerSection ? 'A' : 'B';
+
     // Handle accidental click on locked section B question box
     if (newSection === 'B' && !isSectionASubmitted) {
         alert("Section B is locked. Please submit Section A first.");
@@ -200,6 +201,7 @@ function loadQuestion(index) {
         switchSection('A');
         return;
     }
+
     // If switching sections via sidebar, update UI
     if (newSection !== currentSection) {
          currentSection = newSection;
@@ -208,15 +210,18 @@ function loadQuestion(index) {
          document.getElementById('q-status-grid-A').style.display = newSection === 'A' ? 'grid' : 'none';
          document.getElementById('q-status-grid-B').style.display = newSection === 'B' ? 'grid' : 'none';
     }
+
     // Mark question as Visited (if Not Visited)
     if (questionStatus[currentQIndex] === 0) {
         questionStatus[currentQIndex] = 1;
     } 
+
     // Update Sidebar for the new current question and update counts
     updateSidebarColors();
     updateQuestionCounts();
     const questionData = EXAM_QUESTIONS[currentExamName][currentQIndex];
     const qContent = document.getElementById('current-question-content');   
+
     // Construct Question HTML
     let qHTML = `
         <p>${questionData.text}</p>
@@ -240,15 +245,31 @@ function loadQuestion(index) {
     qContent.innerHTML = qHTML;
     document.getElementById('current-q-num').textContent = questionData.id;
     document.getElementById('current-q-marks').textContent = `${questionData.marks} Mark${questionData.marks > 1 ? 's' : ''}`;
-    
+
     // Update navigation button visibility
     updateNavigationButtons();
+
+    // Show or hide Save buttons based on the current question
+    const saveButtonA = document.getElementById('save-button-section-a');
+    const saveButtonB = document.getElementById('save-button-section-b');
+
+    if (currentQIndex === 9) { // 10th question in Section A
+        saveButtonA.style.display = 'inline-block';
+    } else {
+        saveButtonA.style.display = 'none';
+    }
+
+    if (currentQIndex === 19) { // 20th question in Section B
+        saveButtonB.style.display = 'inline-block';
+    } else {
+        saveButtonB.style.display = 'none';
+    }
 }
 function saveAnswer() {
     const currentQData = EXAM_QUESTIONS[currentExamName][currentQIndex];
     const qID = currentQData.id;
     const form = document.getElementById(`q-form-${qID}`);
-    
+
     if (form) {
         const selected = form.querySelector(`input[name="q${qID}"]:checked`);
         if (selected) {
@@ -266,6 +287,20 @@ function saveAnswer() {
             questionStatus[currentQIndex] = 1;
             delete userAnswers[qID];
         }
+
+        // Update the sidebar colors to reflect the change
+        updateSidebarColors();
+        updateQuestionCounts();
+
+        // Mark the question as Attempted (green) if saved
+        if (currentQIndex === 9 || currentQIndex === 19) {
+            const box = document.getElementById(`q-box-${qID}`);
+            if (box) {
+                box.classList.remove('status-not-visited', 'status-visited');
+                box.classList.add('status-attempted');
+            }
+        }
+
         // Persist a lightweight "recent course" entry so dashboard can show live progress
         try {
             if (currentExamName) {
@@ -354,7 +389,7 @@ function updateSidebarColors() {
         if (i === currentQIndex) {
             box.classList.add('status-current');
         } else {
-             if (questionStatus[i] === 2) {
+            if (questionStatus[i] === 2) {
                 box.classList.add('status-attempted');
             } else if (questionStatus[i] === 1) {
                 box.classList.add('status-visited');

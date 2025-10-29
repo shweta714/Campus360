@@ -1,4 +1,3 @@
-
 /* ... rest of your CSS remains unchanged ... */
 
 .exam-grid-container {
@@ -521,3 +520,23 @@
     line-height: 1.4;
 }
 
+/* Add blue styling for Save buttons */
+#save-button-section-a,
+#save-button-section-b {
+    background-color: #007bff;
+    /* Blue background */
+    color: white;
+    /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+#save-button-section-a:hover,
+#save-button-section-b:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover */
+}
