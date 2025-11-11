@@ -48,15 +48,14 @@
             <input id="seatSearch" placeholder="Name or roll"
               style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #e6edf8" />
           </label>
-          <!-- assignment info will show assigned hall and invigilator for selected exam -->
+         
           <div id="assignmentInfo" style="font-weight:600;color:#374151;margin-left:12px;min-width:220px;">
-            <!-- populated by JS -->
+           
           </div>
         </div>
 
         <div class="stage">Invigilator Desk</div>
         <div id="rowsContainer" class="rows">
-          <!-- seats rendered here -->
         </div>
       </div>
 
@@ -70,7 +69,6 @@
     </main>
 
     <script>
-      // Seating data mapped by date -> course -> rows
       const SEATING_MAPS = {
         '2025-10-12': {
           'DBMS': [
@@ -102,8 +100,6 @@
           ]
         }
       };
-
-      // Assignments mapping: date -> course -> { hall, teacher }
       const ASSIGNMENTS = {
         '2025-10-12': { 'DBMS': { hall: 'Hall A', teacher: 'Dr. R. Mehta' } },
         '2025-10-15': { 'Algorithms': { hall: 'Lab 3', teacher: 'Prof. S. Kapoor' } },
@@ -122,19 +118,19 @@
         courseSel.innerHTML = '';
         dateSel.innerHTML = '';
         const dates = Object.keys(SEATING_MAPS).sort();
-        // populate dates
+    
         dates.forEach(d => {
           const opt = document.createElement('option'); opt.value = d; opt.textContent = d; dateSel.appendChild(opt);
         });
-        // when date changes, populate courses
+        
         dateSel.addEventListener('change', () => {
           populateCoursesForDate(dateSel.value);
           renderForSelection();
         });
-        // when course changes
+      
         courseSel.addEventListener('change', () => renderForSelection());
 
-        // select first date by default
+       
         if (dates.length) { dateSel.value = dates[0]; populateCoursesForDate(dates[0]); }
       }
 
@@ -160,7 +156,7 @@
         rows.forEach(r => {
           const rowEl = document.createElement('div'); rowEl.className = 'row';
           r.forEach(cell => {
-            // cell format: seat:Name:Roll
+           
             const parts = String(cell).split(':');
             const seatId = parts[0] || '';
             const name = parts[1] || '';
@@ -171,10 +167,10 @@
             seat.setAttribute('data-roll', roll);
             seat.setAttribute('data-name', name);
             seat.innerHTML = `${seatId}<br><span class="name">${name}</span>`;
-            // highlight if matches current user
+           
             if ((roll && roll.toLowerCase() === userRoll) || (name && name.toLowerCase() === userName)) {
               seat.classList.add('my-seat'); mySeatFound = true;
-              // add note
+             
               seat.title = 'This is your assigned seat';
             }
             rowEl.appendChild(seat);
@@ -182,10 +178,10 @@
           container.appendChild(rowEl);
         });
 
-        // if user's seat found, scroll into view
+        
         if (mySeatFound) { const el = document.querySelector('.my-seat'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 
-    // populate assignment info for selected date/course (if available)
+   
     try {
       const assignEl = document.getElementById('assignmentInfo');
       if (assignEl) {
@@ -199,7 +195,7 @@
   } catch (e) { }
       }
 
-      // debounced search
+      
       function debounce(fn, wait) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait); }; }
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -220,7 +216,7 @@
 
   </div>
   <script>
-    // Dark theme support removed: read preferences but do not modify document classes
+    
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
@@ -228,7 +224,7 @@
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            // no-op
+           
           }
         } catch (e) { }
       });

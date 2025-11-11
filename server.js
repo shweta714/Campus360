@@ -1,6 +1,3 @@
-// Simple feedback API for Campus360
-// Run: npm install && node server.js
-
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -13,23 +10,19 @@ const DATA_FILE = path.join(__dirname, 'feedbacks.json');
 app.use(cors());
 app.use(express.json());
 
-// Ensure data file exists
 if (!fs.existsSync(DATA_FILE)) {
   try { fs.writeFileSync(DATA_FILE, JSON.stringify([]), { encoding: 'utf8' }); } catch (e) { console.error('Could not create data file:', e); }
 }
 
-// Basic health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Demo users - in production use a database and hashed passwords
 const demoUsers = [
   { id: 1, email: 'student@example.com', username: 'student1', password: 'student123', role: 'student' },
   { id: 2, email: 'faculty@example.com', username: 'faculty1', password: 'faculty123', role: 'faculty' }
 ];
 
-// GET /api/user?email=...  (demo)
 app.get('/api/user', (req, res) => {
   const email = String(req.query.email || '').toLowerCase();
   if (!email) return res.status(400).json({ error: 'email query required' });
@@ -39,7 +32,6 @@ app.get('/api/user', (req, res) => {
   res.json({ user: safe });
 });
 
-// POST /api/login - simple demo authentication
 app.post('/api/login', (req, res) => {
   const { email, password, role } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'email and password required' });
@@ -47,19 +39,15 @@ app.post('/api/login', (req, res) => {
   const user = demoUsers.find(u => (u.email === email || u.username === email) && u.password === password);
   if (!user) return res.status(401).json({ error: 'invalid credentials' });
 
-  // Optional: check role matches
   if (role && user.role !== role) return res.status(403).json({ error: 'role mismatch' });
 
-  // Create a demo token (do NOT use this in production)
   const token = `demo-token-${user.id}-${Date.now()}`;
 
-  // Return redirect target based on role
   const redirect = user.role === 'faculty' ? 'faculty-dashboard.html' : 'student-dashboard.html';
 
   return res.json({ success: true, token, redirect });
 });
 
-// POST /api/feedback
 app.post('/api/feedback', (req, res) => {
   const { name, email, message } = req.body || {};
   if (!name || !email || !message) {
@@ -74,7 +62,6 @@ app.post('/api/feedback', (req, res) => {
     receivedAt: new Date().toISOString()
   };
 
-  // append to file (read -> push -> write). This is simple and acceptable for a small demo.
   try {
     const raw = fs.readFileSync(DATA_FILE, 'utf8') || '[]';
     const arr = JSON.parse(raw);
@@ -88,7 +75,6 @@ app.post('/api/feedback', (req, res) => {
   }
 });
 
-// Serve static files (optional) so you can run API from repo root and serve static pages if desired
 app.use(express.static(path.join(__dirname)));
 
 app.listen(PORT, () => {

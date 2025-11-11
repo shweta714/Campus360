@@ -25,7 +25,6 @@
 </head>
 
 <body>
-  <!-- App Sidebar (shared) -->
   <aside class="app-sidebar" id="appSidebar" aria-label="Main navigation">
     <nav class="sidebar-nav">
       <ul>
@@ -73,9 +72,6 @@
       </ul>
     </nav>
   </aside>
-  
-  <!-- top navbar removed in favor of sidebar navigation -->
-
   <main class="profile-page">
     <div class="profile-card">
       <div class="profile-left">
@@ -182,13 +178,10 @@
       document.getElementById('vEmail').textContent = profile.email || 'Email';
       document.getElementById('vPhone').textContent = profile.phone || 'Phone';
       document.getElementById('vAbout').textContent = profile.about || 'No info yet.';
-    // GPA
     var gpaVal = (profile.gpa !== undefined && profile.gpa !== null && profile.gpa !== '') ? profile.gpa : 'N/A';
     var gpaEl = document.getElementById('vGPAval'); if (gpaEl) gpaEl.textContent = gpaVal;
-      // avatar
       const img = document.getElementById('avatarImg');
       if (profile.avatar) { img.src = profile.avatar; } else { img.src = 'https://via.placeholder.com/160x160.png?text=Avatar'; }
-      // skills
       const vSkills = document.getElementById('vSkills'); vSkills.innerHTML = '';
       (profile.skills || []).forEach(s => { const chip = document.createElement('div'); chip.className = 'skill-chip'; chip.textContent = s; vSkills.appendChild(chip); });
     }
@@ -200,7 +193,6 @@
       document.getElementById('editBtn').style.display = 'none';
       document.getElementById('saveBtn').style.display = 'inline-block';
       document.getElementById('cancelBtn').style.display = 'inline-block';
-      // fill inputs
       document.getElementById('inputName').value = profile.name || '';
       document.getElementById('inputRoll').value = profile.roll || '';
       document.getElementById('inputDept').value = profile.dept || '';
@@ -209,7 +201,6 @@
       document.getElementById('inputPhone').value = profile.phone || '';
     document.getElementById('inputGPA').value = profile.gpa || '';
       document.getElementById('inputAbout').value = profile.about || '';
-      // skills
       const sc = document.getElementById('skillsContainer'); sc.innerHTML = '';
       (profile.skills || []).forEach(addSkillChipToEditor);
     }
@@ -241,50 +232,43 @@
       profile.phone = document.getElementById('inputPhone').value.trim();
     profile.gpa = (document.getElementById('inputGPA') ? document.getElementById('inputGPA').value.trim() : '');
       profile.about = document.getElementById('inputAbout').value.trim();
-      // skills
+      
       profile.skills = Array.from(document.getElementById('skillsContainer').querySelectorAll('.skill-chip')).map(c => c.childNodes[0].nodeValue || c.textContent.replace('x', '').trim());
       saveProfileObj(profile);
       renderView(profile);
       exitEdit();
     }
 
-    // avatar handling
     function readFileAsDataURL(file, cb) { const r = new FileReader(); r.onload = e => cb(e.target.result); r.readAsDataURL(file); }
     document.getElementById('avatarArea').addEventListener('click', () => document.getElementById('avatarInput').click());
     document.getElementById('changeAvatar').addEventListener('click', () => document.getElementById('avatarInput').click());
     document.getElementById('avatarInput').addEventListener('change', function () { if (this.files && this.files[0]) { readFileAsDataURL(this.files[0], function (data) { const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); } });
     document.getElementById('removeAvatar').addEventListener('click', function () { const p = readProfile(); delete p.avatar; saveProfileObj(p); renderView(p); });
 
-    // drag and drop
     const avatarArea = document.getElementById('avatarArea');
     avatarArea.addEventListener('dragover', function (e) { e.preventDefault(); avatarArea.classList.add('dragover'); });
     avatarArea.addEventListener('dragleave', function () { avatarArea.classList.remove('dragover'); });
     avatarArea.addEventListener('drop', function (e) { e.preventDefault(); avatarArea.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) readFileAsDataURL(f, data => { const p = readProfile(); p.avatar = data; saveProfileObj(p); renderView(p); }); });
 
-    // skills input
     document.getElementById('skillInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); const v = this.value.trim(); if (!v) return; addSkillChipToEditor(v); this.value = ''; } });
 
     document.getElementById('editBtn').addEventListener('click', enterEdit);
     document.getElementById('cancelBtn').addEventListener('click', function () { exitEdit(); });
     document.getElementById('saveBtn').addEventListener('click', saveProfile);
 
-    // initial render
     document.addEventListener('DOMContentLoaded', function () {
       const p = readProfile();
       renderView(p);
     });
   </script>
   <script>
-    // Dark theme support removed: preferences are retained but no class toggling is performed.
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
         try {
-          // Read prefs silently for compatibility; do not modify document classes.
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            // previously applied theme: intentionally a no-op now
           }
         } catch (e) { }
       });

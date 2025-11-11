@@ -16,14 +16,11 @@
             position: relative;
         }
 
-        /* Removed topbar styles */
-        /* New Navigation Bar Styles */
         .navbar {
             width: 100%;
             background: #6403ca;
             box-shadow: 0 2px 8px rgba(78, 84, 200, 0.08);
             padding: 1.2rem 0;
-            /* Increased height */
             position: fixed;
             top: 0;
             left: 0;
@@ -94,7 +91,6 @@
             justify-content: center;
             min-height: 100vh;
             padding-top: 4.5rem;
-            /* Adjust for navbar height */
         }
 
         .left-section {
@@ -199,9 +195,7 @@
             bottom: 0;
             width: 100%;
             padding: 0.5rem 2rem;
-            /* Reduced vertical padding */
             background: rgba(100, 3, 202, 0.2);
-            /* More transparent background */
             backdrop-filter: blur(5px);
             z-index: 100;
         }
@@ -211,14 +205,10 @@
             text-decoration: none;
             font-weight: 600;
             padding: 0.3rem 1rem;
-            /* Reduced vertical padding */
             border-radius: 4px;
-            /* Slightly smaller border radius */
             transition: background 0.2s, color 0.2s;
             float: right;
-            /* Align to the right side */
             font-size: 0.9rem;
-            /* Slightly smaller font */
         }
 
         .footer a:hover {
@@ -226,7 +216,6 @@
             color: #3554c8;
         }
 
-        /* Choice Dialog Styles */
         .choice-dialog {
             display: none;
             position: fixed;
@@ -286,7 +275,6 @@
 </head>
 
 <body>
-    <!-- Aligned Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
             <ul class="navbar-menu">
@@ -309,7 +297,6 @@
         </div>
     </div>
 
-    <!-- Choice Dialog -->
     <div class="overlay" id="overlay"></div>
     <div class="choice-dialog" id="choiceDialog">
         <h2>Welcome to Campus360</h2>
@@ -325,7 +312,6 @@
     </footer>
 
     <script>
-        // Dark theme removed: read preferences for compatibility but do not alter page classes
         (function () {
             const PREF_KEY = 'campus360_prefs';
             document.addEventListener('DOMContentLoaded', function () {
@@ -333,7 +319,6 @@
                     const raw = localStorage.getItem(PREF_KEY);
                     if (raw) {
                         const prefs = JSON.parse(raw);
-                        // no-op: previously applied theme is intentionally not applied now
                     }
                 } catch (e) { }
             });
@@ -344,7 +329,6 @@
             document.getElementById('choiceDialog').style.display = 'block';
         }
 
-        // Close dialog when clicking outside
         document.getElementById('overlay').addEventListener('click', function () {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('choiceDialog').style.display = 'none';

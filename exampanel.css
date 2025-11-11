@@ -1,5 +1,3 @@
-/* ... rest of your CSS remains unchanged ... */
-
 .exam-grid-container {
     display: flex;
     gap: 20px;
@@ -10,7 +8,6 @@
 .exam-column {
     flex: 1;
     background: linear-gradient(90deg, #f0f4ff, #e7e0f8);
-    /* Very light purplish gradient */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -21,7 +18,6 @@
     font-size: 1.5em;
     font-weight: bold;
     color: #6a1b9a;
-    /* Deep purple to match gradient */
     text-align: center;
     margin-bottom: 20px;
     border-bottom: 2px solid #6a1b9a;
@@ -30,7 +26,6 @@
 
 .exam-card {
     border: 1px solid #dcdcdc;
-    /* Light gray border */
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 6px;
@@ -39,18 +34,14 @@
     align-items: center;
     transition: transform 0.3s ease, background-color 0.3s ease;
     background-color: #fcfcfc;
-    /* Very light background */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    /* Subtle shadow for depth */
 }
 
 .exam-card:hover {
     transform: scale(1.05);
     background-color: #f5f5f5;
-    /* Slightly darker light gray on hover */
 }
 
-/* Button Styles */
 .start-button,
 .review-button,
 .modal-button {
@@ -71,42 +62,28 @@
     text-align: center;
     padding: 40px 20px;
     border: none;
-    /* Crucial: Removes the dashed border */
     background-color: transparent;
-    /* Allows column background to show */
-
-    /* Flexbox for centering content (icon + text) */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
 }
 
 .empty-message .fa-check-circle {
     font-size: 5em;
-    /* Controls the size of the checkmark */
     color: #bdbdbd;
-    /* Sets the color of the checkmark and the ring */
     margin-bottom: 15px;
-
-    /* Custom Ring Style */
     border: 3px solid #bdbdbd;
-    /* Creates the gray ring/border */
     border-radius: 50%;
-    /* Makes the border perfectly circular */
     padding: 10px;
-    /* Space between the checkmark and the ring border */
 }
 
 .empty-message p {
     margin: 0;
     color: #6a1b9a;
-    /* Sets the text color to a dark purple */
     font-weight: 500;
 }
 
-/* --- New Modal and Exam Styles --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -120,7 +97,6 @@
     z-index: 1000;
 }
 
-/* Full Screen Exam Panel Container */
 #exam-panel-modal {
     display: none;
     position: fixed;
@@ -138,7 +114,6 @@
     width: 100%;
 }
 
-/* --- Left Sidebar (Question Navigation) --- */
 .sidebar {
     width: 250px;
     background-color: #f8f9fa;
@@ -177,7 +152,6 @@
     transition: background-color 0.2s, color 0.2s;
 }
 
-/* Question Status Colors */
 .status-not-visited {
     background-color: #f0f0f0;
     color: #333;
@@ -190,14 +164,12 @@
     border-color: #ff9966;
 }
 
-/* Orange/Not Answered */
 .status-attempted {
     background-color: #28a745;
     color: white;
     border-color: #28a745;
 }
 
-/* Green/Answered */
 .status-current {
     background-color: #007bff;
     color: white;
@@ -210,7 +182,6 @@
     pointer-events: none;
 }
 
-/* Question Summary Box */
 .q-summary {
     padding: 10px;
     border: 1px solid #ddd;
@@ -233,8 +204,6 @@
     border-radius: 3px;
 }
 
-
-/* --- Main Content Area (Header + Question) --- */
 .main-content {
     flex-grow: 1;
     padding: 20px 30px;
@@ -285,7 +254,6 @@
     pointer-events: none;
 }
 
-/* Question Display Area */
 .question-display {
     flex-grow: 1;
     overflow-y: auto;
@@ -353,7 +321,6 @@
     color: white;
 }
 
-/* Instructions Modal specific styling */
 #instructions-modal .modal-content {
     max-width: 600px;
     background-color: white;
@@ -362,11 +329,8 @@
     box-shadow: 0 4px 8px rgba(237, 233, 233, 0);
 }
 
-/* Final Submission Pop-up */
-/* Final Submission Popup Styling */
 #final-submission-popup button {
     background: var(--primary-color);
-    /* Matches the inline style override */
     padding: 12px 25px;
     font-size: 1.1em;
     color: white;
@@ -380,22 +344,11 @@
     background: var(--primary-dark);
 }
 
-/* ------------------------------------------------------------------ */
-/* --- TARGETED STYLING FOR #final-submission-modal (White Text & Spacing) --- */
-/* ------------------------------------------------------------------ */
-
-
-/* ------------------------------------------------------------------ */
-/* --- TARGETED STYLING FOR #final-submission-modal (MINIMAL SPACING) --- */
-/* ------------------------------------------------------------------ */
-
 #final-submission-modal .modal-content {
-    /* ... (Keep existing layout/color styles) ... */
     color: white;
     background-color: transparent;
     max-width: 600px;
     padding: 30px;
-    /* Reduced padding slightly to make content feel more dense */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -404,35 +357,25 @@
     box-shadow: none;
 }
 
-/* Heading Styling: 'Exam Submitted Successfully!' */
 #final-submission-modal .modal-content h2 {
     font-size: 2.2em;
     font-weight: 700;
     margin-bottom: 15px;
-    /* Greatly reduced gap after the heading */
 }
 
-/* Paragraph Styling (Controlling Vertical Gaps) */
 #final-submission-modal .modal-content p {
     font-size: 1.1em;
     opacity: 0.95;
     line-height: 1.4;
-    /* Slightly reduced line-height for a denser feel */
     margin-bottom: 5px;
-    /* Minimal gap between the first two body lines */
     max-width: 80%;
 }
 
-/* The final paragraph before the button: "Thank you for completing..." */
 #final-submission-modal .modal-content p[style*="margin-top: 20px"] {
-    /* The HTML has margin-top: 20px, so we'll just set a minimal margin-bottom */
     margin-top: 15px !important;
-    /* Reduced margin-top slightly */
     margin-bottom: 15px;
-    /* Minimal gap before the "Close Panel" button */
 }
 
-/* Button Styling (Ensuring bright blue) */
 #final-submission-modal .modal-content button {
     background-color: #007bff;
     color: white;
@@ -446,14 +389,10 @@
     background-color: #0056b3;
 }
 
-/* Add light background colors to exam boxes */
 .upcoming-column .exam-card {
     background: linear-gradient(90deg, #e0f0f8, #f0f4ff);
-    /* Light gradient background */
     border-radius: 20px;
-    /* Rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow for depth */
     padding: 20px;
     margin-bottom: 20px;
     display: flex;
@@ -465,16 +404,12 @@
 .upcoming-column .exam-card:hover {
     transform: scale(1.05);
     background: linear-gradient(90deg, #e0eaf8, #f0f4ff);
-    /* Slightly altered gradient on hover */
 }
 
 .completed-column .exam-card {
     background: linear-gradient(90deg, #f0f4ff, #e7e0f8);
-    /* Light gradient background */
     border-radius: 20px;
-    /* Rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow for depth */
     padding: 20px;
     margin-bottom: 20px;
     display: flex;
@@ -486,33 +421,24 @@
 .completed-column .exam-card:hover {
     transform: scale(1.05);
     background: linear-gradient(90deg, #e7e0f8, #f0f4ff);
-    /* Slightly altered gradient on hover */
 }
 
 .subject-name {
     font-size: 1.2em;
     font-weight: bold;
     color: black;
-    /* Set subject title color to black */
 }
 
-/* ADDED: Specific styling for Upcoming Exams Empty State */
 #upcoming-empty-message {
-    /* Inherits core flexbox and border: none from .empty-message */
     padding: 50px 20px;
-    /* Adjusted padding to center content vertically */
 }
 
-/* ADDED: Icon Style for Upcoming (e.g., a calendar or clock) */
 #upcoming-empty-message .fas {
     font-size: 4.5em;
-    /* Large icon size */
     color: #9c27b0;
-    /* Darker purple/magenta color for icon */
     margin-bottom: 20px;
 }
 
-/* ADDED: Text Styling for Upcoming Empty State */
 #upcoming-empty-message p {
     font-style: italic;
     color: #6a1b9a;
@@ -520,13 +446,10 @@
     line-height: 1.4;
 }
 
-/* Add blue styling for Save buttons */
 #save-button-section-a,
 #save-button-section-b {
     background-color: #007bff;
-    /* Blue background */
     color: white;
-    /* White text */
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -538,5 +461,4 @@
 #save-button-section-a:hover,
 #save-button-section-b:hover {
     background-color: #0056b3;
-    /* Darker blue on hover */
 }

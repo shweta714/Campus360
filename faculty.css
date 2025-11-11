@@ -12,7 +12,6 @@ body {
     padding: 2rem;
 }
 
-/* Header Styles */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -61,8 +60,6 @@ body {
 .logout-btn:hover {
     background: #ff6b81;
 }
-
-/* Profile Section */
 .profile-section {
     margin-bottom: 2rem;
 }
@@ -102,8 +99,6 @@ body {
     font-size: 1.1rem;
     font-weight: 500;
 }
-
-/* Classes Section */
 .classes-section h2 {
     color: #333;
     margin-bottom: 1rem;
@@ -156,8 +151,6 @@ body {
     color: #333;
     font-weight: 500;
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 1rem;

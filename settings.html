@@ -8,7 +8,6 @@
   <script src="theme.js" defer></script>
 </head>
 <body>
-  <!-- App Sidebar (shared) -->
   <aside class="app-sidebar" id="appSidebar" aria-label="Main navigation">
     <nav class="sidebar-nav">
       <ul>
@@ -56,9 +55,6 @@
       </ul>
     </nav>
   </aside>
-
-  <!-- top navbar removed in favor of sidebar navigation -->
-
   <main style="max-width:900px;margin:80px auto 40px;padding:20px;">
     <section class="settings-card">
       <div class="settings-bubbles" id="settingsBubbles"></div>
@@ -99,7 +95,6 @@
     function loadPrefs(){
       const raw = localStorage.getItem(PREF_KEY);
       const prefs = raw ? JSON.parse(raw) : { theme:'dark', notify:true };
-      // set buttons
       document.getElementById(prefs.theme === 'dark' ? 'themeDark' : 'themeLight').classList.add('active');
       document.getElementById(prefs.notify ? 'notifyOn' : 'notifyOff').classList.add('active');
       try{ if(window.setTheme) window.setTheme(prefs.theme); else applyTheme(prefs.theme === 'dark'); }catch(e){ applyTheme(prefs.theme === 'dark'); }
@@ -114,7 +109,6 @@
     }
     document.addEventListener('DOMContentLoaded', function(){
       loadPrefs();
-      // theme buttons
       document.getElementById('themeDark').addEventListener('click', function(){
         document.getElementById('themeDark').classList.add('active');
         document.getElementById('themeLight').classList.remove('active');
@@ -125,7 +119,7 @@
         document.getElementById('themeDark').classList.remove('active');
         savePrefs('light', document.getElementById('notifyOn').classList.contains('active'));
       });
-      // notify buttons
+  
       document.getElementById('notifyOn').addEventListener('click', function(){
         document.getElementById('notifyOn').classList.add('active');
         document.getElementById('notifyOff').classList.remove('active');

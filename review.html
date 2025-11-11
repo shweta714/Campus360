@@ -139,7 +139,6 @@
 </head>
 
 <body>
-    <!-- Aligned Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
             <ul class="navbar-menu">
@@ -173,18 +172,16 @@
     </main>
 
     <script>
-        // Handle feedback form submission
         document.getElementById('feedbackForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('feedbackName').value;
             const email = document.getElementById('feedbackEmail').value;
             const message = document.getElementById('feedbackMessage').value;
 
-            // Simulate feedback submission
             console.log('Feedback submitted:', { name, email, message });
             alert('Thank you for your feedback, ' + name + '!');
 
-            // Clear the form
+
             this.reset();
         });
     </script>

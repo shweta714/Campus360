@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        (function(){
-            try{
+        (function () {
+            try {
                 const raw = localStorage.getItem('campus360_prefs');
-                if(!raw) return;
+                if (!raw) return;
                 const prefs = JSON.parse(raw);
-                if(prefs && prefs.theme === 'dark'){
+                if (prefs && prefs.theme === 'dark') {
                     document.documentElement.classList.add('dark-theme');
-                    try{ document.body.classList.add('dark-theme'); }catch(e){}
-                    document.documentElement.setAttribute('data-theme','dark');
+                    try { document.body.classList.add('dark-theme'); } catch (e) { }
+                    document.documentElement.setAttribute('data-theme', 'dark');
                 }
-            }catch(e){}
+            } catch (e) { }
         })();
     </script>
     <script src="theme.js" defer></script>
@@ -41,29 +41,30 @@
             font-size: 0.9rem;
             color: #333;
         }
-        
+
         .google-signup-btn:hover {
             background: #f8f8f8;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .google-signup-btn:active {
             background: #eee;
         }
-        
+
         .google-signup-btn img {
             width: 18px;
             height: 18px;
         }
-        
+
         .divider {
             text-align: center;
             margin: 20px 0;
             position: relative;
             color: #666;
         }
-        
-        .divider:before, .divider:after {
+
+        .divider:before,
+        .divider:after {
             content: "";
             position: absolute;
             top: 50%;
@@ -71,21 +72,26 @@
             height: 1px;
             background: #ddd;
         }
-        
-        .divider:before { left: 0; }
-        .divider:after { right: 0; }
+
+        .divider:before {
+            left: 0;
+        }
+
+        .divider:after {
+            right: 0;
+        }
 
         .forgot-password-link {
             text-align: right;
             margin-top: 5px;
         }
-        
+
         .forgot-password-link a {
             color: #4e54c8;
             text-decoration: none;
             font-size: 0.9rem;
         }
-        
+
         .forgot-password-link a:hover {
             text-decoration: underline;
         }
@@ -98,14 +104,14 @@
         <div class="logo"><img src="logo.png" alt="Campus360 Logo" style="width: 48px; height: 48px;"></div>
         <h1>Create Account</h1>
         <p>Join Campus 360 today!</p>
-        
+
         <button type="button" class="google-signup-btn" id="googleSignUp">
             <img src="images/google.svg" alt="Google">
             Sign up with Google
         </button>
-        
+
         <div class="divider">or</div>
-        
+
         <form id="signupForm">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
@@ -134,8 +140,8 @@
 
             <button type="submit">Create Account</button>
             <div class="form-links">
-        <p>Already have an account? <a href="login.html" class="login-link"
-            onclick="sessionStorage.setItem('fromIntro','true')">Login here</a></p>
+                <p>Already have an account? <a href="login.html" class="login-link"
+                        onclick="sessionStorage.setItem('fromIntro','true')">Login here</a></p>
             </div>
         </form>
     </div>
@@ -147,13 +153,11 @@
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
 
-            // Password validation
             const hasUpperCase = /[A-Z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
             const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
             const hasLength = password.length >= 8;
 
-            // Update password requirement indicators
             document.getElementById('length').style.color = hasLength ? 'green' : 'red';
             document.getElementById('uppercase').style.color = hasUpperCase ? 'green' : 'red';
             document.getElementById('number').style.color = hasNumber ? 'green' : 'red';
@@ -169,7 +173,6 @@
                 return false;
             }
 
-            // Check if user already exists
             const existingUsers = ['test@example.com', 'student1', 'admin@campus360.com'];
             if (existingUsers.includes(email) || existingUsers.includes(username)) {
                 alert('This email or username is already registered. Please login instead.');
@@ -178,22 +181,16 @@
                 return false;
             }
 
-            // If all validations pass
             alert('Account created successfully! Please login.');
             sessionStorage.setItem('fromIntro', 'true');
             window.location.href = 'index.html';
             return false;
         }
-
-        // Attach submit event handler to the form
         document.getElementById('signupForm').addEventListener('submit', function (event) {
-            // Only prevent default if validation fails
             if (!validateForm(event)) {
                 event.preventDefault();
             }
         });
-
-        // Real-time Password validation
         document.getElementById('password').addEventListener('input', function () {
             const password = this.value;
             document.getElementById('length').style.color = password.length >= 8 ? 'green' : 'red';
@@ -201,36 +198,25 @@
             document.getElementById('number').style.color = /[0-9]/.test(password) ? 'green' : 'red';
             document.getElementById('special').style.color = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'green' : 'red';
         });
-
-        // Initialize Google Sign-In
         function initializeGoogleSignIn() {
             google.accounts.id.initialize({
                 client_id: '123672447023-9ph6ep8mb7l4bkcosp7bbtbetvps8upn.apps.googleusercontent.com', // Replace with your actual client ID
                 callback: handleGoogleSignIn
             });
         }
-
-        // Handle Google Sign-In response
         function handleGoogleSignIn(response) {
             const credential = response.credential;
-            // Here you would typically:
-            // 1. Send the credential to your backend
-            // 2. Create a new account or link to existing one
-            // 3. Redirect to dashboard
-            try { 
+            try {
                 localStorage.setItem('authToken', credential);
                 window.location.href = 'student-dashboard.html';
-            } catch(e) {
+            } catch (e) {
                 console.error('Error storing auth token:', e);
             }
         }
-
-        // Add click handler for Google sign-up button
-        document.getElementById('googleSignUp').addEventListener('click', function() {
+        document.getElementById('googleSignUp').addEventListener('click', function () {
             google.accounts.id.prompt();
         });
 
-        // Initialize when page loads
         window.onload = initializeGoogleSignIn;
     </script>
     <script src="https://accounts.google.com/gsi/client" async></script>

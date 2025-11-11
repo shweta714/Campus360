@@ -151,7 +151,7 @@
     }
   </style>
   <style>
-    /* Page background (use same image as signup) */
+   
     body {
       margin: 0;
       font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
@@ -164,7 +164,7 @@
       padding: 24px;
     }
 
-    /* Centered frosted panel */
+    
     main { max-width: 420px; width: 100%; }
     .panel {
       background: rgba(255,255,255,0.14);
@@ -187,7 +187,6 @@
 
   label.field-label { display:block; font-weight:600; color:#111; margin-bottom:6px; font-size:0.9rem; }
   input.field { width:100%; padding:12px 14px; border-radius:10px; border:none; background:#fff; box-sizing:border-box; font-size:1rem; color: #111; }
-  /* lighter placeholder but darker input text for readability */
   input.field::placeholder { color: #8b8b91; }
 
     .btn-login { width:100%; padding:14px; margin-top:18px; border-radius:10px; border:none; color:#fff; font-weight:800; font-size:1rem; cursor:pointer; background: linear-gradient(90deg,#6b46ff,#8b5cf6); box-shadow: 0 10px 30px rgba(99,102,241,0.12); }
@@ -234,8 +233,6 @@
 
   <script>
     const loginForm = document.getElementById('loginForm');
-
-    // Role toggle behavior (student/faculty)
     const roleStudent = document.getElementById('role-student');
     const roleFaculty = document.getElementById('role-faculty');
     let selectedRole = 'student';
@@ -257,8 +254,6 @@
 
     roleStudent.addEventListener('click', () => setRoleUI('student'));
     roleFaculty.addEventListener('click', () => setRoleUI('faculty'));
-
-    // Handle login form submission — redirect based on selected role
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
       try { localStorage.setItem('authToken','demo-token'); } catch(e){}
@@ -268,8 +263,6 @@
         window.location.href = 'faculty-dashboard.html';
       }
     });
-
-    // Load Google Sign-In API
     function loadGoogleSignIn() {
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
@@ -278,30 +271,25 @@
 
       script.onload = function() {
         google.accounts.id.initialize({
-          client_id: '123672447023-9ph6ep8mb7l4bkcosp7bbtbetvps8upn.apps.googleusercontent.com', // Replace with your actual client ID
+          client_id: '123672447023-9ph6ep8mb7l4bkcosp7bbtbetvps8upn.apps.googleusercontent.com', 
           callback: handleGoogleSignIn
         });
       };
     }
 
-    // Handle Google Sign-In response
     function handleGoogleSignIn(response) {
       const credential = response.credential;
-      // Send the credential to your backend for verification
-      // For demo purposes, we'll just redirect to dashboard
+     
       try { localStorage.setItem('authToken', credential); } catch(e){}
       window.location.href = 'student-dashboard.html';
     }
 
-    // Initialize Google Sign-In button (if present)
     const googleBtn = document.getElementById('googleSignIn');
     if (googleBtn) {
       googleBtn.addEventListener('click', function() {
         if (window.google && google.accounts && google.accounts.id) google.accounts.id.prompt();
       });
     }
-
-    // Load Google Sign-In when page loads
     loadGoogleSignIn();
   </script>
 </body>

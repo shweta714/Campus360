@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quiz - Campus360</title>
   <script>
-    // early theme fallback: apply stored theme asap so CSS picks it up before render
     (function(){
       try{
         const raw = localStorage.getItem('campus360_prefs');
@@ -31,16 +30,12 @@
   .wrong{background:#fff1f1}
   .muted{color:#666}
   .btn.primary{background:#4e54c8;color:#fff}
-
-  /* Dark mode overrides for quiz page (applies when .dark-theme is on <html> or <body>) */
   .dark-theme .quiz-page { background: var(--dm-bg, #071025); color: var(--dm-text, #e6eef8); }
   .dark-theme .quiz-question { background: var(--dm-card, #0f1724); color: var(--dm-text, #e6eef8); box-shadow: 0 6px 18px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); }
   .dark-theme .quiz-opts label { color: var(--dm-text, #e6eef8); }
   .dark-theme .muted { color: var(--dm-muted, #9aa0b2); }
   .dark-theme .btn.primary { background: linear-gradient(90deg,#7c3aed,#37a9ff) !important; color: #fff !important; }
   .dark-theme .navbar-top { background: var(--dm-surface, #0b1220) !important; }
-
-  /* Make correct/wrong highlights readable in dark mode and ensure result text contrasts */
   .correct { background: #e6fff1 }
   .wrong { background: #fff1f1 }
   .dark-theme .correct { background: rgba(34,197,94,0.12) !important; color: var(--dm-text, #e6eef8) !important; border-left: 4px solid rgba(34,197,94,0.6); }
@@ -89,7 +84,6 @@ const LEVEL_QUIZ_DB = {
   medium: [], hard: []
 };
 
-// Topic-specific question banks (overrides level-based DB when topic query param is present)
 const TOPIC_QUIZ_DB = {
   'Loop': [
     { q: 'What will happen if the condition in a for loop is always true and there is no break statement inside it?', opts: ['The loop executes only once','The program crashes immediately','The loop runs infinitely until stopped manually','The compiler throws an error'], a: 2 },
@@ -98,7 +92,6 @@ const TOPIC_QUIZ_DB = {
     { q: 'Consider nested loops: for (int i = 0; i < n; i++) for (int j = 0; j < n; j++); What is the time complexity of this code?', opts: ['O(n)','O(n²)','O(2n)','O(log n)'], a: 1 },
     { q: 'Which of the following is NOT valid in Java?', opts: ['for(;;)','for(int i=0; ; i++)','for(; i<10; )','for(int i=0, j=10; i<j; i++, j--) System.out.println(i+j);'], a: 3 },
 
-    // Part B: Output based
     { q: 'for(int i=0; i<5; i++);\nSystem.out.println(i); What is the output?', opts: ['5','4','Compilation error','Infinite loop'], a: 0 },
     { q: 'int i = 0;\nwhile(i < 3) {\n   System.out.print(i);\n   i++;\n}\nWhat is the output?', opts: ['123','012','013','Infinite loop'], a: 1 },
     { q: 'int i = 0;\ndo {\n   System.out.print(i);\n   i++;\n} while(i < 0);\nWhat is the output?', opts: ['0','None','Infinite loop','No output'], a: 0 },
@@ -146,12 +139,11 @@ function renderQuestion(i){
   div.appendChild(opts);
   container.appendChild(div);
 
-  // store selection when changed
+  
   container.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', function(){
     answers[i] = parseInt(this.value,10);
   }));
 
-  // update nav visibility
   prevBtn.style.display = i > 0 ? 'inline-block' : 'none';
   nextBtn.style.display = i < qlist.length - 1 ? 'inline-block' : 'none';
   evalBtn.style.display = i === qlist.length - 1 ? 'inline-block' : 'none';
@@ -159,7 +151,6 @@ function renderQuestion(i){
 }
 
 function renderReview(results){
-  // show all questions with correct/wrong highlights
   container.innerHTML = '';
   results.forEach(r => {
     const item = qlist[r.idx];
@@ -177,11 +168,9 @@ function renderReview(results){
     div.appendChild(opts);
     container.appendChild(div);
   });
-  // hide nav in review
   prevBtn.style.display='none'; nextBtn.style.display='none'; evalBtn.style.display='none';
 }
 
-// initial render
 renderQuestion(currentIndex);
 
 prevBtn.addEventListener('click', ()=>{ if(currentIndex>0){ currentIndex--; renderQuestion(currentIndex); } });
@@ -198,9 +187,9 @@ evalBtn.addEventListener('click', function(){
   });
   const pct = Math.round((score/qlist.length)*100);
   resultEl.textContent = `${score}/${qlist.length} (${pct}%)`;
-  // update best
+  
   try{ const key = 'course_level_best_'+level+'_'+courseName; const prev = parseInt(localStorage.getItem(key)||'0',10); if(pct>prev) localStorage.setItem(key,pct); }catch(e){}
-  // increase completion by 10% per attempt (capped at 100)
+
   try{ const PROG_KEY = 'course_progress_'+courseName; let p = parseInt(localStorage.getItem(PROG_KEY) || '0',10); p = Math.min(100, p + 10); localStorage.setItem(PROG_KEY, p); }catch(e){}
   renderReview(results);
 });
@@ -208,3 +197,4 @@ evalBtn.addEventListener('click', function(){
 </script>
 </body>
 </html>
+

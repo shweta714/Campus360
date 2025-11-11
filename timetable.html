@@ -62,7 +62,6 @@
   </div>
 
   <script>
-    // Prepopulated exam events (read-only)
     const EXAMS = [
       { date: '2025-10-12', course: 'DBMS', time: '10:00 - 12:00', venue: 'Hall A', cloakroom: 'Cloakroom 1' },
       { date: '2025-10-15', course: 'Algorithms', time: '14:00 - 16:00', venue: 'Lab 3', cloakroom: 'Cloakroom 2' },
@@ -71,8 +70,6 @@
       { date: '2025-09-13', course: 'DSA (C++)', time: '09:00 - 11:00', venue: 'Hall C', cloakroom: 'Cloakroom 2' },
       { date: '2025-09-13', course: 'IOT', time: '13:00 - 15:00', venue: 'Lab 5', cloakroom: 'Cloakroom 1' }
     ];
-
-    // Calendar state
     let viewDate = new Date();
     let selectedDate = null;
 
@@ -91,14 +88,11 @@
       const startDay = first.getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       document.getElementById('monthLabel').textContent = viewDate.toLocaleString(undefined, { month: 'long', year: 'numeric' });
-
-      // weekday headers
       const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       for (let w of weekdays) {
         const el = document.createElement('div'); el.className = 'wd'; el.textContent = w; cal.appendChild(el);
       }
 
-      // empty cells
       for (let i = 0; i < startDay; i++) { const el = document.createElement('div'); el.className = 'cell empty'; cal.appendChild(el); }
 
       for (let d = 1; d <= daysInMonth; d++) {
@@ -128,13 +122,11 @@
           list.appendChild(card);
         });
       }
-      // re-render to update selected cell highlight
       renderCalendar();
-      // highlight selected
       const btn = document.querySelector(`[data-date='${dateStr}']`);
       if (btn) btn.classList.add('selected');
 
-      // wire ICS download for the selected date
+      
       const dl = document.getElementById('downloadIcs');
       if (dl) { dl.disabled = false; dl.onclick = () => { downloadIcsForDate(dateStr); }; }
     }
@@ -146,10 +138,8 @@
       exams.forEach((e, idx) => {
         const dt = dateStr.replace(/-/g, '') + 'T000000';
         const uid = 'campus360-' + dateStr + '-' + idx + '@campus360.local';
-        // crude single-day event: start at time's first token
         const startTime = e.time.split('-')[0].trim();
         const endTime = e.time.split('-')[1] ? e.time.split('-')[1].trim() : startTime;
-        // convert HH:MM to basic TZ-less format
         const toHHMM = t => { const parts = t.split(':'); if (parts.length < 2) return '000000'; return (parts[0].padStart(2, '0') + parts[1].padStart(2, '0') + '00'); };
         const dtstart = dateStr.replace(/-/g, '') + 'T' + toHHMM(startTime);
         const dtend = dateStr.replace(/-/g, '') + 'T' + toHHMM(endTime);
@@ -170,7 +160,6 @@
       const a = document.createElement('a'); a.href = url; a.download = 'exams-' + dateStr + '.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 
-    // start
     start();
   </script>
   <script>
@@ -178,11 +167,9 @@
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
         try {
-          // Read preferences for backward compatibility; do not modify DOM classes.
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            // previously applied theme: intentionally no-op
           }
         } catch (e) { }
       });

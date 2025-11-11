@@ -8,72 +8,87 @@
   <link rel="stylesheet" href="student-dashboard.css">
   <link rel="stylesheet" href="courses.css">
   <script>
-    (function(){
-      try{
+    (function () {
+      try {
         const raw = localStorage.getItem('campus360_prefs');
-        if(!raw) return;
+        if (!raw) return;
         const prefs = JSON.parse(raw);
-        if(prefs && prefs.theme === 'dark'){
-          try{ document.documentElement.classList.add('dark-theme'); }catch(e){}
-          try{ document.body.classList.add('dark-theme'); }catch(e){}
-          try{ document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
+        if (prefs && prefs.theme === 'dark') {
+          try { document.documentElement.classList.add('dark-theme'); } catch (e) { }
+          try { document.body.classList.add('dark-theme'); } catch (e) { }
+          try { document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { }
         }
-      }catch(e){}
+      } catch (e) { }
     })();
   </script>
   <script src="theme.js" defer></script>
-  
+
 </head>
 
 <body>
-  <!-- top navbar removed in favor of sidebar navigation -->
 
-  <!-- App Sidebar (shared) -->
   <aside class="app-sidebar" id="appSidebar" aria-label="Main navigation">
     <nav class="sidebar-nav">
       <ul>
         <li class="sidebar-item" data-target="student-dashboard.html" title="Home">
           <button class="sidebar-btn" data-href="student-dashboard.html">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M5 10.5v7a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M5 10.5v7a1 1 0 0 0 1 1h3v-5h6v5h3a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
         </li>
 
         <li class="sidebar-item" data-target="profile.html" title="Profile Overview">
           <button class="sidebar-btn" data-href="profile.html">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </button>
         </li>
 
         <li class="sidebar-item" data-target="exam-panel.html" title="Exam Panel">
           <button class="sidebar-btn" data-href="exam-panel.html">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M21 4v14a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 17.5V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M8 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M21 4v14a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 17.5V4" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M8 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </button>
         </li>
 
         <li class="sidebar-item" data-target="courses.html" title="Resources">
           <button class="sidebar-btn" data-href="courses.html">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </button>
         </li>
 
         <li class="sidebar-item" data-target="settings.html" title="Settings">
           <button class="sidebar-btn" data-href="settings.html">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.8 1.8 0 0 0-2 .3l-.2.2a1 1 0 0 1-1.4 0l-.2-.2a1.8 1.8 0 0 0-2-.3l-.2.1a1 1 0 0 1-1-.2l-.1-.1a1.8 1.8 0 0 0-.3-2l-.1-.1a1 1 0 0 1 0-1.4l.1-.1a1.8 1.8 0 0 0 .3-2l-.1-.2a1 1 0 0 1 1.1-1.4l.2.1a1.8 1.8 0 0 0 2-.3l.2-.2a1 1 0 0 1 1.4 0l.2.2a1.8 1.8 0 0 0 2 .3l.2-.1a1 1 0 0 1 1 .2l.1.1a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1 0 1.4l-.1.1z" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.8 1.8 0 0 0-2 .3l-.2.2a1 1 0 0 1-1.4 0l-.2-.2a1.8 1.8 0 0 0-2-.3l-.2.1a1 1 0 0 1-1-.2l-.1-.1a1.8 1.8 0 0 0-.3-2l-.1-.1a1 1 0 0 1 0-1.4l.1-.1a1.8 1.8 0 0 0 .3-2l-.1-.2a1 1 0 0 1 1.1-1.4l.2.1a1.8 1.8 0 0 0 2-.3l.2-.2a1 1 0 0 1 1.4 0l.2.2a1.8 1.8 0 0 0 2 .3l.2-.1a1 1 0 0 1 1 .2l.1.1a1.8 1.8 0 0 0 .3 2l.1.1a1 1 0 0 1 0 1.4l-.1.1z"
+                stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
         </li>
@@ -143,13 +158,11 @@
       subjects.forEach(s => {
         if (filter !== 'all' && s.type !== filter) return;
         if (ql && !s.name.toLowerCase().includes(ql)) return;
-        // attach a sample course code for display (if missing)
         const entry = Object.assign({}, s);
-        if (!entry.code) entry.code = (s.name.split(' ').map(w=>w[0]).join('').toUpperCase() || 'CS101');
+        if (!entry.code) entry.code = (s.name.split(' ').map(w => w[0]).join('').toUpperCase() || 'CS101');
         grid.appendChild(createCard(entry));
       });
 
-      // wire open buttons
       grid.querySelectorAll('button[data-course], .course-tile .view-btn').forEach(btn => {
         btn.addEventListener('click', function () {
           const name = decodeURIComponent(this.getAttribute('data-course') || this.getAttribute('data-course-name') || '');
@@ -161,21 +174,18 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       renderCourses();
-      // search
       const search = document.getElementById('searchCourse');
       search.addEventListener('input', function () { renderCourses(document.querySelector('.filter-btn.active').dataset.filter, this.value); });
-      // filters
       document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', function () {
         document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
         this.classList.add('active');
         renderCourses(this.dataset.filter, document.getElementById('searchCourse').value);
       }));
     });
-    
-    
+
+
   </script>
   <script>
-    // Dark theme removed: read prefs for compatibility but do not alter the DOM class
     (function () {
       const PREF_KEY = 'campus360_prefs';
       document.addEventListener('DOMContentLoaded', function () {
@@ -183,15 +193,14 @@
           const raw = localStorage.getItem(PREF_KEY);
           if (raw) {
             const prefs = JSON.parse(raw);
-            // no-op: theme preference retained but no class toggling
           }
         } catch (e) { }
       });
     })();
   </script>
   <script>
-    (function initSidebarCourses(){
-      const sidebar = document.getElementById('appSidebar'); if(!sidebar) return;
+    (function initSidebarCourses() {
+      const sidebar = document.getElementById('appSidebar'); if (!sidebar) return;
       const items = sidebar.querySelectorAll('.sidebar-item');
       const current = window.location.pathname.split('/').pop() || 'courses.html';
       items.forEach(li => {
@@ -205,21 +214,20 @@
       });
     })();
   </script>
-  <!-- Simple runtime error overlay to help capture console errors visually -->
   <script>
-    (function(){
-      function makeOverlay(){
-        if(document.getElementById('jsErrorOverlay')) return;
-        const o = document.createElement('div'); o.id='jsErrorOverlay';
-        o.style.position='fixed'; o.style.right='18px'; o.style.bottom='18px'; o.style.left='18px'; o.style.maxWidth='900px'; o.style.zIndex='99999'; o.style.background='rgba(255,255,255,0.98)'; o.style.border='1px solid #f3dcdc'; o.style.boxShadow='0 10px 30px rgba(12,13,20,0.08)'; o.style.padding='12px'; o.style.borderRadius='10px'; o.style.fontFamily='system-ui,Segoe UI,Roboto';
-        const title = document.createElement('div'); title.style.fontWeight='700'; title.style.marginBottom='6px'; title.textContent='JavaScript Error (click to dismiss)';
-        const pre = document.createElement('pre'); pre.style.whiteSpace='pre-wrap'; pre.style.margin='0'; pre.style.maxHeight='240px'; pre.style.overflow='auto'; pre.id='jsErrorText';
+    (function () {
+      function makeOverlay() {
+        if (document.getElementById('jsErrorOverlay')) return;
+        const o = document.createElement('div'); o.id = 'jsErrorOverlay';
+        o.style.position = 'fixed'; o.style.right = '18px'; o.style.bottom = '18px'; o.style.left = '18px'; o.style.maxWidth = '900px'; o.style.zIndex = '99999'; o.style.background = 'rgba(255,255,255,0.98)'; o.style.border = '1px solid #f3dcdc'; o.style.boxShadow = '0 10px 30px rgba(12,13,20,0.08)'; o.style.padding = '12px'; o.style.borderRadius = '10px'; o.style.fontFamily = 'system-ui,Segoe UI,Roboto';
+        const title = document.createElement('div'); title.style.fontWeight = '700'; title.style.marginBottom = '6px'; title.textContent = 'JavaScript Error (click to dismiss)';
+        const pre = document.createElement('pre'); pre.style.whiteSpace = 'pre-wrap'; pre.style.margin = '0'; pre.style.maxHeight = '240px'; pre.style.overflow = 'auto'; pre.id = 'jsErrorText';
         o.appendChild(title); o.appendChild(pre);
-        o.addEventListener('click', ()=> o.remove());
+        o.addEventListener('click', () => o.remove());
         document.body.appendChild(o);
       }
-      window.addEventListener('error', function(ev){ makeOverlay(); const txt = document.getElementById('jsErrorText'); if(txt) txt.textContent = (ev.message || 'Error') + '\n' + (ev.filename || '') + ':' + (ev.lineno||'') + '\n' + (ev.error && ev.error.stack ? ev.error.stack : ''); });
-      window.addEventListener('unhandledrejection', function(ev){ makeOverlay(); const txt = document.getElementById('jsErrorText'); if(txt) txt.textContent = 'Unhandled Rejection:\n' + (ev.reason && ev.reason.stack ? ev.reason.stack : JSON.stringify(ev.reason)); });
+      window.addEventListener('error', function (ev) { makeOverlay(); const txt = document.getElementById('jsErrorText'); if (txt) txt.textContent = (ev.message || 'Error') + '\n' + (ev.filename || '') + ':' + (ev.lineno || '') + '\n' + (ev.error && ev.error.stack ? ev.error.stack : ''); });
+      window.addEventListener('unhandledrejection', function (ev) { makeOverlay(); const txt = document.getElementById('jsErrorText'); if (txt) txt.textContent = 'Unhandled Rejection:\n' + (ev.reason && ev.reason.stack ? ev.reason.stack : JSON.stringify(ev.reason)); });
     })();
   </script>
 </body>
